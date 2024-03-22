@@ -101,7 +101,7 @@ export function Header() {
             <div className="hidden md:flex md:gap-x-6">
               <NavLink href="/">Home</NavLink>
               <NavLink href="/about">About</NavLink>
-              <NavLink href="/join">Register </NavLink>
+              <NavLink href="/register">Register </NavLink>
               <NavLink href="/resource"> Resources</NavLink>
               <NavLink href="/contact">Contact Us </NavLink>
             </div>
@@ -112,7 +112,7 @@ export function Header() {
             </div>
             <Button href="/donate" color="blue">
               <span>
-              Support <span className="hidden lg:inline">Us</span>
+                Support <span className="hidden lg:inline">Us</span>
               </span>
             </Button>
             <div className="-mr-1 md:hidden">
