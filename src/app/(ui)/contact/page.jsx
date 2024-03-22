@@ -1,10 +1,7 @@
 'use client'
 import React from 'react'
-import {
-  BuildingOffice2Icon,
-  EnvelopeIcon,
-  PhoneIcon,
-} from '@heroicons/react/24/outline'
+import { FaBuilding, FaEnvelopeSquare, FaPhoneAlt } from 'react-icons/fa'
+
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
 
@@ -67,7 +64,7 @@ export default function Contact() {
                 <div className="flex gap-x-4">
                   <dt className="flex-none">
                     <span className="sr-only">Address</span>
-                    <BuildingOffice2Icon
+                    <FaBuilding
                       className="h-7 w-6 text-gray-400"
                       aria-hidden="true"
                     />
@@ -82,7 +79,7 @@ export default function Contact() {
                 <div className="flex gap-x-4">
                   <dt className="flex-none">
                     <span className="sr-only">Telephone</span>
-                    <PhoneIcon
+                    <FaPhoneAlt
                       className="h-7 w-6 text-gray-400"
                       aria-hidden="true"
                     />
@@ -99,7 +96,7 @@ export default function Contact() {
                 <div className="flex gap-x-4">
                   <dt className="flex-none">
                     <span className="sr-only">Email</span>
-                    <EnvelopeIcon
+                    <FaEnvelopeSquare
                       className="h-7 w-6 text-gray-400"
                       aria-hidden="true"
                     />

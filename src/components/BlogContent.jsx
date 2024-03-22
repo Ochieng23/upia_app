@@ -14,7 +14,7 @@ function BlogContent({ posts }) {
   }
 
   return (
-    <div className="flex-col gap-10 bg-gray-200 px-10 py-20  ">
+    <div className="flex-col gap-10 bg-slate-100 px-10 py-10  ">
       <span className="text-2xl font-extrabold text-black">Trending Posts</span>
       {posts &&
         Array.isArray(posts) &&

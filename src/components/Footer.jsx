@@ -12,22 +12,22 @@ const navigation = {
     { name: 'Contact Us', href: '/contact' },
   ],
   support: [
-    { name: 'Party Leaders', href: '#' },
+    { name: 'Party Leaders', href: '/lxc' },
     { name: 'Members', href: '/members' },
-    { name: 'Donate', href: '/donate' },
-    { name: 'Register', href: '#' },
+    { name: 'Donate', href: '/donat' },
+    { name: 'Register', href: '/lxc' },
   ],
   news: [
     { name: 'Latest', href: '/news' },
-    { name: 'Blog', href: '#' },
-    { name: 'Events', href: '#' },
+    { name: 'Blog', href: '/news' },
+    { name: 'Events', href: '/lxc' },
     { name: 'Press', href: '/news' },
-    { name: 'Partners', href: '#' },
+    
   ],
   legal: [
-    { name: 'Claim', href: '#' },
-    { name: 'Privacy', href: '#' },
-    { name: 'Terms', href: '#' },
+    { name: 'Claim', href: '/lxc' },
+    { name: 'Privacy', href: '/lxc' },
+    { name: 'Terms', href: '/lxc' },
   ],
   social: [
     {
@@ -84,7 +84,7 @@ const navigation = {
 
 export function Footer() {
   return (
-    <footer className="bg-slate-50">
+    <footer className="bg-slate-50 ">
       <Container>
         <h2 id="footer-heading" className="sr-only">
           Footer

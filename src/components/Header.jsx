@@ -80,8 +80,11 @@ function MobileNavigation() {
             <MobileNavLink href="/">Home</MobileNavLink>
             <MobileNavLink href="/about">About</MobileNavLink>
             <MobileNavLink href="/register">Register </MobileNavLink>
+            <MobileNavLink href="/resources">Resources </MobileNavLink>
+            <MobileNavLink href="/contact">Contact Us </MobileNavLink>
             <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/login">Donate</MobileNavLink>
+            <MobileNavLink href="/news">News </MobileNavLink>
+            <MobileNavLink href="/lxc">Donate</MobileNavLink>
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -91,7 +94,7 @@ function MobileNavigation() {
 
 export function Header() {
   return (
-    <header className="  py-3">
+    <header className="  py-3 shadow-md">
       <Container>
         <nav className="relative z-50 flex justify-between">
           <div className="flex items-center md:gap-x-12">
@@ -102,7 +105,7 @@ export function Header() {
               <NavLink href="/">Home</NavLink>
               <NavLink href="/about">About</NavLink>
               <NavLink href="/register">Register </NavLink>
-              <NavLink href="/resource"> Resources</NavLink>
+              <NavLink href="/resources"> Resources</NavLink>
               <NavLink href="/contact">Contact Us </NavLink>
             </div>
           </div>
@@ -110,7 +113,7 @@ export function Header() {
             <div className="hidden md:block">
               <NavLink href="/news">News</NavLink>
             </div>
-            <Button href="/donate" color="blue">
+            <Button href="/donat" color="blue">
               <span>
                 Support <span className="hidden lg:inline">Us</span>
               </span>

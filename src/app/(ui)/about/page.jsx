@@ -51,10 +51,10 @@ const values = [
 
 export default function About() {
   return (
-    <div className="bg-white">
+    <div >
       <Header />
-      <main className="isolate">
-        <div className="relative isolate -z-10">
+      <main className="isolate min-h-screen ">
+        <div className="relative isolate -z-10 ">
           <svg
             className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
             aria-hidden="true"

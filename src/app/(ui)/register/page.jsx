@@ -37,10 +37,9 @@ const RegisterForm = () => {
   return (
     <>
       <Header />
-
-      <main className="mb-13 mt-5 flex min-h-screen items-center justify-center">
-        <form className="mx-auto max-w-sm" onSubmit={handleSubmit}>
-          <div className="mb-5 flex items-center rounded bg-red-200">
+      <main className="mb-5 mt-2 flex  items-center justify-center">
+        <form className="mx-auto max-w-sm min-h-screen sm:py-10 sm:min-h-screen  sm:mt-10" onSubmit={handleSubmit}>
+          <div className="mb-5 flex items-center rounded-lg p-3 bg-red-200">
             <FaInfo className="mr-2 text-blue-600" />
             <span className="text-sm text-gray-900 dark:text-black">
               Please confirm your membership status by dialing:{' '}
@@ -59,7 +58,7 @@ const RegisterForm = () => {
                 <input
                   type="text"
                   id="name"
-                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-white-600 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   placeholder="First and last name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -78,7 +77,7 @@ const RegisterForm = () => {
                 <input
                   type="text"
                   id="other_names"
-                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-white-600 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   placeholder="20XX2357"
                   value={otherNames}
                   onChange={(e) => setOtherNames(e.target.value)}
@@ -98,7 +97,7 @@ const RegisterForm = () => {
             <input
               type="text"
               id="mobile_phone"
-              className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-white-600 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               placeholder="0791XX0460"
               value={mobileNumber}
               onChange={(e) => setMobileNumber(e.target.value)}
@@ -117,7 +116,7 @@ const RegisterForm = () => {
                 <input
                   type="email"
                   id="email"
-                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-white-600 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   placeholder="name@gmail.com"
                   required
                 />
@@ -134,7 +133,7 @@ const RegisterForm = () => {
                 <input
                   type="email"
                   id="confirm_email"
-                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                  className="dark:shadow-sm-light block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-black shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-white-600 dark:bg-white dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   placeholder="name@gmail.com"
                   required
                 />
@@ -151,7 +150,7 @@ const RegisterForm = () => {
             </label>
             <select
               id="membership"
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              className="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-black focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-white dark:text-black dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
               value={membership}
               onChange={(e) => setMembership(e.target.value)}
             >
@@ -164,7 +163,7 @@ const RegisterForm = () => {
               id="terms"
               type="checkbox"
               value=""
-              className="focus:ring-3 h-4 w-4 rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800"
+              className="focus:ring-3 h-4 w-4 rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-600 dark:bg-white dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800"
               checked={termsAgreed}
               onChange={(e) => setTermsAgreed(e.target.checked)}
               required
