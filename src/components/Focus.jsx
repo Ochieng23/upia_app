@@ -1,120 +1,109 @@
 'use client'
-import { cn } from "../../utils/cn";
-import { AnimatePresence, motion } from "framer-motion";
-import Link from "next/link";
-import { useState } from "react";
+import { cn } from '../../utils/cn'
+import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link'
+import { useState } from 'react'
 
-export const HoverEffect = ({
-  items,
-  className,
-}) => {
-  let [hoveredIndex, setHoveredIndex] = useState(null);
+export const HoverEffect = ({ items, className }) => {
+  let [hoveredIndex, setHoveredIndex] = useState(null)
 
   return (
-    <div className="min-h-screen bg-slate-100">
-    <h1 className="text-center text-2xl font-extrabold py-5 text-red-600"> <span className="text-green-600">Focus</span> Areas</h1>
-    <div
-      className={cn(
-        "grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3  py-7",
-        className
-      )}
-    >
-      {items.map((item, idx) => (
-        <Link
-          href={item?.link}
-          key={item?.link}
-          className="relative group  block p-2 h-full w-full"
-          onMouseEnter={() => setHoveredIndex(idx)}
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
-          <AnimatePresence>
-            {hoveredIndex === idx && (
-              <motion.span
-                className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-red-600/[0.8] block  rounded-3xl"
-                layoutId="hoverBackground"
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  transition: { duration: 0.15 },
-                }}
-                exit={{
-                  opacity: 0,
-                  transition: { duration: 0.15, delay: 0.2 },
-                }}
-              />
-            )}
-          </AnimatePresence>
-          <Card>
-          <div className="flex items-center gap-5">
-  <p>{item.icon}</p>
-  <CardTitle>{item.title}</CardTitle>
-</div>
+    <div className=" min-h-screen bg-slate-100">
+      <h1 className="py-5 text-center text-2xl font-extrabold text-red-600">
+        {' '}
+        <span className="text-green-600">Focus</span> Areas
+      </h1>
+      <div
+        className={cn(
+          'grid grid-cols-1 py-7  md:grid-cols-2  lg:grid-cols-3',
+          className,
+        )}
+      >
+        {items.map((item, idx) => (
+          <Link
+            href={item?.link}
+            key={item?.link}
+            className="group relative  block h-full w-full p-2"
+            onMouseEnter={() => setHoveredIndex(idx)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            <AnimatePresence>
+              {hoveredIndex === idx && (
+                <motion.span
+                  className="absolute inset-0 block h-full w-full rounded-3xl bg-neutral-200  dark:bg-red-600/[0.8]"
+                  layoutId="hoverBackground"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: { duration: 0.15 },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    transition: { duration: 0.15, delay: 0.2 },
+                  }}
+                />
+              )}
+            </AnimatePresence>
+            <Card>
+              <div className="flex items-center gap-5">
+                <p>{item.icon}</p>
+                <CardTitle>{item.title}</CardTitle>
+              </div>
 
-            <CardDescription>{item.description}</CardDescription>
-          </Card>
-        </Link>
-      ))}
+              <CardDescription>{item.description}</CardDescription>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
-    </div>
-  );
-};
+  )
+}
 
-export const Card = ({
-  className,
-  children,
-}) => {
+export const Card = ({ className, children }) => {
   return (
     <div
       className={cn(
-        "rounded-2xl h-full w-full p-4 overflow-hidden bg-white border border-gray-200 dark:border-gray/[0.2] group-hover:border-slate-700 relative z-20",
-        className
+        'dark:border-gray/[0.2] relative z-10 h-full w-full overflow-hidden rounded-2xl border border-gray-200 bg-white p-4 group-hover:border-slate-700',
+        className,
       )}
     >
       <div className="relative z-50">
         <div className="p-4">{children}</div>
       </div>
     </div>
-  );
-};
-export const CardTitle = ({
-  className,
-  children,
-}) => {
+  )
+}
+export const CardTitle = ({ className, children }) => {
   return (
-    <h4 className={cn("text-black font-extrabold tracking-wide mt-4", className)}>
+    <h4
+      className={cn('mt-4 font-extrabold tracking-wide text-black', className)}
+    >
       {children}
     </h4>
-  );
-};
-export const CardDescription = ({
-  className,
-  children,
-}) => {
+  )
+}
+export const CardDescription = ({ className, children }) => {
   return (
     <p
       className={cn(
-        "mt-8 text-black tracking-wide leading-relaxed text-sm",
-        className
+        'mt-8 text-sm leading-relaxed tracking-wide text-black',
+        className,
       )}
     >
       {children}
     </p>
-  );
-};
+  )
+}
 
-
-export const CardIcon = ({
-    className,
-    children,
-  }) => {
-    return (
-      <p
-        className={cn(
-          "mt-8 text-white tracking-wide leading-relaxed text-sm",
-          className
-        )}
-      >
-        {children}
-      </p>
-    );
-  };
+export const CardIcon = ({ className, children }) => {
+  return (
+    <p
+      className={cn(
+        'mt-8 text-sm leading-relaxed tracking-wide text-white',
+        className,
+      )}
+    >
+      {children}
+    </p>
+  )
+}

@@ -64,7 +64,7 @@ const items = [
 export default function Home() {
   return (
     <>
-      <Header />
+      <Header  />
       <main>
         <Hero />
         <AboutHome />
