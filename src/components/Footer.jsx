@@ -208,7 +208,7 @@ export function Footer() {
               ))}
             </div>
             <p className="text-black-400 mt-8 text-xs leading-5 md:order-1 md:mt-0">
-              &copy; 2020 UPIA PARTY. All rights reserved.
+              &copy; 2024 UPIA PARTY. All rights reserved.
             </p>
           </div>
         </div>
