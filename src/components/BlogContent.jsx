@@ -15,7 +15,7 @@ function BlogContent({ posts }) {
 
   return (
     <div className="flex-col gap-10 bg-slate-100 px-10 py-10  ">
-      <span className="text-2xl font-extrabold text-black">Trending Posts</span>
+      <span className="font-extrabold text-black hidden">News</span>
       {posts &&
         Array.isArray(posts) &&
         posts.map((post) => (

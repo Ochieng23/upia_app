@@ -1,4 +1,3 @@
-
 import { createClient, groq } from 'next-sanity'
 import { client } from '../components/createClient' // Assuming `client` is exported correctly from `createClient`
 import React from 'react'
@@ -25,10 +24,8 @@ export default async function Posts() {
     const posts = await client.fetch(query) // Corrected variable name from `post` to `posts`
 
     return (
-      <div className="min-h-screen ">
-       
+      <div className="mt-10 min-h-screen">
         <main>
-         
           <BlogContent posts={posts} />
         </main>
       </div>
