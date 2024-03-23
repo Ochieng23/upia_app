@@ -37,7 +37,7 @@ const RegisterForm = () => {
   return (
     <>
       <Header />
-      <main className="mb-5 mt-10 flex  items-center justify-center">
+      <main className="mb-5 mt-28 sm:mt-30 flex  items-center justify-center">
         <form className="mx-auto max-w-sm min-h-screen sm:py-10 sm:min-h-screen  sm:mt-10" onSubmit={handleSubmit}>
           <div className="mb-5 flex items-center rounded-lg p-3 bg-red-200">
             <FaInfo className="mr-2 text-blue-600" />
