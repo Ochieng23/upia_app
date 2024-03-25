@@ -2,7 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-
 function BlogContent({ posts }) {
   function truncateText(text, maxLength) {
     if (!text || text.length <= maxLength) {
@@ -14,8 +13,8 @@ function BlogContent({ posts }) {
   }
 
   return (
-    <div className="flex-col gap-10 bg-slate-100 px-10 py-10  ">
-      <span className="font-extrabold text-black hidden">News</span>
+    <div className="mt-10 flex-col gap-10 bg-slate-100 px-10 py-10  ">
+      <span className="hidden font-extrabold text-black">News</span>
       {posts &&
         Array.isArray(posts) &&
         posts.map((post) => (

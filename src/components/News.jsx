@@ -24,7 +24,7 @@ export default async function Posts() {
     const posts = await client.fetch(query) // Corrected variable name from `post` to `posts`
 
     return (
-      <div className="mt-10 min-h-screen">
+      <div className=" min-h-screen">
         <main>
           <BlogContent posts={posts} />
         </main>

@@ -18,7 +18,7 @@ export function Hero() {
         <Image src={Tero} alt="" fill className="opacity-65 aspect-auto"  />
       </div>{' '}
       {/* Overlay */}
-      <div className="bg-white-400 relative z-10 pt-20">
+      <div className="bg-white-400 relative z-10 pt-20 md:pt-20 sm:pt-40">
         <h1 className="text-black-600 mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight sm:text-7xl">
           <span className="font-bold  text-white">United</span>{' '}
           <span className="relative whitespace-nowrap text-red-600">
