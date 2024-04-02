@@ -4,10 +4,39 @@ import { FaBuilding, FaEnvelopeSquare, FaPhoneAlt } from 'react-icons/fa'
 
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
+import WhatsAppWidget from "react-whatsapp-chat-widget";
+import "react-whatsapp-chat-widget/index.css";
 
 export default function Contact() {
   return (
     <>
+      <WhatsAppWidget
+            phoneNo="+254791410460"
+            position="right"
+            widgetWidth="400px"
+            widgetWidthMobile="360px"
+            autoOpen={true}
+            autoOpenTimer={2000}
+            messageBox={true}
+            messageBoxTxt="Hi , I need help with... ?"
+            iconSize="40"
+            iconColor="white"
+            iconBgColor="green"
+            headerIcon="https://www.pdapps.net.in/_next/static/media/android-chrome-192x192.9a39c2c7.png"
+            headerIconColor="green"
+            headerTxtColor="black"
+            headerBgColor="green"
+            headerTitle="John Doe"
+            headerCaption="Online"
+            bodyBgColor="green"
+            chatPersonName="Support"
+            chatMessage={<>Hi there 👋 <br /><br /> How can I help you?</>}
+            footerBgColor="green"
+            placeholder="Type a message.."
+            btnBgColor="green"
+            btnTxt="Start Chat"
+            btnTxtColor="black"
+        />
       <Header />
       <main className="relative isolate bg-white mt-10">
         <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">

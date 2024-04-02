@@ -1,3 +1,4 @@
+
 import { CallToAction } from '../components/CallToAction'
 import { Footer } from '../components/Footer'
 import { Header } from '../components/Header'
@@ -14,6 +15,7 @@ import {
   FaDonate,
   FaGraduationCap,
 } from 'react-icons/fa'
+
 
 const items = [
   {
@@ -66,6 +68,7 @@ export default function Home() {
     <>
       <Header  />
       <main>
+    
         <Hero />
         <AboutHome />
         <HoverEffect items={items} />
