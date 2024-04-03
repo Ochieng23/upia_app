@@ -7,7 +7,7 @@ import Tero from '../images/images/about-6.jpg'
 export function Hero() {
   return (
     <Container
-      className=" relative mt-10 h-screen py-20 2xl:h-[calc(100vh-1000px)]  pb-16 pt-20 text-center  lg:pt-40 2xl:pt-60"
+      className=" relative mt-10 h-screen   py-20 2xl:h-[calc(100vh-1000px)]   pb-16 pt-20 text-center  lg:pt-40 2xl:pt-60"
       style={{
         backgroundImage: 'url("/path/to/background-image.jpg")',
         backgroundSize: 'cover',
