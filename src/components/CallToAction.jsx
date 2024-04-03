@@ -7,9 +7,9 @@ import backgroundImage from '../images/images/about-1.jpg'
 
 export function CallToAction() {
   return (
-    <section
+    < Container
       id="get-started-today"
-      className="relative flex flex-col items-center overflow-hidden bg-green-600 py-0 sm:flex-row"
+      className="relative flex flex-col items-center overflow-hidden bg-green-600  sm:flex-row"
     >
       {/* Image */}
       <div className="w-full  sm:w-1/2">
@@ -24,7 +24,7 @@ export function CallToAction() {
       </div>
 
       {/* Container */}
-      <Container className="relative w-full sm:w-1/2 sm:py-20 ">
+      <div className="relative w-full sm:w-1/2 sm:py-20 ">
         <div className="mx-auto max-w-lg text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Be a part of change!
@@ -39,7 +39,7 @@ export function CallToAction() {
             Join Us
           </Button>
         </div>
-      </Container>
-    </section>
+      </div>
+    </Container>
   )
 }

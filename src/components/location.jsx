@@ -1,9 +1,10 @@
 'use client'
 import React from 'react'
+import { Container } from './Container'
 
 function Location() {
   return (
-    <div className="mb-3 mt-5 bg-white">
+    <Container className="mb-3 mt-5 bg-white">
       <h1 className="text-center text-2xl font-extrabold text-black">
         Our <span className=" text-red-500">Location</span>
       </h1>
@@ -76,7 +77,7 @@ function Location() {
           </div>
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
 

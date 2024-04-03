@@ -3,12 +3,12 @@ import { cn } from '../../utils/cn'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useState } from 'react'
-
+import { Container } from './Container'
 export const HoverEffect = ({ items, className }) => {
   let [hoveredIndex, setHoveredIndex] = useState(null)
 
   return (
-    <div className=" min-h-screen bg-slate-100">
+    <Container className=" bg-slate-100">
       <h1 className="py-5 text-center text-2xl font-extrabold text-red-600">
         {' '}
         <span className="text-green-600">Focus</span> Areas
@@ -55,7 +55,7 @@ export const HoverEffect = ({ items, className }) => {
           </Link>
         ))}
       </div>
-    </div>
+    </Container>
   )
 }
 

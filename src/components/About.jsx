@@ -33,7 +33,7 @@ const cards = [
 
 export default function AboutHome() {
   return (
-    <div className="sm:py-15 relative isolate min-h-screen overflow-hidden bg-white py-2">
+    <div className="sm:py-15 relative isolate  overflow-hidden bg-white py-2">
       <h1 className="py-5 text-center text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
         <span className="text-red-500">Pillars</span> of{' '}
         <span className="text-green-600">UPIA</span>
@@ -42,7 +42,7 @@ export default function AboutHome() {
         <div className="flex justify-center">
           <div className="max-w-2xl text-center lg:mx-0"></div>
         </div>
-        <div className="mx-auto  mt-6 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-8">
+        <div className="mx-auto  mt-6 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 lg:mx-0 lg:max-w-none md:grid-cols-3 lg:grid-cols-3 lg:gap-8">
           {cards.map((card) => (
             <div
               key={card.name}

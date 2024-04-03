@@ -5,6 +5,7 @@ import { Header } from '../components/Header'
 import { Hero } from '../components/Hero'
 import Location from '../components/location'
 import AboutHome from '../components/About'
+import Leadership from '../components/Leadership'
 import Blog from '../components/Blog'
 import { HoverEffect } from '../components/Focus'
 import {
@@ -73,6 +74,7 @@ export default function Home() {
         <AboutHome />
         <HoverEffect items={items} />
         <CallToAction />
+        <Leadership />
         <Location />
         <Blog />
       </main>

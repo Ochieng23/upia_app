@@ -6,7 +6,7 @@ import Tero from '../images/images/about-6.jpg'
 export function Hero() {
   return (
     <Container
-      className=" relative min-h-screen pb-16 mt-10  pt-20 text-center  lg:pt-32 "
+      className=" relative pb-16 mt-10  pt-20 text-center  lg:pt-32 "
       style={{
         backgroundImage: 'url("/path/to/background-image.jpg")',
         backgroundSize: 'cover',
@@ -15,7 +15,7 @@ export function Hero() {
     >
       <div className="absolute inset-0 bg-black opacity-70 ">
         {' '}
-        <Image src={Tero} alt="" fill className="opacity-65 aspect-auto"  />
+        <Image src={Tero} alt="" fill className="overflow-hidden opacity-65  aspect-auto"  />
       </div>{' '}
       {/* Overlay */}
       <div className="bg-white-400 relative z-10 pt-20">

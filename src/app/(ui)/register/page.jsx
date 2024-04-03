@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
 import { FaInfo } from 'react-icons/fa'
+import { Container } from '../../../components/Container'
 
 const RegisterForm = () => {
   // State variables to store form field values
@@ -38,7 +39,7 @@ const RegisterForm = () => {
     <>
       <Header />
       <main className="mb-5 mt-28 sm:mt-30 flex  items-center justify-center">
-        <form className="mx-auto max-w-sm min-h-screen sm:py-10 sm:min-h-screen  sm:mt-10" onSubmit={handleSubmit}>
+        <Container className="mx-auto max-w-sm  sm:py-10 sm:min-h-screen  sm:mt-10" onSubmit={handleSubmit}>
           <div className="mb-5 flex items-center rounded-lg p-3 bg-red-200">
             <FaInfo className="mr-2 text-blue-600" />
             <span className="text-sm text-gray-900 dark:text-black">
@@ -187,7 +188,7 @@ const RegisterForm = () => {
           >
             Register
           </button>
-        </form>
+        </Container>
       </main>
       <Footer />
     </>
