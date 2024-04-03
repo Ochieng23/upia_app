@@ -110,14 +110,33 @@ export default function Leadership() {
                 }
                 key={index}
               >
-                <div style={{width:'280px', height:'300px', overflow:'hidden'}}>
-                <Image
-                  src={person.imageUrl}
-                  alt=""
-                  width={400}
-                  height={400}
-                  className="transition-transform hover:scale-105"
-                />
+                <div
+                  style={{
+                    width: '275px',
+                    height: '275px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Image
+                      src={person.imageUrl}
+                      alt=""
+                      width={500}
+                      height={500}
+                      className="transition-transform hover:scale-105"
+                    />
+                  </div>
                 </div>
 
                 <h3 className="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">
