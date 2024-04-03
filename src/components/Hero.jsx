@@ -3,22 +3,28 @@ import { Button } from './Button'
 import { Container } from './Container'
 import Tero from '../images/images/about-6.jpg'
 
+
 export function Hero() {
   return (
     <Container
-      className=" relative pb-16 mt-10  pt-20 text-center  lg:pt-32 "
+      className=" relative mt-10 h-screen py-20 2xl:h-[calc(100vh-1000px)]  pb-16 pt-20 text-center  lg:pt-40 2xl:pt-60"
       style={{
         backgroundImage: 'url("/path/to/background-image.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-black opacity-70 ">
+      <div className="absolute inset-0 bg-black  opacity-70 ">
         {' '}
-        <Image src={Tero} alt="" fill className="overflow-hidden opacity-65  aspect-auto"  />
+        <Image
+          src={Tero}
+          alt=""
+          fill
+          className="aspect-auto   overflow-hidden opacity-65"
+        />
       </div>{' '}
       {/* Overlay */}
-      <div className="bg-white-400 relative z-10 pt-20">
+      <div className="bg-white-400 relative z-10 pt-20 ">
         <h1 className="text-black-600 mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight sm:text-7xl">
           <span className="font-bold  text-white">United</span>{' '}
           <span className="relative whitespace-nowrap text-red-600">

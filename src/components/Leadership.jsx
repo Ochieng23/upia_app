@@ -134,7 +134,7 @@ export default function Leadership() {
                     <div className="w-full border-t border-green-300" />
                   </div>
                 </div>
-                <ul role="list" className="mt-6 flex gap-x-6">
+                <ul role="list" className="mt-4 flex gap-x-6">
                   <li>
                     <Link
                       href={person.xUrl}
