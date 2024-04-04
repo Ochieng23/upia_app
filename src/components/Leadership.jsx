@@ -13,28 +13,28 @@ import kanguchu from '../images/images/kanguchu.jpeg'
 import Link from 'next/link'
 const people = [
   {
-    name: 'Ukur Yattani',
+    name: 'Amb. Ukur Yattani',
     role: 'Party Leader',
     imageUrl: ukur,
     xUrl: '#',
     linkedinUrl: '#',
   },
   {
-    name: 'Ukur Yattani',
+    name: 'Hon. Joseph Kanguchu',
     role: 'Organizing Secretary',
     imageUrl: kanguchu,
     xUrl: '#',
     linkedinUrl: '#',
   },
   {
-    name: 'Ukur Yattani',
+    name: 'Dr. Nuh Nassir Abdi ',
     role: 'Chairman',
     imageUrl: chairman,
     xUrl: '#',
     linkedinUrl: '#',
   },
   {
-    name: 'Ukur Yattani',
+    name: 'Dr. Mohamed Dahir Duale',
     role: 'Secretary General',
     imageUrl: secgen,
     xUrl: '#',
@@ -42,7 +42,7 @@ const people = [
   },
   ,
   {
-    name: 'Ukur Yattani',
+    name: 'Hon. Hibo Bishar ',
     role: 'National Treasurer',
     imageUrl: hibo,
     xUrl: '#',
@@ -50,7 +50,7 @@ const people = [
   },
   ,
   {
-    name: 'Ukur Yattani',
+    name: ' Hon. Sadick Doufa',
     role: 'CE0',
     imageUrl: sadick,
     xUrl: '#',
