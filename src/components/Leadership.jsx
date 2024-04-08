@@ -128,7 +128,7 @@ export default function Leadership() {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}
-                  >
+                  > 
                     <Image
                       src={person.imageUrl}
                       alt=""
@@ -136,7 +136,7 @@ export default function Leadership() {
                       height={500}
                       className="transition-transform hover:scale-105"
                     />
-                  </div>
+                  </div> 
                 </div>
 
                 <h3 className="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900">
