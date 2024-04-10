@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const RichText = {
+const RichText = {
   types: {
     image: ({ value }) => {
       return (
@@ -21,8 +21,10 @@ export const RichText = {
     bullet: ({ children }) => (
       <ul className="ml-10 list-disc space-y-5 py-5">{children}</ul>
     ),
+    number: ({ children }) => (
+      <ol className="mt-lg list-decimal">{children}</ol>
+    ),
   },
-  number: ({ children }) => <ol className="mt-lg list-decimal">{children}</ol>,
   block: {
     h1: ({ children }) => (
       <h1 className="py-10 text-4xl font-bold">{children}</h1>
@@ -44,12 +46,18 @@ export const RichText = {
   },
   marks: {
     link: ({ children, value }) => {
-      const rel = !value.href.startWith('/') ? 'noreferrer noopener' : undefined
+      const rel = !value.href.startsWith('/')
+        ? 'noreferrer noopener'
+        : undefined
       return (
-        <Link href={value.href} rel={rel} className="underline">
-          {children}
+        <Link href={value.href} passHref>
+          <a rel={rel} className="underline">
+            {children}
+          </a>
         </Link>
       )
     },
   },
 }
+
+export default RichText
