@@ -11,7 +11,7 @@ export const HoverEffect = ({ items, className }) => {
     <Container className=" bg-slate-100">
       <h1 className="py-5 text-center text-2xl font-extrabold text-red-600">
         {' '}
-        <span className="text-green-600">Focus</span> Areas
+        <span className="">Focus</span> Areas
       </h1>
       <div
         className={cn(

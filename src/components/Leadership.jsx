@@ -4,12 +4,12 @@ import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import Image from 'next/image'
-import ukur from '../images/images/ukur.png'
+import ukur from '../images/images/CS-Ukur-1-removebg-preview.png'
 import chairman from '../images/images/chairman.jpg'
 import secgen from '../images/images/secgen.jpeg'
 import hibo from '../images/images/hibo.jpeg'
-import sadick from '../images/images/sadiq.jpeg'
-import kanguchu from '../images/images/kanguchu.jpeg'
+import sadick from '../images/images/Sadick PP.jpg'
+import kanguchu from '../images/images/kanguchu-removebg-preview.png'
 import Link from 'next/link'
 const people = [
   {
@@ -19,13 +19,7 @@ const people = [
     xUrl: '#',
     linkedinUrl: '#',
   },
-  {
-    name: 'Hon. Joseph Kanguchu',
-    role: 'Organizing Secretary',
-    imageUrl: kanguchu,
-    xUrl: '#',
-    linkedinUrl: '#',
-  },
+  
   {
     name: 'Dr. Nuh Nassir Abdi ',
     role: 'Chairman',
@@ -37,6 +31,13 @@ const people = [
     name: 'Dr. Mohamed Dahir Duale',
     role: 'Secretary General',
     imageUrl: secgen,
+    xUrl: '#',
+    linkedinUrl: '#',
+  },
+  {
+    name: 'Hon. Joseph Kanguchu',
+    role: 'Organizing Secretary',
+    imageUrl: kanguchu,
     xUrl: '#',
     linkedinUrl: '#',
   },
@@ -97,8 +98,8 @@ export default function Leadership() {
   return (
     <div className="sm:py-13 overflow-hidden bg-white py-10">
       <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-        <span>Our</span> <span className="text-green-600">Party</span>{' '}
-        <span className="text-red-500">Leadership</span>
+        <span>Our</span> <span className="">Party</span>{' '}
+        <span className="">Leadership</span>
       </h2>
       <div className="mx-auto max-w-7xl px-4 lg:px-5">
         <ul role="list" className="mx-auto mt-10  ">

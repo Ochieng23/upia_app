@@ -6,7 +6,7 @@ function Location() {
   return (
     <Container className="mb-3 mt-5 bg-white">
       <h1 className="text-center text-2xl font-extrabold text-black">
-        Our <span className=" text-red-500">Location</span>
+        Our <span className="">Location</span>
       </h1>
       <div className=" mx-auto   max-w-2xl sm:mt-20 lg:mx-0 lg:flex lg:max-w-none lg:gap-0">
         <div className="m-5 w-auto lg:w-1/3 ">

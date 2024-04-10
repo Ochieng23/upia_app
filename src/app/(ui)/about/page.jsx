@@ -10,7 +10,6 @@ import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
 import Image from 'next/image'
 
-
 const stats = [
   { label: 'Lawfully elected ', value: '0 Governors' },
   { label: 'Voter oriented', value: '2 Mps' },
@@ -18,40 +17,40 @@ const stats = [
 ]
 const values = [
   {
-    name: 'Be world-class',
+    name: 'Inclusivity',
     description:
-      'Aut illo quae. Ut et harum ea animi natus. Culpa maiores et sed sint et magnam exercitationem quia. Ullam voluptas nihil vitae dicta molestiae et. Aliquid velit porro vero.',
+      'We believe in embracing diversity and fostering an environment where every individual, regardless of background or belief, feels valued, respected, and included in the political process.',
   },
   {
-    name: 'Share everything you know',
+    name: 'Transparency',
     description:
-      'Mollitia delectus a omnis. Quae velit aliquid. Qui nulla maxime adipisci illo id molestiae. Cumque cum ut minus rerum architecto magnam consequatur. Quia quaerat minima.',
+      'We are committed to transparency in governance, ensuring that our actions, decisions, and policies are open to scrutiny and accessible to all citizens. We believe that transparency is essential for building trust and accountability within our party and with the communities we serve.',
   },
   {
-    name: 'Always learning',
+    name: 'Innovation',
     description:
-      'Aut repellendus et officiis dolor possimus. Deserunt velit quasi sunt fuga error labore quia ipsum. Commodi autem voluptatem nam. Quos voluptatem totam.',
+      'We recognize the importance of embracing innovation in addressing complex challenges and shaping the future of our society. We strive to harness new ideas, technologies, and approaches to governance to drive positive change and improve the lives of all citizens.',
   },
   {
-    name: 'Be supportive',
+    name: 'Collaboration',
     description:
-      'Magnam provident veritatis odit. Vitae eligendi repellat non. Eum fugit impedit veritatis ducimus. Non qui aspernatur laudantium modi. Praesentium rerum error deserunt harum.',
+      'We believe in the power of collaboration and partnership to achieve our goals. We seek to work across political divides and engage with diverse stakeholders to find common ground, build consensus, and enact meaningful and sustainable solutions for the benefit of our nation.',
   },
   {
-    name: 'Take responsibility',
+    name: 'Peace',
     description:
-      'Sit minus expedita quam in ullam molestiae dignissimos in harum. Tenetur dolorem iure. Non nesciunt dolorem veniam necessitatibus laboriosam voluptas perspiciatis error.',
+      'We prioritize the promotion of peace both domestically and internationally. We advocate for diplomacy, conflict resolution, and the protection of human rights as fundamental principles of our governance. We believe that a peaceful society fosters stability, prosperity, and social harmony, and we are dedicated to fostering dialogue, understanding, and reconciliation among all communities.',
   },
   {
-    name: 'Enjoy downtime',
+    name: 'Economic Growth',
     description:
-      'Ipsa in earum deserunt aut. Quos minus aut animi et soluta. Ipsum dicta ut quia eius. Possimus reprehenderit iste aspernatur ut est velit consequatur distinctio.',
+      'We are dedicated to fostering robust economic growth that benefits all members of society. We advocate for policies that promote entrepreneurship, innovation, and sustainable development, creating opportunities for job creation, wealth distribution, and upward mobility. We believe in fostering an environment where businesses can thrive, investments are encouraged, and economic prosperity is shared equitably among all citizens.',
   },
 ]
 
 export default function About() {
   return (
-    <div >
+    <div>
       <Header />
       <main className="isolate min-h-screen ">
         <div className="relative isolate -z-10 ">
@@ -104,12 +103,12 @@ export default function About() {
                     We’re changing the way parties and leaders connect.
                   </h1>
                   <p className="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
-                    Cupidatat minim id magna ipsum sint dolor qui. Sunt sit in
-                    quis cupidatat mollit aute velit. Et labore commodo nulla
-                    aliqua proident mollit ullamco exercitation tempor. Sint
-                    aliqua anim nulla sunt mollit id pariatur in voluptate
-                    cillum. Eu voluptate tempor esse minim amet fugiat veniam
-                    occaecat aliqua.
+                    We endevour to forge a cohesive society where every voice is
+                    heard, every opportunity is accessible, and every idea is
+                    valued. Through relentless dedication to equity and
+                    pioneering innovation, we strive to unite diverse
+                    perspectives, foster inclusive growth, and catalyze positive
+                    change for all.
                   </p>
                 </div>
                 <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
@@ -179,27 +178,32 @@ export default function About() {
             </h2>
             <div className="mt-6 flex flex-col gap-x-8 gap-y-20 lg:flex-row">
               <div className="lg:w-full lg:max-w-2xl lg:flex-auto">
-                <p className="text-xl leading-8 text-gray-600">
-                  Aliquet nec orci mattis amet quisque ullamcorper neque, nibh
-                  sem. At arcu, sit dui mi, nibh dui, diam eget aliquam. Quisque
-                  id at vitae feugiat egestas ac. Diam nulla orci at in viverra
-                  scelerisque eget. Eleifend egestas fringilla sapien.
-                </p>
+                <p className="text-xl leading-8 text-gray-600"></p>
                 <div className="mt-10 max-w-xl text-base leading-7 text-gray-700">
                   <p>
-                    Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget
-                    risus enim. Mattis mauris semper sed amet vitae sed turpis
-                    id. Id dolor praesent donec est. Odio penatibus risus
-                    viverra tellus varius sit neque erat velit. Faucibus commodo
-                    massa rhoncus, volutpat. Dignissim sed eget risus enim.
-                    Mattis mauris semper sed amet vitae sed turpis id.
+                    By leveraging cutting-edge technology and user-centric
+                    design, we're empowering parties and leaders to transcend
+                    geographical and ideological boundaries, reaching out to a
+                    diverse range of individuals and communities. Our platform
+                    serves as a catalyst for collaboration, enabling parties to
+                    tap into the collective wisdom and energy of their
+                    supporters, driving informed decision-making and effective
+                    governance.
                   </p>
                   <p className="mt-10">
-                    Et vitae blandit facilisi magna lacus commodo. Vitae sapien
-                    duis odio id et. Id blandit molestie auctor fermentum
-                    dignissim. Lacus diam tincidunt ac cursus in vel. Mauris
-                    varius vulputate et ultrices hac adipiscing egestas. Iaculis
-                    convallis ac tempor et ut. Ac lorem vel integer orci.
+                    Moreover, we're democratizing access to political discourse,
+                    amplifying the voices of marginalized groups and
+                    underrepresented communities. By breaking down silos and
+                    embracing diversity, we're building a more resilient and
+                    responsive political ecosystem, one that reflects the rich
+                    tapestry of human experiences and aspirations. In essence,
+                    we're not just changing the way parties and leaders connect;
+                    we're revolutionizing the very fabric of political
+                    engagement, ushering in a new era of inclusivity,
+                    transparency, and empowerment. Together, we're shaping a
+                    future where every voice matters, and every individual has
+                    the opportunity to contribute to the collective well-being
+                    of society.
                   </p>
                 </div>
               </div>
@@ -243,8 +247,7 @@ export default function About() {
               Our values
             </h2>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Lorem ipsum dolor sit amet consect adipisicing elit. Possimus
-              magnam voluptatum cupiditate veritatis in accusamus quisquam.
+              
             </p>
           </div>
           <dl className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base leading-7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
@@ -293,7 +296,6 @@ export default function About() {
           </div>
           <div className="mx-auto max-w-7xl px-6 lg:px-8"> </div>
         </div>
-        
       </main>
       <Footer />
     </div>

@@ -35,8 +35,8 @@ export default function AboutHome() {
   return (
     <div className="sm:py-15 relative isolate  overflow-hidden bg-white py-2">
       <h1 className="py-5 text-center text-2xl font-extrabold tracking-tight text-black sm:text-3xl">
-        <span className="text-red-500">Pillars</span> of{' '}
-        <span className="text-green-600">UPIA</span>
+        <span className="">Pillars</span> of{' '}
+        <span className="">UPIA</span>
       </h1>
       <div className="mx-auto max-w-7xl px-4 lg:px-5">
         <div className="flex justify-center">
