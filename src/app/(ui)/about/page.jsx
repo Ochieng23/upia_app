@@ -182,7 +182,7 @@ export default function About() {
                 <div className="mt-10 max-w-xl text-base leading-7 text-gray-700">
                   <p>
                     By leveraging cutting-edge technology and user-centric
-                    design, we're empowering parties and leaders to transcend
+                    design, we are empowering parties and leaders to transcend
                     geographical and ideological boundaries, reaching out to a
                     diverse range of individuals and communities. Our platform
                     serves as a catalyst for collaboration, enabling parties to
@@ -191,16 +191,16 @@ export default function About() {
                     governance.
                   </p>
                   <p className="mt-10">
-                    Moreover, we're democratizing access to political discourse,
-                    amplifying the voices of marginalized groups and
+                    Moreover, we are democratizing access to political
+                    discourse, amplifying the voices of marginalized groups and
                     underrepresented communities. By breaking down silos and
-                    embracing diversity, we're building a more resilient and
+                    embracing diversity, we are building a more resilient and
                     responsive political ecosystem, one that reflects the rich
                     tapestry of human experiences and aspirations. In essence,
-                    we're not just changing the way parties and leaders connect;
-                    we're revolutionizing the very fabric of political
+                    we are not just changing the way parties and leaders
+                    connect; we are revolutionizing the very fabric of political
                     engagement, ushering in a new era of inclusivity,
-                    transparency, and empowerment. Together, we're shaping a
+                    transparency, and empowerment. Together, we are shaping a
                     future where every voice matters, and every individual has
                     the opportunity to contribute to the collective well-being
                     of society.
@@ -246,9 +246,7 @@ export default function About() {
             <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
               Our values
             </h2>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              
-            </p>
+            <p className="mt-6 text-lg leading-8 text-gray-600"></p>
           </div>
           <dl className="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 text-base leading-7 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
             {values.map((value) => (
