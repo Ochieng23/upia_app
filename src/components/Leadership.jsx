@@ -97,7 +97,7 @@ export default function Leadership() {
   }
   return (
     <div className="sm:py-13 overflow-hidden bg-white py-10">
-      <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+      <h2 className="text-center text-2xl font-extrabold tracking-tight text-red-600 sm:text-2xl">
         <span>Our</span> <span className="">Party</span>{' '}
         <span className="">Leadership</span>
       </h2>

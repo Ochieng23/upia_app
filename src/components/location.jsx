@@ -5,7 +5,7 @@ import { Container } from './Container'
 function Location() {
   return (
     <Container className="mb-3 mt-5 bg-white">
-      <h1 className="text-center text-2xl font-extrabold text-black">
+      <h1 className="text-center text-2xl font-extrabold text-red-600">
         Our <span className="">Location</span>
       </h1>
       <div className=" mx-auto   max-w-2xl sm:mt-20 lg:mx-0 lg:flex lg:max-w-none lg:gap-0">

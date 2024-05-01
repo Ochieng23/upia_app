@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { PortableText } from '@portabletext/react'
 import RichText from '../../../../components/RichText'
+import { Container } from '../../../../components/Container'
 import {
   FaFacebookF,
   FaGithub,
@@ -48,8 +49,8 @@ async function SlugPage({ params: { slug } }) {
   return (
     <>
     <Header/>
-      <main className="mb-10 min-h-screen   bg-white">
-        <div className="mb-10 flex   items-center">
+      <main className="mb-10    bg-white">
+        <Container className="mb-10 flex   items-center">
           <div className="relative w-full md:w-2/3">
             <Image
               src={post.mainImage}
@@ -125,10 +126,10 @@ async function SlugPage({ params: { slug } }) {
               </Link>
             </div>
           </div>
-        </div>
-        <div className="bg-gray-600">
+        </Container>
+        <Container className="">
           <PortableText value={post.body} components={RichText} />
-        </div>
+        </Container>
       </main>
       <Footer/>
     </>

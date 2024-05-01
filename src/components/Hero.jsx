@@ -13,14 +13,16 @@ export function Hero() {
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-black  opacity-65 ">
+      <div className="absolute inset-0 bg-black   ">
         {' '}
         <Image
-          src={Tero}
-          alt=""
-          fill
-          className="aspect-auto   overflow-hidden opacity-65"
+          src={Tero} // Replace `Tero` with your import or URL
+          alt="Hero Image"
+          layout="fill" // Ensures the image fills the parent container
+          objectFit="cover" // Covers the available space, cropping as needed without stretching
+          className="object-center opacity-40" // Centers the image within the element
         />
+        
       </div>{' '}
       {/* Overlay */}
       <div className="bg-white-400 sm:pt-25 relative z-10 pt-20 ">
