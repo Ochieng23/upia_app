@@ -1,12 +1,12 @@
 'use client'
+import { Suspense } from 'react'
 import { useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { api } from '../../../../../lib/api'
 
-export default function PaymentCallback() {
+function PaymentCallbackInner() {
   const searchParams = useSearchParams()
-  const router = useRouter()
   const [status, setStatus] = useState('verifying') // verifying | success | failed
   const [payment, setPayment] = useState(null)
 
@@ -73,5 +73,17 @@ export default function PaymentCallback() {
         </Link>
       </div>
     </div>
+  )
+}
+
+export default function PaymentCallback() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F8F5F3] flex items-center justify-center">
+        <div className="animate-spin h-10 w-10 rounded-full border-4 border-[#1a3c5e] border-t-transparent" />
+      </div>
+    }>
+      <PaymentCallbackInner />
+    </Suspense>
   )
 }

@@ -309,7 +309,7 @@ export default function Portal() {
               <div className="space-y-6">
                 <div>
                   <h1 className="text-xl font-semibold text-[#111111]">Welcome back, {user.firstName}</h1>
-                  <p className="text-sm text-[#5A5450] mt-1">Here's a summary of your aspirant profile and party status.</p>
+                  <p className="text-sm text-[#5A5450] mt-1">Here&apos;s a summary of your aspirant profile and party status.</p>
                 </div>
 
                 {/* Status cards */}
