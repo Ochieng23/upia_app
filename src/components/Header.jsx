@@ -1,129 +1,175 @@
 'use client'
-import { Fragment } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Popover, Transition } from '@headlessui/react'
 import clsx from 'clsx'
-import { Button } from './Button'
-import { Container } from './Container'
 import { Logo } from '../components/Logo'
-import { NavLink } from './NavLink'
 
-function MobileNavLink({ href, children }) {
-  return (
-    <Popover.Button as={Link} href={href} className="block w-full p-2">
-      {children}
-    </Popover.Button>
-  )
-}
+const navLinks = [
+  { href: '/',          label: 'Home' },
+  { href: '/about',     label: 'About' },
+  { href: '/register',  label: 'Register' },
+  { href: '/resources', label: 'Resources' },
+  { href: '/news',      label: 'News' },
+  { href: '/contact',   label: 'Contact' },
+]
 
-function MobileNavIcon({ open }) {
+/* ── Mobile full-screen drawer ── */
+function MobileNav() {
   return (
-    <svg
-      aria-hidden="true"
-      className="h-3.5 w-3.5 overflow-visible stroke-slate-700"
-      fill="none"
-      strokeWidth={2}
-      strokeLinecap="round"
+    <Popover.Panel
+      as="div"
+      className="fixed inset-0 z-50 flex flex-col bg-[#6B2626]"
     >
-      <path
-        d="M0 1H14M0 7H14M0 13H14"
-        className={clsx(
-          'origin-center transition',
-          open && 'scale-90 opacity-0',
-        )}
-      />
-      <path
-        d="M2 2L12 12M12 2L2 12"
-        className={clsx(
-          'origin-center transition',
-          !open && 'scale-90 opacity-0',
-        )}
-      />
-    </svg>
+      <div className="flex items-center justify-between px-5 h-[60px] border-b border-white/10">
+        <Logo className="h-9 w-auto brightness-0 invert" />
+        <Popover.Button
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-white/70 hover:text-white focus:outline-none"
+          aria-label="Close menu"
+        >
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </Popover.Button>
+      </div>
+
+      <nav className="flex flex-1 flex-col justify-center gap-1 px-6">
+        {navLinks.map(({ href, label }) => (
+          <Popover.Button
+            key={href}
+            as={Link}
+            href={href}
+            className="rounded-lg px-4 py-4 text-lg font-medium text-white/70 hover:bg-white/8 hover:text-white transition-colors"
+          >
+            {label}
+          </Popover.Button>
+        ))}
+      </nav>
+
+      <div className="px-6 pb-10">
+        <Popover.Button
+          as={Link}
+          href="/donate"
+          className="flex w-full items-center justify-center rounded-[6px] bg-[#236331] px-6 py-4 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
+        >
+          Support UPIA
+        </Popover.Button>
+      </div>
+    </Popover.Panel>
   )
 }
 
-function MobileNavigation() {
+function HamburgerIcon({ open }) {
   return (
-    <Popover>
-      <Popover.Button
-        className="relative z-10 flex h-10 w-8 items-center justify-center ui-not-focus-visible:outline-none"
-        aria-label="Toggle Navigation"
-      >
-        {({ open }) => <MobileNavIcon open={open} />}
-      </Popover.Button>
-      <Transition.Root>
-        <Transition.Child
-          as={Fragment}
-          enter="duration-150 ease-out"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="duration-150 ease-in"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <Popover.Overlay className="fixed inset-0 bg-slate-300/50" />
-        </Transition.Child>
-        <Transition.Child
-          as={Fragment}
-          enter="duration-150 ease-out"
-          enterFrom="opacity-0 scale-95"
-          enterTo="opacity-100 scale-100"
-          leave="duration-100 ease-in"
-          leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
-        >
-          <Popover.Panel
-            as="div"
-            className="absolute inset-x-0 top-full mt-4 flex origin-top flex-col rounded-2xl bg-white p-4 text-lg tracking-tight text-slate-900 shadow-xl ring-1 ring-slate-900/5"
-          >
-            <MobileNavLink href="/">Home</MobileNavLink>
-            <MobileNavLink href="/about">About</MobileNavLink>
-            <MobileNavLink href="/register">Register </MobileNavLink>
-            <MobileNavLink href="/resources">Resources </MobileNavLink>
-            <MobileNavLink href="/contact">Contact Us </MobileNavLink>
-            <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/news">News </MobileNavLink>
-            <MobileNavLink href="/lxc">Donate</MobileNavLink>
-          </Popover.Panel>
-        </Transition.Child>
-      </Transition.Root>
-    </Popover>
+    <div className="relative flex h-6 w-6 flex-col justify-center items-center gap-[5px]">
+      <span className={clsx('block h-0.5 w-6 bg-current transition-all duration-300 origin-center', open ? 'rotate-45 translate-y-[7px]' : '')} />
+      <span className={clsx('block h-0.5 w-6 bg-current transition-all duration-300', open ? 'opacity-0 scale-x-0' : '')} />
+      <span className={clsx('block h-0.5 w-6 bg-current transition-all duration-300 origin-center', open ? '-rotate-45 -translate-y-[7px]' : '')} />
+    </div>
+  )
+}
+
+function NavItem({ href, children }) {
+  const pathname = usePathname()
+  const isActive = pathname === href
+
+  return (
+    <Link
+      href={href}
+      className={clsx(
+        'relative text-[13px] font-medium transition-colors duration-150',
+        isActive
+          ? 'text-[#C25757]'
+          : 'text-[#5A5450] hover:text-[#C25757]',
+      )}
+    >
+      {children}
+      {isActive && (
+        <span className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full bg-[#C25757]" />
+      )}
+    </Link>
   )
 }
 
 export function Header() {
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="fixed top-0 z-20 w-full bg-white py-2 shadow-md sm:py-0">
-      <Container>
-        <nav className="relative z-50 flex justify-between">
-          <div className="flex items-center md:gap-x-12">
-            <Link href="/" aria-label="Home">
-              <Logo className="h-10 w-auto" />
-            </Link>
-            <div className="hidden md:flex md:gap-x-6">
-              <NavLink href="/">Home</NavLink>
-              <NavLink href="/about">About</NavLink>
-              <NavLink href="/register">Register </NavLink>
-              <NavLink href="/resources"> Resources</NavLink>
-              <NavLink href="/contact">Contact Us </NavLink>
-            </div>
+    <header
+      className={clsx(
+        'fixed top-0 z-50 w-full h-[60px] bg-white transition-all duration-300',
+        scrolled
+          ? 'shadow-md border-b border-[#E2DCDA]'
+          : 'border-b border-[#E2DCDA]',
+      )}
+    >
+      {/* Top 4px maroon-green accent bar */}
+      <div className="absolute top-0 left-0 right-0 h-[3px] flex">
+        <div className="flex-1 bg-[#C25757]" />
+        <div className="flex-1 bg-[#236331]" />
+      </div>
+
+      <div className="mx-auto max-w-7xl h-full px-4 sm:px-6 lg:px-8">
+        <nav className="flex items-center justify-between h-full">
+          {/* Logo */}
+          <Link href="/" aria-label="Home" className="flex items-center flex-shrink-0 gap-2">
+            <Logo className="h-9 w-auto" />
+          </Link>
+
+          {/* Desktop links */}
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.map(({ href, label }) => (
+              <NavItem key={href} href={href}>{label}</NavItem>
+            ))}
           </div>
-          <div className="flex items-center gap-x-5 md:gap-x-8">
-            <div className="hidden md:block">
-              <NavLink href="/news">News</NavLink>
-            </div>
-            <Button href="/donate" color="blue">
-              <span>
-                Support <span className="hidden lg:inline">Us</span>
-              </span>
-            </Button>
-            <div className="-mr-1 md:hidden">
-              <MobileNavigation />
+
+          {/* CTA + mobile toggle */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/donate"
+              className="hidden lg:inline-flex items-center rounded-[6px] bg-[#236331] px-[18px] py-2 text-sm font-medium text-white hover:bg-[#2B753A] active:scale-[0.98] transition-all duration-150"
+            >
+              Support Us
+            </Link>
+
+            <div className="lg:hidden">
+              <Popover>
+                {({ open }) => (
+                  <>
+                    <Popover.Button
+                      className="flex h-10 w-10 items-center justify-center rounded-lg text-[#5A5450] hover:text-[#C25757] focus:outline-none"
+                      aria-label="Toggle navigation"
+                    >
+                      <HamburgerIcon open={open} />
+                    </Popover.Button>
+
+                    <Transition.Root>
+                      <Transition.Child
+                        as={Fragment}
+                        enter="duration-200 ease-out"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="duration-150 ease-in"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                      >
+                        <MobileNav />
+                      </Transition.Child>
+                    </Transition.Root>
+                  </>
+                )}
+              </Popover>
             </div>
           </div>
         </nav>
-      </Container>
+      </div>
     </header>
   )
 }

@@ -1,253 +1,236 @@
 'use client'
-import React from 'react'
-import { FaBuilding, FaEnvelopeSquare, FaPhoneAlt } from 'react-icons/fa'
-
+import React, { useState } from 'react'
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
-import WhatsAppWidget from "react-whatsapp-chat-widget";
-import "react-whatsapp-chat-widget/index.css";
+import WhatsAppWidget from 'react-whatsapp-chat-widget'
+import 'react-whatsapp-chat-widget/index.css'
+
+const contactInfo = [
+  {
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+    ),
+    label: 'Office Address',
+    value: 'Ramshab Lane, Along Ngong Road\nNext to Nairobi Baptist Church, Nairobi',
+    iconBg: 'bg-[#C25757]',
+  },
+  {
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+      </svg>
+    ),
+    label: 'Phone Number',
+    value: '+254 705 927 424',
+    href: 'tel:+254705927424',
+    iconBg: 'bg-[#236331]',
+  },
+  {
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    ),
+    label: 'Email Address',
+    value: 'info@upiaparty.com',
+    href: 'mailto:info@upiaparty.com',
+    iconBg: 'bg-[#111111]',
+  },
+  {
+    icon: (
+      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    label: 'Office Hours',
+    value: 'Monday – Friday: 9:00 AM – 5:00 PM\nWeekends: Closed',
+    iconBg: 'bg-[#A84545]',
+  },
+]
+
+const inputClass =
+  'block w-full rounded-[6px] border border-[#E2DCDA] bg-white px-[14px] text-sm text-[#111111] placeholder:text-[#5A5450]/50 focus:border-[#D46868] focus:outline-none focus:ring-[3px] focus:ring-[rgba(194,87,87,0.12)] transition-all'
+
+const labelClass = 'block text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-2'
 
 export default function Contact() {
+  const [formState, setFormState] = useState({ firstName: '', lastName: '', email: '', phone: '', message: '' })
+  const [submitted, setSubmitted] = useState(false)
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setSubmitted(true)
+  }
+
   return (
     <>
       <WhatsAppWidget
-            phoneNo="+254791410460"
-            position="right"
-            widgetWidth="400px"
-            widgetWidthMobile="360px"
-            autoOpen={true}
-            autoOpenTimer={2000}
-            messageBox={true}
-            messageBoxTxt="Hi , I need help with... ?"
-            iconSize="40"
-            iconColor="white"
-            iconBgColor="green"
-            headerIcon="https://www.pdapps.net.in/_next/static/media/android-chrome-192x192.9a39c2c7.png"
-            headerIconColor="green"
-            headerTxtColor="black"
-            headerBgColor="green"
-            headerTitle="John Doe"
-            headerCaption="Online"
-            bodyBgColor="green"
-            chatPersonName="Support"
-            chatMessage={<>Hi there 👋 <br /><br /> How can I help you?</>}
-            footerBgColor="green"
-            placeholder="Type a message.."
-            btnBgColor="green"
-            btnTxt="Start Chat"
-            btnTxtColor="black"
-        />
-      <Header />
-      <main className="relative isolate bg-white mt-10">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 lg:grid-cols-2">
-          <div className="relative px-6 pb-20 pt-24 sm:pt-32 lg:static lg:px-8 lg:py-48">
-            <div className="mx-auto max-w-xl lg:mx-0 lg:max-w-lg">
-              <div className="absolute inset-y-0 left-0 -z-10 w-full overflow-hidden bg-gray-100 ring-1 ring-gray-900/10 lg:w-1/2">
-                <svg
-                  className="absolute inset-0 h-full w-full stroke-gray-200 [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]"
-                  aria-hidden="true"
-                >
-                  <defs>
-                    <pattern
-                      id="83fd4e5a-9d52-42fc-97b6-718e5d7ee527"
-                      width={200}
-                      height={200}
-                      x="100%"
-                      y={-1}
-                      patternUnits="userSpaceOnUse"
-                    >
-                      <path d="M130 200V.5M.5 .5H200" fill="none" />
-                    </pattern>
-                  </defs>
-                  <rect
-                    width="100%"
-                    height="100%"
-                    strokeWidth={0}
-                    fill="white"
-                  />
-                  <svg
-                    x="100%"
-                    y={-1}
-                    className="overflow-visible fill-gray-50"
-                  >
-                    <path d="M-470.5 0h201v201h-201Z" strokeWidth={0} />
-                  </svg>
-                  <rect
-                    width="100%"
-                    height="100%"
-                    strokeWidth={0}
-                    fill="url(#83fd4e5a-9d52-42fc-97b6-718e5d7ee527)"
-                  />
-                </svg>
+        phoneNo="+254705927424"
+        position="right"
+        widgetWidth="400px"
+        widgetWidthMobile="360px"
+        autoOpen={true}
+        autoOpenTimer={2000}
+        messageBox={true}
+        messageBoxTxt="Hi, I need help with... ?"
+        iconSize="40"
+        iconColor="white"
+        iconBgColor="#236331"
+        headerIconColor="white"
+        headerTxtColor="white"
+        headerBgColor="#236331"
+        headerTitle="UPIA Support"
+        headerCaption="Online"
+        bodyBgColor="#f0fdf4"
+        chatPersonName="Support"
+        chatMessage={<>Hi there 👋 <br /><br /> How can I help you?</>}
+        footerBgColor="#f0fdf4"
+        placeholder="Type a message..."
+        btnBgColor="#236331"
+        btnTxt="Start Chat"
+        btnTxtColor="white"
+      />
+
+      <div className="min-h-screen bg-white">
+        <Header />
+
+        {/* Page hero */}
+        <section className="relative overflow-hidden bg-[#14321e] pt-[60px]">
+          <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'linear-gradient(135deg, rgba(35,99,49,0.18) 0%, rgba(35,99,49,0.14) 50%, rgba(20,60,30,0.16) 100%)' }} />
+          <div className="absolute -bottom-16 -left-16 h-[280px] w-[280px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(107,38,38,0.50) 0%, transparent 70%)' }} />
+          <div className="absolute -top-10 right-0 h-[200px] w-[200px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(194,87,87,0.25) 0%, transparent 70%)' }} />
+          <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 text-center">
+            <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-white/60 mb-4">
+              Get in Touch
+            </span>
+            <h1 className="text-[32px] font-semibold text-white sm:text-5xl">
+              Contact UPIA Kenya
+            </h1>
+            <p className="mt-4 text-[15px] leading-[1.75] text-white/55 max-w-xl mx-auto">
+              We are a progressive political party committed to unbiased development. Reach out — we&apos;d love to hear from you.
+            </p>
+          </div>
+          <div className="flex h-1">
+            <div className="flex-1 bg-[#C25757]" />
+            <div className="flex-1 bg-[#236331]" />
+            <div className="flex-1 bg-white" />
+            <div className="flex-1 bg-[#111111]" />
+          </div>
+        </section>
+
+        <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+          {/* Contact cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-16">
+            {contactInfo.map((item) => (
+              <div
+                key={item.label}
+                className="rounded-[12px] bg-white p-[20px]"
+                style={{ border: '0.5px solid #E2DCDA' }}
+              >
+                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-[8px] ${item.iconBg} text-white mb-4`}>
+                  {item.icon}
+                </div>
+                <h3 className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-2">{item.label}</h3>
+                {item.href ? (
+                  <a href={item.href} className="text-sm font-medium text-[#111111] hover:text-[#C25757] transition-colors">
+                    {item.value}
+                  </a>
+                ) : (
+                  <p className="text-sm text-[#5A5450] whitespace-pre-line">{item.value}</p>
+                )}
               </div>
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-                Contact Us
-              </h2>
-              <p className="mt-6 text-lg leading-8 text-gray-600">
-                We are a progressive political party committed to unbiased
-                development initiatives. Our inclusive approach welcomes diverse
-                perspectives. Together, let us create a better future. Get
-                involved today by reaching out to us.
-              </p>
-              <dl className="mt-10 space-y-4 text-base leading-7 text-gray-600">
-                <div className="flex gap-x-4">
-                  <dt className="flex-none">
-                    <span className="sr-only">Address</span>
-                    <FaBuilding
-                      className="h-7 w-6 text-gray-400"
-                      aria-hidden="true"
-                    />
-                  </dt>
-                  <dd>
-                    Gem Lane,
-                    <br />
-                    Mandera Road, Kileleshwa, Nairobi, P.O Box 51851 – 00100,
-                    Nairobi.
-                  </dd>
+            ))}
+          </div>
+
+          {/* Form + Map */}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            {/* Contact form */}
+            <div className="rounded-[12px] bg-white overflow-hidden" style={{ border: '0.5px solid #E2DCDA' }}>
+              <div className="border-b border-[#E2DCDA] px-8 py-6">
+                <h2 className="text-[22px] font-medium text-[#111111]">Send us a Message</h2>
+                <p className="text-sm text-[#5A5450] mt-1">We&apos;ll respond within 24 hours</p>
+              </div>
+
+              {submitted ? (
+                <div className="p-12 text-center">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#EBF5EC] mb-6">
+                    <svg className="h-8 w-8 text-[#236331]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h3 className="text-[17px] font-medium text-[#111111]">Message Sent!</h3>
+                  <p className="mt-2 text-sm text-[#5A5450]">Thank you for reaching out. We&apos;ll get back to you soon.</p>
+                  <button
+                    onClick={() => setSubmitted(false)}
+                    className="mt-6 text-sm font-medium text-[#C25757] hover:underline"
+                  >
+                    Send another message
+                  </button>
                 </div>
-                <div className="flex gap-x-4">
-                  <dt className="flex-none">
-                    <span className="sr-only">Telephone</span>
-                    <FaPhoneAlt
-                      className="h-7 w-6 text-gray-400"
-                      aria-hidden="true"
-                    />
-                  </dt>
-                  <dd>
-                    <a
-                      className="hover:text-gray-900"
-                      href="tel:+1 (555) 234-5678"
-                    >
-                      +254 (0)793027836
-                    </a>
-                  </dd>
-                </div>
-                <div className="flex gap-x-4">
-                  <dt className="flex-none">
-                    <span className="sr-only">Email</span>
-                    <FaEnvelopeSquare
-                      className="h-7 w-6 text-gray-400"
-                      aria-hidden="true"
-                    />
-                  </dt>
-                  <dd>
-                    <a
-                      className="hover:text-gray-900"
-                      href="mailto:info@upiaparty.com"
-                    >
-                      info@upiaparty.com
-                    </a>
-                  </dd>
-                </div>
-              </dl>
+              ) : (
+                <form onSubmit={handleSubmit} className="px-8 py-8 space-y-5">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="first-name" className={labelClass}>First Name *</label>
+                      <input type="text" id="first-name" className={inputClass} style={{ height: '42px' }}
+                        placeholder="John" required
+                        value={formState.firstName} onChange={(e) => setFormState(s => ({ ...s, firstName: e.target.value }))} />
+                    </div>
+                    <div>
+                      <label htmlFor="last-name" className={labelClass}>Last Name *</label>
+                      <input type="text" id="last-name" className={inputClass} style={{ height: '42px' }}
+                        placeholder="Doe" required
+                        value={formState.lastName} onChange={(e) => setFormState(s => ({ ...s, lastName: e.target.value }))} />
+                    </div>
+                  </div>
+                  <div>
+                    <label htmlFor="email" className={labelClass}>Email Address *</label>
+                    <input type="email" id="email" className={inputClass} style={{ height: '42px' }}
+                      placeholder="john@example.com" required
+                      value={formState.email} onChange={(e) => setFormState(s => ({ ...s, email: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className={labelClass}>Phone Number</label>
+                    <input type="tel" id="phone" className={inputClass} style={{ height: '42px' }}
+                      placeholder="+254 7XX XXX XXX"
+                      value={formState.phone} onChange={(e) => setFormState(s => ({ ...s, phone: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label htmlFor="message" className={labelClass}>Message *</label>
+                    <textarea id="message" rows={5} className={inputClass}
+                      style={{ paddingTop: '10px', paddingBottom: '10px', height: 'auto' }}
+                      placeholder="How can we help you?" required
+                      value={formState.message} onChange={(e) => setFormState(s => ({ ...s, message: e.target.value }))} />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full rounded-[6px] bg-[#C25757] px-6 py-4 text-sm font-medium text-white hover:bg-[#A84545] active:scale-[0.99] transition-all duration-150 focus:outline-none focus:ring-[3px] focus:ring-[rgba(194,87,87,0.20)]"
+                  >
+                    Send Message
+                  </button>
+                </form>
+              )}
+            </div>
+
+            {/* Map */}
+            <div className="rounded-[12px] overflow-hidden min-h-[500px]" style={{ border: '0.5px solid #E2DCDA' }}>
+              <iframe
+                className="h-full w-full min-h-[500px] border-0"
+                src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Ramshab+Lane,+Along+Ngong+Road,+Nairobi,+(UPIA%20Party%20HQ)&t=&z=15&ie=UTF8&iwloc=B&output=embed"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="UPIA Party HQ"
+              />
             </div>
           </div>
-          <form
-            action="#"
-            method="POST"
-            className="px-6 pb-24 pt-20 sm:pb-32 lg:px-8 lg:py-48"
-          >
-            <div className="mx-auto max-w-xl lg:mr-0 lg:max-w-lg">
-              <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="first-name"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    First name
-                  </label>
-                  <div className="mt-2.5">
-                    <input
-                      type="text"
-                      name="first-name"
-                      id="first-name"
-                      autoComplete="given-name"
-                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label
-                    htmlFor="last-name"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    Last name
-                  </label>
-                  <div className="mt-2.5">
-                    <input
-                      type="text"
-                      name="last-name"
-                      id="last-name"
-                      autoComplete="family-name"
-                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    Email
-                  </label>
-                  <div className="mt-2.5">
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      autoComplete="email"
-                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="phone-number"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    Phone number
-                  </label>
-                  <div className="mt-2.5">
-                    <input
-                      type="tel"
-                      name="phone-number"
-                      id="phone-number"
-                      autoComplete="tel"
-                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                  >
-                    Message
-                  </label>
-                  <div className="mt-2.5">
-                    <textarea
-                      name="message"
-                      id="message"
-                      rows={4}
-                      className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      defaultValue={''}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-8 flex justify-end">
-                <button
-                  type="submit"
-                  className="rounded-md bg-green-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                >
-                  Send message
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </main>
-      <Footer />
+        </main>
+
+        <Footer />
+      </div>
     </>
   )
 }

@@ -1,13 +1,12 @@
-import { Inter, Lexend } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import clsx from 'clsx'
 import '../styles/tailwind.css'
-import {Footer} from '../components/Footer'
-import {Header} from '../components/Header'
+import { AuthProvider } from '../context/AuthContext'
 
 export const metadata = {
   title: {
     template: '%s - UPIA KENYA',
-    default: 'UPIA -The best political party in Kenya',
+    default: 'UPIA - The best political party in Kenya',
   },
   description: 'A political party bringing about change in Kenya.',
 }
@@ -18,25 +17,15 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-const lexend = Lexend({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-lexend',
-})
-
 export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={clsx(
-        'h-full scroll-smooth bg-white antialiased',
-        inter.variable,
-        lexend.variable,
-      )}
+      className={clsx('h-full scroll-smooth antialiased', inter.variable)}
     >
-      
-      <body className="flex h-full flex-col">{children}</body>
-      
+      <body className="flex h-full flex-col bg-[#F8F5F3]">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   )
 }

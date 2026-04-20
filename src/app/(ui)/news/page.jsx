@@ -1,15 +1,13 @@
-
-import { createClient, groq } from 'next-sanity'
-import { client } from '../../../components/createClient' // Assuming `client` is exported correctly from `createClient`
-import React from 'react'
-import BlogContent from '../../../components/BlogContent'
-import {Header} from '../../../components/Header'
+import { Header } from '../../../components/Header'
+import { Footer } from '../../../components/Footer'
 import Posts from '../../../components/News'
-import {Footer} from '../../../components/Footer'
-export default function News() {
+
+export const metadata = { title: 'News & Press' }
+
+export default function NewsPage() {
   return (
     <>
-    <Header/>
+      <Header />
       <main>
         <Posts />
       </main>

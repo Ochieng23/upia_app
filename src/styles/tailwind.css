@@ -1,3 +1,71 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --maroon:       #C25757;
+    --maroon-mid:   #A84545;
+    --maroon-light: #D46868;
+    --maroon-tint:  #FBF0F0;
+    --maroon-deep:  #6B2626;
+    --green:        #236331;
+    --green-mid:    #2B753A;
+    --green-tint:   #EBF5EC;
+    --off-white:    #F8F5F3;
+    --gray-text:    #5A5450;
+    --gray-border:  #E2DCDA;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: var(--font-inter), sans-serif;
+    background-color: var(--off-white);
+    color: var(--gray-text);
+  }
+}
+
+@layer components {
+  /* Slick carousel overrides */
+  .slick-dots li button:before {
+    font-size: 8px !important;
+    color: var(--gray-border) !important;
+  }
+  .slick-dots li.slick-active button:before {
+    color: var(--maroon) !important;
+  }
+  .slick-prev:before,
+  .slick-next:before {
+    color: var(--maroon) !important;
+  }
+
+  /* Scroll-reveal utility — toggled by IntersectionObserver */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 400ms ease, transform 400ms ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}

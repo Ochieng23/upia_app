@@ -1,46 +1,31 @@
 import Link from 'next/link'
 import clsx from 'clsx'
 
-const baseStyles = {
-  solid:
-    'group inline-flex items-center justify-center rounded-full py-2 px-4 text-sm font-semibold focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2',
-  outline:
-    'group inline-flex ring-1 items-center justify-center rounded-full py-2 px-4 text-sm focus:outline-none',
+/**
+ * Variants:   primary | secondary | green | ghost | danger
+ * All: 14px / 500 / radius 6px / transition 150ms ease / active:scale-[0.98]
+ */
+const base =
+  'inline-flex items-center justify-center rounded-[6px] px-6 py-[10px] text-[14px] font-medium transition-all duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
+
+const variants = {
+  primary:
+    'bg-[#C25757] text-white hover:bg-[#A84545] focus-visible:ring-[#C25757]',
+  secondary:
+    'bg-transparent text-[#C25757] border border-[#C25757] hover:bg-[#FBF0F0] focus-visible:ring-[#C25757]',
+  green:
+    'bg-[#236331] text-white hover:bg-[#2B753A] focus-visible:ring-[#236331]',
+  ghost:
+    'bg-transparent text-white border border-white/30 hover:border-white/60 hover:bg-white/8 focus-visible:ring-white',
+  danger:
+    'bg-transparent text-[#A32D2D] border border-[#A32D2D] hover:bg-[#fdeaea] focus-visible:ring-[#A32D2D]',
 }
 
-const variantStyles = {
-  solid: {
-    slate:
-      'bg-red-600 text-white hover:bg-slate-700 hover:text-slate-100 active:bg-slate-800 active:text-slate-300 focus-visible:outline-slate-900',
-    blue: 'bg-green-600 text-white hover:text-slate-100 hover:bg-green-500 active:bg-green-800 active:text-blue-100 focus-visible:outline-blue-600',
-    white:
-      'bg-red-600 mb-5 text-slate-900 hover:bg-blue-50 active:bg-blue-200 active:text-slate-600 focus-visible:outline-white',
-  },
-  outline: {
-    slate:
-      'ring-slate-200 text-slate-700 hover:text-slate-900 hover:ring-slate-300 active:bg-slate-100 active:text-slate-600 focus-visible:outline-blue-600 focus-visible:ring-slate-300',
-    white:
-      'ring-slate-700 text-white hover:ring-slate-500 active:ring-slate-700 active:text-slate-400 focus-visible:outline-white',
-  },
-}
+export function Button({ variant = 'primary', className, href, ...props }) {
+  const classes = clsx(base, variants[variant], className)
 
-export function Button({ className, ...props }) {
-  props.variant ??= 'solid'
-  props.color ??= 'slate'
-
-  className = clsx(
-    baseStyles[props.variant],
-    props.variant === 'outline'
-      ? variantStyles.outline[props.color]
-      : props.variant === 'solid'
-        ? variantStyles.solid[props.color]
-        : undefined,
-    className,
-  )
-
-  return typeof props.href === 'undefined' ? (
-    <button className={className} {...props} />
-  ) : (
-    <Link className={className} {...props} />
-  )
+  if (href !== undefined) {
+    return <Link href={href} className={classes} {...props} />
+  }
+  return <button className={classes} {...props} />
 }
