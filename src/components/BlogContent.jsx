@@ -99,7 +99,7 @@ export default function BlogContent({ posts }) {
                             className="h-9 w-9 rounded-full object-cover ring-2 ring-[#FBF0F0]"
                           />
                         ) : (
-                          <div className="h-9 w-9 rounded-full bg-[#1a3c5e] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                          <div className="h-9 w-9 rounded-full bg-[#236331] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
                             {post.author?.name?.[0] || 'U'}
                           </div>
                         )}

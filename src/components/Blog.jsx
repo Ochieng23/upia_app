@@ -95,7 +95,7 @@ export default async function Blog() {
                         className="h-8 w-8 rounded-full object-cover ring-2 ring-[#FBF0F0]"
                       />
                     ) : (
-                      <div className="h-8 w-8 rounded-full bg-[#1a3c5e] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                      <div className="h-8 w-8 rounded-full bg-[#236331] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
                         {post.author?.name?.[0] || 'U'}
                       </div>
                     )}

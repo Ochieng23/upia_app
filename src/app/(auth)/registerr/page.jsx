@@ -43,7 +43,7 @@ export default function Register() {
   return (
     <div className="min-h-screen flex">
       {/* ── Left brand panel ── */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] flex-col bg-[#1a3c5e] relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] flex-col bg-[#14321e] relative overflow-hidden">
         <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-white/5" />
         <div className="absolute bottom-0 -left-24 h-72 w-72 rounded-full bg-white/5" />
 
@@ -226,7 +226,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 w-full rounded-[8px] bg-[#1a3c5e] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[#1e4570] active:scale-[0.99] disabled:opacity-60 transition-all duration-150 flex items-center justify-center gap-2"
+                className="mt-2 w-full rounded-[8px] bg-[#14321e] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[#1e4570] active:scale-[0.99] disabled:opacity-60 transition-all duration-150 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>

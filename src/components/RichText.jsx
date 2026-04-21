@@ -39,7 +39,7 @@ const RichText = {
       <h4 className="py-10 text-2xl font-bold">{children}</h4>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="my-5 border-l-4 border-l-blue-600 py-5 pl-5 ">
+      <blockquote className="my-5 border-l-4 border-l-[#236331] py-5 pl-5 bg-[#EBF5EC] rounded-r-md">
         {children}
       </blockquote>
     ),

@@ -1,23 +1,54 @@
+'use client'
+
 import Image from 'next/image'
 import ukur from '../images/images/CS-Ukur-1-removebg-preview.png'
-import chairman from '../images/images/chairman.jpg'
 import secgen from '../images/images/secgen.jpeg'
 import hibo from '../images/images/hibo.jpeg'
 import sadick from '../images/images/Sadick PP.jpg'
 import kanguchu from '../images/images/kanguchu-removebg-preview.png'
 
 const people = [
-  { name: 'Amb. Ukur Yattani',       role: 'Party Leader',         imageUrl: ukur      },
-  { name: 'Dr. Nuh Nassir Abdi',     role: 'Chairman',             imageUrl: chairman  },
-  { name: 'Dr. Mohamed Dahir Duale', role: 'Secretary General',    imageUrl: secgen    },
-  { name: 'Hon. Joseph Kanguchu',    role: 'Organizing Secretary', imageUrl: kanguchu  },
-  { name: 'Hon. Hibo Bishar',        role: 'National Treasurer',   imageUrl: hibo      },
-  { name: 'Hon. Sadick Doufa',       role: 'Chief Executive Officer', imageUrl: sadick },
+  {
+    name: 'Amb. Ukur Yattani',
+    role: 'Party Leader',
+    imageUrl: ukur,
+    objectPosition: 'center top',
+  },
+  {
+    name: 'Maj. RTD Iltasayon Neepe',
+    role: 'Chairman',
+    imageUrl: 'https://res.cloudinary.com/dhz4c0oae/image/upload/v1751961365/Director-Maj.-Rtd-Iltasayon-Neepe-Director_a2l5tg.jpg',
+    objectPosition: 'center top',
+  },
+  {
+    name: 'Dr. Mohamed Dahir Duale',
+    role: 'Secretary General',
+    imageUrl: secgen,
+    objectPosition: 'center top',
+  },
+  {
+    name: 'Hon. Joseph Kanguchu',
+    role: 'Organizing Secretary',
+    imageUrl: kanguchu,
+    objectPosition: 'center top',
+  },
+  {
+    name: 'Hon. Hibo Bishar',
+    role: 'National Treasurer',
+    imageUrl: hibo,
+    objectPosition: 'center top',
+  },
+  {
+    name: 'Hon. Sadick Doufa',
+    role: 'Chief Executive Officer',
+    imageUrl: sadick,
+    objectPosition: 'center top',
+  },
 ]
 
 export default function Leadership() {
   return (
-    <section className="relative bg-white py-20 sm:py-28">
+    <section className="relative bg-[#F9F6F4] py-20 sm:py-28">
       {/* Top accent strip */}
       <div className="absolute top-0 left-0 right-0 flex h-1">
         <div className="flex-1 bg-[#C25757]" />
@@ -40,48 +71,51 @@ export default function Leadership() {
               Dedicated leaders committed to Kenya&apos;s progress and prosperity
             </p>
           </div>
-          {/* Decorative rule */}
           <div className="hidden sm:block flex-shrink-0 w-24 h-px bg-[#E2DCDA]" />
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 gap-px bg-[#E2DCDA] sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {people.map((person, i) => (
             <div
               key={i}
-              className="group relative bg-white flex flex-col overflow-hidden transition-shadow duration-200 hover:shadow-lg hover:z-10"
+              className="group relative bg-white overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 rounded-sm"
             >
-              {/* Photo */}
-              <div className="relative h-96 overflow-hidden bg-[#F8F5F3]">
+              {/* Fixed-ratio photo container — all cards identical height */}
+              <div className="relative w-full" style={{ paddingBottom: '120%' }}>
                 <Image
                   src={person.imageUrl}
                   alt={person.name}
                   fill
-                  className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  unoptimized={typeof person.imageUrl === 'string'}
+                  className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  style={{ objectPosition: person.objectPosition }}
                 />
-              </div>
 
-              {/* Info block */}
-              <div className="flex items-stretch">
-                {/* Red left accent */}
-                <div className="w-1 flex-shrink-0 bg-[#C25757]" />
+                {/* Gradient overlay — ensures text area is always legible */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-                <div className="flex-1 px-5 py-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#C25757] mb-1">
-                    {person.role}
-                  </p>
-                  <h3 className="text-[17px] font-semibold text-[#111111] leading-snug">
-                    {person.name}
-                  </h3>
-                </div>
-
-                {/* Index number — subtle corporate detail */}
-                <div className="flex items-center pr-5">
-                  <span className="text-[28px] font-bold text-[#E2DCDA] leading-none select-none">
+                {/* Index badge — top-right */}
+                <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+                  <span className="text-[11px] font-bold text-white leading-none">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                 </div>
+
+                {/* Name + role pinned to bottom of photo */}
+                <div className="absolute bottom-0 left-0 right-0 px-5 py-5">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#D46868] mb-1">
+                    {person.role}
+                  </p>
+                  <h3 className="text-[16px] font-semibold text-white leading-snug drop-shadow-sm">
+                    {person.name}
+                  </h3>
+                </div>
               </div>
+
+              {/* Red bottom accent line */}
+              <div className="h-[3px] bg-[#C25757] w-0 group-hover:w-full transition-all duration-500" />
             </div>
           ))}
         </div>
