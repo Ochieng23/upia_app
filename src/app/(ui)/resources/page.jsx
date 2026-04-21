@@ -67,10 +67,10 @@ export default function Resources() {
       </section>
 
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Sidebar */}
-          <aside className="lg:col-span-1">
-            <div className="rounded-[12px] bg-white p-6 sticky top-24" style={{ border: '0.5px solid #E2DCDA' }}>
+          <aside className="md:col-span-1">
+            <div className="rounded-[12px] bg-white p-5 sm:p-6 md:sticky md:top-20" style={{ border: '0.5px solid #E2DCDA' }}>
               <h2 className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-4">Categories</h2>
               <ul className="space-y-1">
                 {categories.map((cat) => (
@@ -104,7 +104,7 @@ export default function Resources() {
           </aside>
 
           {/* Documents list */}
-          <div className="lg:col-span-3">
+          <div className="md:col-span-3">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h2 className="text-[22px] font-medium text-[#111111]">Financial Statements</h2>

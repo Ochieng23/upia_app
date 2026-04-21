@@ -70,20 +70,20 @@ export default function Donate() {
               Your contribution powers the movement for a better, fairer, and more prosperous Kenya.
               Every shilling counts.
             </p>
-            <div className="mt-10 flex flex-wrap justify-center gap-6">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-6">
               <div
-                className="rounded-[12px] px-8 py-5 text-center"
+                className="rounded-[12px] px-6 sm:px-8 py-4 sm:py-5 text-center"
                 style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)' }}
               >
                 <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-white/40 mb-1">Paybill Number</p>
-                <p className="text-3xl font-semibold text-[#EBF5EC]">247247</p>
+                <p className="text-2xl sm:text-3xl font-semibold text-[#EBF5EC]">247247</p>
               </div>
               <div
-                className="rounded-[12px] px-8 py-5 text-center"
+                className="rounded-[12px] px-6 sm:px-8 py-4 sm:py-5 text-center"
                 style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)' }}
               >
                 <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-white/40 mb-1">Account Number</p>
-                <p className="text-3xl font-semibold text-[#EBF5EC]">1010272135531</p>
+                <p className="text-2xl sm:text-3xl font-semibold text-[#EBF5EC]">1010272135531</p>
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@ export default function Donate() {
               {donationTiers.map((tier) => (
                 <div
                   key={tier.name}
-                  className={`relative bg-white border-2 p-8 flex flex-col rounded-[12px] ${tier.border} ${tier.featured ? 'shadow-lg' : ''}`}
+                  className={`relative bg-white border-2 p-5 sm:p-8 flex flex-col rounded-[12px] ${tier.border} ${tier.featured ? 'shadow-lg' : ''}`}
                 >
                   {tier.featured && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -123,7 +123,7 @@ export default function Donate() {
                     <span className={`inline-block rounded-[6px] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.07em] mb-4 ${tier.badgeBg}`}>
                       {tier.name}
                     </span>
-                    <div className="text-[32px] font-semibold text-[#111111]">{tier.amount}</div>
+                    <div className="text-[26px] sm:text-[32px] font-semibold text-[#111111]">{tier.amount}</div>
                     <p className="mt-2 text-[15px] text-[#5A5450]">{tier.description}</p>
                   </div>
                   <ul className="space-y-3 flex-1 mb-8">

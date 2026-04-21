@@ -1,8 +1,8 @@
 'use client'
-import { Fragment, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Popover, Transition } from '@headlessui/react'
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
 import clsx from 'clsx'
 import { Logo } from '../components/Logo'
 
@@ -14,51 +14,6 @@ const navLinks = [
   { href: '/news',      label: 'News' },
   { href: '/contact',   label: 'Contact' },
 ]
-
-/* ── Mobile full-screen drawer ── */
-function MobileNav() {
-  return (
-    <Popover.Panel
-      as="div"
-      className="fixed inset-0 z-50 flex flex-col bg-[#6B2626]"
-    >
-      <div className="flex items-center justify-between px-5 h-[60px] border-b border-white/10">
-        <Logo className="h-9 w-auto brightness-0 invert" />
-        <Popover.Button
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-white/70 hover:text-white focus:outline-none"
-          aria-label="Close menu"
-        >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </Popover.Button>
-      </div>
-
-      <nav className="flex flex-1 flex-col justify-center gap-1 px-6">
-        {navLinks.map(({ href, label }) => (
-          <Popover.Button
-            key={href}
-            as={Link}
-            href={href}
-            className="rounded-lg px-4 py-4 text-lg font-medium text-white/70 hover:bg-white/8 hover:text-white transition-colors"
-          >
-            {label}
-          </Popover.Button>
-        ))}
-      </nav>
-
-      <div className="px-6 pb-10">
-        <Popover.Button
-          as={Link}
-          href="/donate"
-          className="flex w-full items-center justify-center rounded-[6px] bg-[#236331] px-6 py-4 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
-        >
-          Support UPIA
-        </Popover.Button>
-      </div>
-    </Popover.Panel>
-  )
-}
 
 function HamburgerIcon({ open }) {
   return (
@@ -110,7 +65,7 @@ export function Header() {
           : 'border-b border-[#E2DCDA]',
       )}
     >
-      {/* Top 4px maroon-green accent bar */}
+      {/* Top accent bar */}
       <div className="absolute top-0 left-0 right-0 h-[3px] flex">
         <div className="flex-1 bg-[#C25757]" />
         <div className="flex-1 bg-[#236331]" />
@@ -143,26 +98,52 @@ export function Header() {
               <Popover>
                 {({ open }) => (
                   <>
-                    <Popover.Button
+                    <PopoverButton
                       className="flex h-10 w-10 items-center justify-center rounded-lg text-[#5A5450] hover:text-[#C25757] focus:outline-none"
                       aria-label="Toggle navigation"
                     >
                       <HamburgerIcon open={open} />
-                    </Popover.Button>
+                    </PopoverButton>
 
-                    <Transition.Root>
-                      <Transition.Child
-                        as={Fragment}
-                        enter="duration-200 ease-out"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="duration-150 ease-in"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <MobileNav />
-                      </Transition.Child>
-                    </Transition.Root>
+                    <PopoverPanel
+                      transition
+                      className="fixed inset-0 z-50 flex flex-col bg-[#6B2626] transition duration-200 ease-out data-[closed]:opacity-0"
+                    >
+                      <div className="flex items-center justify-between px-5 h-[60px] border-b border-white/10">
+                        <Logo className="h-9 w-auto brightness-0 invert" />
+                        <PopoverButton
+                          className="flex h-10 w-10 items-center justify-center rounded-lg text-white/70 hover:text-white focus:outline-none"
+                          aria-label="Close menu"
+                        >
+                          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </PopoverButton>
+                      </div>
+
+                      <nav className="flex flex-1 flex-col justify-center gap-1 px-6">
+                        {navLinks.map(({ href, label }) => (
+                          <PopoverButton
+                            key={href}
+                            as={Link}
+                            href={href}
+                            className="rounded-lg px-4 py-4 text-lg font-medium text-white/70 hover:bg-white/8 hover:text-white transition-colors"
+                          >
+                            {label}
+                          </PopoverButton>
+                        ))}
+                      </nav>
+
+                      <div className="px-6 pb-10">
+                        <PopoverButton
+                          as={Link}
+                          href="/donate"
+                          className="flex w-full items-center justify-center rounded-[6px] bg-[#236331] px-6 py-4 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
+                        >
+                          Support UPIA
+                        </PopoverButton>
+                      </div>
+                    </PopoverPanel>
                   </>
                 )}
               </Popover>

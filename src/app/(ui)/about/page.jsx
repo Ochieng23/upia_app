@@ -152,14 +152,14 @@ export default function About() {
       </section>
 
       {/* Stats bar */}
-      <section className="bg-[#111111] py-12">
+      <section className="bg-[#111111] py-10 sm:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="text-center">
-                <div className="text-4xl font-semibold text-white">{stat.value}</div>
-                <div className="mt-1 text-lg font-medium text-white/80">{stat.unit}</div>
-                <div className="text-sm text-white/50">{stat.label}</div>
+                <div className="text-2xl sm:text-4xl font-semibold text-white">{stat.value}</div>
+                <div className="mt-1 text-sm sm:text-lg font-medium text-white/80">{stat.unit}</div>
+                <div className="text-xs sm:text-sm text-white/50">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -167,17 +167,17 @@ export default function About() {
       </section>
 
       {/* Mission section */}
-      <section className="py-20 sm:py-28 bg-white">
+      <section className="py-16 sm:py-20 lg:py-28 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-center">
+          <div className="grid grid-cols-1 gap-10 lg:gap-16 lg:grid-cols-2 lg:items-center">
             <div>
               <span className="inline-block rounded-full bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757] mb-4">
                 Our Mission
               </span>
-              <h2 className="text-[32px] font-semibold tracking-tight text-[#111111]">
+              <h2 className="text-[28px] sm:text-[32px] font-semibold tracking-tight text-[#111111]">
                 Building bridges, not walls
               </h2>
-              <div className="mt-8 space-y-5 text-[15px] leading-[1.75] text-[#5A5450]">
+              <div className="mt-6 sm:mt-8 space-y-5 text-[15px] leading-[1.75] text-[#5A5450]">
                 <p>
                   By leveraging cutting-edge technology and user-centric design, we are
                   empowering parties and leaders to transcend geographical and ideological
@@ -197,21 +197,21 @@ export default function About() {
               </div>
             </div>
 
-            {/* Image collage */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div className="relative h-48 overflow-hidden rounded-[12px]">
+            {/* Image collage — aspect-ratio based, no fixed px heights */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
                   <Image src={img2} alt="" fill className="object-cover" />
                 </div>
-                <div className="relative h-64 overflow-hidden rounded-[12px]">
+                <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '85%' }}>
                   <Image src={img3} alt="" fill className="object-cover" />
                 </div>
               </div>
-              <div className="space-y-4 pt-8">
-                <div className="relative h-64 overflow-hidden rounded-[12px]">
+              <div className="space-y-3 sm:space-y-4 pt-6 sm:pt-8">
+                <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '85%' }}>
                   <Image src={img4} alt="" fill className="object-cover" />
                 </div>
-                <div className="relative h-48 overflow-hidden rounded-[12px]">
+                <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
                   <Image src={img5} alt="" fill className="object-cover" />
                 </div>
               </div>
@@ -221,7 +221,7 @@ export default function About() {
       </section>
 
       {/* Full-width quote image */}
-      <section className="relative h-72 sm:h-96 overflow-hidden">
+      <section className="relative h-56 sm:h-72 lg:h-96 overflow-hidden">
         <Image src={hero} alt="UPIA Party" fill className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#6B2626]/85 to-[#6B2626]/40 flex items-center">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

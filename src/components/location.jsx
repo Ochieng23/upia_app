@@ -3,14 +3,14 @@ import React from 'react'
 
 function Location() {
   return (
-    <section className="relative bg-white py-20 sm:py-28 overflow-hidden">
+    <section className="relative bg-white py-16 sm:py-20 lg:py-28 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section header */}
-        <div className="mx-auto max-w-2xl text-center mb-16">
+        <div className="mx-auto max-w-2xl text-center mb-10 sm:mb-16">
           <span className="inline-block rounded-full bg-[#EBF5EC] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#236331] mb-4">
             Find Us
           </span>
-          <h2 className="text-[32px] font-semibold tracking-tight text-[#111111]">
+          <h2 className="text-[28px] sm:text-[32px] font-semibold tracking-tight text-[#111111]">
             Our Location
           </h2>
           <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
@@ -19,14 +19,11 @@ function Location() {
         </div>
 
         {/* Content grid */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
           {/* Info cards */}
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4 md:col-span-1">
             {/* Hours card */}
-            <div
-              className="rounded-[12px] bg-white p-6"
-              style={{ border: '0.5px solid #E2DCDA' }}
-            >
+            <div className="rounded-[12px] bg-white p-5 sm:p-6" style={{ border: '0.5px solid #E2DCDA' }}>
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#236331] text-white">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -43,10 +40,7 @@ function Location() {
             </div>
 
             {/* Address card */}
-            <div
-              className="rounded-[12px] bg-white p-6"
-              style={{ border: '0.5px solid #E2DCDA' }}
-            >
+            <div className="rounded-[12px] bg-white p-5 sm:p-6" style={{ border: '0.5px solid #E2DCDA' }}>
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#C25757] text-white">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -66,10 +60,7 @@ function Location() {
             </div>
 
             {/* Contact card */}
-            <div
-              className="rounded-[12px] bg-white p-6"
-              style={{ border: '0.5px solid #E2DCDA' }}
-            >
+            <div className="rounded-[12px] bg-white p-5 sm:p-6" style={{ border: '0.5px solid #E2DCDA' }}>
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#111111] text-white">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -90,9 +81,9 @@ function Location() {
           </div>
 
           {/* Map */}
-          <div className="lg:col-span-2">
+          <div className="md:col-span-2">
             <div
-              className="relative h-full min-h-[400px] overflow-hidden rounded-[12px]"
+              className="relative w-full overflow-hidden rounded-[12px] min-h-[260px] sm:min-h-[360px] md:h-full md:min-h-[400px]"
               style={{ border: '0.5px solid #E2DCDA' }}
             >
               <iframe

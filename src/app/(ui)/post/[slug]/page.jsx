@@ -7,7 +7,8 @@ const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
 export async function generateMetadata({ params }) {
   try {
-    const res = await fetch(`${API}/api/posts/slug/${params.slug}`, { next: { revalidate: 60 } })
+    const { slug } = await params
+    const res = await fetch(`${API}/api/posts/slug/${slug}`, { next: { revalidate: 60 } })
     if (!res.ok) return {}
     const { data } = await res.json()
     return {
@@ -28,7 +29,8 @@ async function getPost(slug) {
 }
 
 export default async function PostPage({ params }) {
-  const post = await getPost(params.slug)
+  const { slug } = await params
+  const post = await getPost(slug)
   if (!post) notFound()
 
   return (
@@ -167,7 +169,7 @@ export default async function PostPage({ params }) {
                         className="h-20 w-20 rounded-full object-cover ring-4 ring-[#FBF0F0] mb-4"
                       />
                     ) : (
-                      <div className="h-20 w-20 rounded-full bg-[#1a3c5e] flex items-center justify-center text-white text-2xl font-semibold mb-4">
+                      <div className="h-20 w-20 rounded-full bg-[#236331] flex items-center justify-center text-white text-2xl font-semibold mb-4">
                         {post.author?.name?.[0] || 'U'}
                       </div>
                     )}

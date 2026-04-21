@@ -149,13 +149,13 @@ export default function Contact() {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {/* Contact form */}
             <div className="rounded-[12px] bg-white overflow-hidden" style={{ border: '0.5px solid #E2DCDA' }}>
-              <div className="border-b border-[#E2DCDA] px-8 py-6">
+              <div className="border-b border-[#E2DCDA] px-4 py-5 sm:px-8 sm:py-6">
                 <h2 className="text-[22px] font-medium text-[#111111]">Send us a Message</h2>
                 <p className="text-sm text-[#5A5450] mt-1">We&apos;ll respond within 24 hours</p>
               </div>
 
               {submitted ? (
-                <div className="p-12 text-center">
+                <div className="p-6 sm:p-12 text-center">
                   <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#EBF5EC] mb-6">
                     <svg className="h-8 w-8 text-[#236331]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -171,7 +171,7 @@ export default function Contact() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="px-8 py-8 space-y-5">
+                <form onSubmit={handleSubmit} className="px-4 py-5 sm:px-8 sm:py-8 space-y-5">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                       <label htmlFor="first-name" className={labelClass}>First Name *</label>
@@ -216,9 +216,9 @@ export default function Contact() {
             </div>
 
             {/* Map */}
-            <div className="rounded-[12px] overflow-hidden min-h-[500px]" style={{ border: '0.5px solid #E2DCDA' }}>
+            <div className="rounded-[12px] overflow-hidden min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]" style={{ border: '0.5px solid #E2DCDA' }}>
               <iframe
-                className="h-full w-full min-h-[500px] border-0"
+                className="h-full w-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] border-0"
                 src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Ramshab+Lane,+Along+Ngong+Road,+Nairobi,+(UPIA%20Party%20HQ)&t=&z=15&ie=UTF8&iwloc=B&output=embed"
                 allowFullScreen
                 loading="lazy"

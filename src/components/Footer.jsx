@@ -87,7 +87,7 @@ export function Footer() {
                 Get the latest news, articles, and party updates delivered to your inbox.
               </p>
             </div>
-            <form className="flex w-full max-w-md gap-3" onSubmit={(e) => e.preventDefault()}>
+            <form className="flex w-full max-w-md flex-col gap-3 sm:flex-row" onSubmit={(e) => e.preventDefault()}>
               <label htmlFor="footer-email" className="sr-only">Email address</label>
               <input
                 type="email"
@@ -100,7 +100,7 @@ export function Footer() {
               />
               <button
                 type="submit"
-                className="flex-shrink-0 rounded-[6px] bg-[#C25757] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#A84545] transition-colors duration-150"
+                className="flex-shrink-0 rounded-[6px] bg-[#C25757] px-5 py-3 sm:py-2.5 text-sm font-medium text-white hover:bg-[#A84545] transition-colors duration-150"
               >
                 Subscribe
               </button>
@@ -126,7 +126,7 @@ export function Footer() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="flex h-9 w-9 items-center justify-center rounded-[6px] bg-white/6 text-white/40 hover:bg-[#C25757] hover:text-white transition-all duration-150"
+                  className="flex h-11 w-11 items-center justify-center rounded-[6px] bg-white/6 text-white/40 hover:bg-[#C25757] hover:text-white transition-all duration-150"
                   aria-label={item.name}
                 >
                   <item.icon className="h-4 w-4" />

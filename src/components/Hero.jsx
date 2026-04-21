@@ -11,7 +11,7 @@ const stats = [
 
 export function Hero() {
   return (
-    <section className="relative w-full min-h-[88vh] overflow-hidden bg-[#14321e]">
+    <section className="relative w-full min-h-[100svh] sm:min-h-[88vh] overflow-hidden bg-[#14321e]">
       {/* Background image */}
       <div className="absolute inset-0">
         <Image
@@ -44,12 +44,12 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[88vh] py-32 pt-36">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center min-h-[100svh] sm:min-h-[88vh] py-24 pt-28 sm:pt-36">
 
           {/* Left — copy */}
           <div>
             {/* Overline */}
-            <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6"
+            <span className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-5 sm:mb-6"
               style={{ background: 'rgba(107,38,38,0.45)', border: '0.5px solid rgba(194,87,87,0.40)' }}>
               <span className="h-1.5 w-1.5 rounded-full bg-[#C25757]" />
               <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-white/90">2027 General Elections</p>
@@ -58,28 +58,28 @@ export function Hero() {
             {/* Headline */}
             <h1
               className="font-sans font-semibold text-white leading-tight"
-              style={{ fontSize: 'clamp(32px, 5vw, 52px)' }}
+              style={{ fontSize: 'clamp(28px, 5vw, 52px)' }}
             >
               United for a{' '}
               <span className="text-[#EBF5EC]">Better</span>{' '}
               Kenya
             </h1>
 
-            <p className="mt-3 text-xl font-medium text-white/80 tracking-wide">
+            <p className="mt-3 text-lg sm:text-xl font-medium text-white/80 tracking-wide">
               United Party of Independent Alliance
             </p>
 
             {/* Sub-text */}
-            <p className="mt-6 text-base leading-[1.75] text-white/55 max-w-[480px]">
+            <p className="mt-4 sm:mt-6 text-sm sm:text-base leading-[1.75] text-white/55 max-w-[480px]">
               Building a nation where every voice is heard, every opportunity is accessible,
               and every Kenyan can thrive. Join the movement for real, lasting change.
             </p>
 
             {/* CTAs */}
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
               <Link
                 href="/register"
-                className="inline-flex items-center rounded-[6px] bg-white px-7 py-3 text-sm font-medium text-[#236331] hover:bg-[#EBF5EC] active:scale-[0.98] transition-all duration-150"
+                className="inline-flex items-center rounded-[6px] bg-white px-5 sm:px-7 py-3 text-sm font-medium text-[#236331] hover:bg-[#EBF5EC] active:scale-[0.98] transition-all duration-150"
               >
                 Become a Member
                 <svg className="ml-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -88,7 +88,7 @@ export function Hero() {
               </Link>
               <Link
                 href="/login"
-                className="inline-flex items-center rounded-[6px] px-7 py-3 text-sm font-medium text-white active:scale-[0.98] transition-all duration-150"
+                className="inline-flex items-center rounded-[6px] px-5 sm:px-7 py-3 text-sm font-medium text-white active:scale-[0.98] transition-all duration-150"
                 style={{ background: 'rgba(107,38,38,0.55)', border: '0.5px solid rgba(194,87,87,0.45)' }}
               >
                 <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -100,11 +100,11 @@ export function Hero() {
           </div>
 
           {/* Right — stat pills */}
-          <div className="grid grid-cols-2 gap-4 lg:gap-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex flex-col rounded-[10px] border px-6 py-6"
+                className="flex flex-col rounded-[10px] border px-4 sm:px-6 py-4 sm:py-6"
                 style={{
                   background: 'rgba(255,255,255,0.10)',
                   backdropFilter: 'blur(12px)',
@@ -113,8 +113,8 @@ export function Hero() {
                   borderWidth: '0.5px',
                 }}
               >
-                <span className="text-4xl font-semibold text-white leading-none">{stat.value}</span>
-                <span className="mt-2 text-[13px] text-white/60 leading-snug">{stat.label}</span>
+                <span className="text-2xl sm:text-4xl font-semibold text-white leading-none">{stat.value}</span>
+                <span className="mt-2 text-[11px] sm:text-[13px] text-white/60 leading-snug">{stat.label}</span>
               </div>
             ))}
           </div>
