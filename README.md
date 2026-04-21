@@ -1,36 +1,88 @@
-# Salient
+# UPIA Frontend
 
-Salient is a [Tailwind UI](https://tailwindui.com) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+Frontend web application for the **Urban Poor Integrated Alliance (UPIA)** platform, built with Next.js 14, Tailwind CSS, and deployed on Azure App Service.
 
-## Getting started
+## Tech Stack
 
-To get started with this template, first install the npm dependencies:
+- **Framework:** Next.js 14 (App Router)
+- **Styling:** Tailwind CSS, Headless UI, Framer Motion
+- **CMS:** Sanity (for news/blog content)
+- **Maps:** Google Maps / Places Autocomplete
+- **Deployment:** Azure App Service (Linux, Node 24)
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/          # Login and registration flows
+│   ├── (portal)/        # Authenticated dashboards (portal, admin)
+│   │   └── portal/      # User portal (profile, payment, payment callback)
+│   └── (ui)/            # Public-facing pages (about, contact, donate, news, resources, register)
+├── components/          # Shared UI components
+├── context/             # React context providers
+├── lib/                 # Utilities and API helpers
+└── styles/              # Global styles
+```
+
+## Getting Started
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-Next, run the development server:
+Copy the environment file and fill in values:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Run the development server:
 
 ```bash
 npm run dev
 ```
 
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Customizing
+## Environment Variables
 
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | Base URL of the UPIA backend API |
 
-## License
+> **Note:** `NEXT_PUBLIC_*` variables are baked in at build time. Update `.env.local` and redeploy when changing the API URL.
 
-This site template is a commercial product and is licensed under the [Tailwind UI license](https://tailwindui.com/license).
+## Scripts
 
-## Learn more
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm start` | Start production server |
+| `npm run lint` | Run ESLint |
 
-To learn more about the technologies used in this site template, see the following resources:
+## Deployment (Azure App Service)
 
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-# upia_app
+The app deploys automatically via GitHub Actions on push to the main branch.
+
+- **App name:** `upiafrontend`
+- **Resource group:** `upia`
+- **Region:** Canada Central
+- **Runtime:** Node 24 LTS
+- **Startup command:** `node_modules/.bin/next start`
+
+To restart the app manually:
+
+```bash
+az webapp restart --name upiafrontend --resource-group upia
+```
+
+To update environment variables:
+
+```bash
+az webapp config appsettings set --name upiafrontend --resource-group upia \
+  --settings NEXT_PUBLIC_API_URL=<your-backend-url>
+```
