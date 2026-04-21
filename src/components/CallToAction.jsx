@@ -28,7 +28,7 @@ export function CallToAction() {
           </div>
 
           {/* Right — content */}
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col items-center justify-center text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#E2DCDA] bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#236331] animate-pulse" />
               Join the Movement
@@ -42,10 +42,10 @@ export function CallToAction() {
               Become a United Party Independent Alliance member and help build a better, fairer Kenya for every citizen.
             </p>
 
-            {/* Stats — stack on small, row on sm+ */}
-            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-8">
-              <div>
-                <div className="flex items-end gap-1 leading-none">
+            {/* Stats */}
+            <div className="mt-8 sm:mt-10 flex items-center justify-center gap-8 sm:gap-12">
+              <div className="text-center">
+                <div className="flex items-end justify-center gap-1 leading-none">
                   <CountUp
                     className="text-3xl sm:text-4xl font-semibold text-[#C25757]"
                     end={1000007}
@@ -59,10 +59,9 @@ export function CallToAction() {
                 </p>
               </div>
 
-              <div className="hidden sm:block h-12 w-px bg-[#E2DCDA]" />
-              <div className="block sm:hidden h-px w-12 bg-[#E2DCDA]" />
+              <div className="h-12 w-px bg-[#E2DCDA]" />
 
-              <div>
+              <div className="text-center">
                 <p className="text-3xl sm:text-4xl font-semibold leading-none text-[#236331]">30+</p>
                 <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">
                   MCAs Elected
@@ -71,7 +70,7 @@ export function CallToAction() {
             </div>
 
             {/* CTAs */}
-            <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
               <Link
                 href="/register"
                 className="inline-flex items-center gap-2 rounded-[6px] bg-[#236331] px-6 sm:px-7 py-3 text-sm font-medium text-white hover:bg-[#2B753A] active:scale-[0.98] transition-all duration-150"
