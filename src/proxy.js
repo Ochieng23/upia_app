@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 const PROTECTED = ['/portal', '/admin']
 const AUTH_ONLY = ['/login', '/registerr']
 
-export function middleware(request) {
+export function proxy(request) {
   const { pathname } = request.nextUrl
 
   // Check for token in cookies (we also support localStorage but that's client-side only)
