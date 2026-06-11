@@ -14,12 +14,13 @@ export function AuthProvider({ children }) {
     const stored = getStoredUser()
     if (stored) setUser(stored)
 
-    if (getToken()) {
+    const token = getToken()
+    if (token) {
       api
         .get('/auth/me')
         .then((data) => {
           setUser(data.user)
-          saveAuth(getToken(), null, data.user)
+          saveAuth(token, null, data.user)
         })
         .catch(() => {
           clearAuth()

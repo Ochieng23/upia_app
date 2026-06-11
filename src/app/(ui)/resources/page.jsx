@@ -4,6 +4,16 @@ import Link from 'next/link'
 
 const documents = [
   {
+    title: 'Public Notice — Special National Delegates Congress',
+    description:
+      'Official public notice issued by UPIA Kenya regarding the Special National Delegates Congress. All members and the public are encouraged to read and take note.',
+    href: '/documents/public-notice-special-national-delegates-congress.pdf',
+    type: 'PDF',
+    date: '2025',
+    size: 'Public Notice',
+    category: 'Press Releases',
+  },
+  {
     title: 'UPIA Annual Report & Financial Statements — FY Ended 30th June 2023',
     description:
       'Comprehensive financial statements and annual report for the fiscal year ended 30th June 2023, audited and approved by the party board.',
@@ -11,6 +21,7 @@ const documents = [
     type: 'PDF',
     date: 'June 2023',
     size: 'Annual Report',
+    category: 'Financial Reports',
   },
 ]
 
@@ -18,6 +29,11 @@ const categories = [
   { name: 'Financial Reports', icon: (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    </svg>
+  ), count: 1 },
+  { name: 'Press Releases', icon: (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
     </svg>
   ), count: 1 },
   { name: 'Party Manifesto', icon: (
@@ -28,11 +44,6 @@ const categories = [
   { name: 'Party Constitution', icon: (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-    </svg>
-  ), count: 0 },
-  { name: 'Press Releases', icon: (
-    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
     </svg>
   ), count: 0 },
 ]
@@ -107,7 +118,7 @@ export default function Resources() {
           <div className="md:col-span-3">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-[22px] font-medium text-[#111111]">Financial Statements</h2>
+                <h2 className="text-[22px] font-medium text-[#111111]">All Documents</h2>
                 <p className="text-sm text-[#5A5450] mt-1">{documents.length} document{documents.length !== 1 ? 's' : ''} available</p>
               </div>
             </div>
@@ -120,7 +131,7 @@ export default function Resources() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex flex-col gap-4 rounded-[12px] bg-white p-[20px] transition-all duration-150 hover:border-[#D46868] sm:flex-row sm:items-center"
-                  style={{ border: '0.5px solid #E2DCDA' }}
+                  style={{ border: doc.category === 'Press Releases' ? '0.5px solid #C25757' : '0.5px solid #E2DCDA' }}
                 >
                   {/* File icon */}
                   <div className="flex-shrink-0 flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#FBF0F0] ring-1 ring-[#E2DCDA] group-hover:bg-[#C25757] transition-all duration-150">
@@ -132,6 +143,11 @@ export default function Resources() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2 mb-1">
+                      {doc.category === 'Press Releases' && (
+                        <span className="rounded-full bg-[#FBF0F0] px-2.5 py-0.5 text-[11px] font-semibold uppercase text-[#C25757]">
+                          Public Notice
+                        </span>
+                      )}
                       <span className="rounded-full bg-[#F8F5F3] px-2.5 py-0.5 text-[11px] font-medium uppercase text-[#5A5450]">
                         {doc.type}
                       </span>

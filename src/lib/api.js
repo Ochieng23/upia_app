@@ -1,6 +1,6 @@
 import { getToken, getRefreshToken, saveAuth, clearAuth } from './auth'
 
-const BASE = '/api/backend'
+const BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api`
 
 let refreshPromise = null
 

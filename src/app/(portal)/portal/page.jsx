@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../context/AuthContext'
 import { api } from '../../../lib/api'
 import { Logo } from '../../../components/Logo'
+import { getToken } from '../../../lib/auth'
 
 const SEAT_OPTIONS = [
   { value: 'president', label: 'President' },
@@ -73,7 +74,12 @@ export default function Portal() {
   const [editSaved, setEditSaved] = useState(false)
 
   useEffect(() => {
-    if (!authLoading && !user) { router.replace('/login'); return }
+    if (!authLoading && !user) {
+      // Token present means login just happened and auth state is still settling — wait
+      if (getToken()) return
+      router.replace('/login')
+      return
+    }
     if (!authLoading && user?.role === 'admin') { router.replace('/admin'); return }
     if (user && user.role === 'aspirant') {
       Promise.all([

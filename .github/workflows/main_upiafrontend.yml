@@ -24,6 +24,9 @@ jobs:
           node-version: '24.x'
 
       - name: Install dependencies and build
+        env:
+          NEXT_PUBLIC_API_URL: https://upiabackend-ecafg4dqfhc2hvf7.canadacentral-01.azurewebsites.net
+          BACKEND_URL: https://upiabackend-ecafg4dqfhc2hvf7.canadacentral-01.azurewebsites.net
         run: |
           npm install
           npm run build
