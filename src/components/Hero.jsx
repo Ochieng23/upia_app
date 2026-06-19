@@ -21,7 +21,7 @@ export function Hero() {
           fill
           priority
           className="object-cover object-center"
-          style={{ filter: 'brightness(0.36) saturate(0.85)' }}
+          style={{ filter: 'brightness(0.28) saturate(0.85)' }}
         />
         {/* Directional overlay — denser on left for text contrast */}
         <div
@@ -67,7 +67,7 @@ export function Hero() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C25757] opacity-70" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-[#C25757]" />
               </span>
-              <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/60">
+              <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-white/80">
                 2027 General Elections
               </span>
               <span className="h-px w-12 bg-white/15 flex-shrink-0" />
@@ -92,13 +92,13 @@ export function Hero() {
             {/* Sub-label */}
             <div className="mt-7 flex items-center gap-3">
               <span className="block h-px w-8 bg-[#C25757] flex-shrink-0" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.09em] text-white/40">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.09em] text-white/70">
                 United Party of Independent Alliance
               </p>
             </div>
 
             {/* Body copy */}
-            <p className="mt-5 text-[15.5px] leading-[1.82] text-white/52 max-w-[460px]">
+            <p className="mt-5 text-[15.5px] leading-[1.82] text-white/80 max-w-[460px]">
               Building a nation where every voice is heard, every opportunity is
               accessible, and every Kenyan can thrive — join the movement for
               real, lasting change.
@@ -136,9 +136,9 @@ export function Hero() {
             </div>
 
             {/* Trust signal */}
-            <p className="mt-5 text-[12px] text-white/28 tracking-wide">
+            <p className="mt-5 text-[12px] text-white/55 tracking-wide">
               Over{' '}
-              <span className="text-white/48 font-semibold">1,000,000+</span>{' '}
+              <span className="text-white/80 font-semibold">1,000,000+</span>{' '}
               registered members across all 47 counties
             </p>
           </div>
@@ -170,7 +170,7 @@ export function Hero() {
 
                 <span className="mt-3 block h-px w-7 bg-white/15" />
 
-                <span className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.07em] text-white/45 leading-snug">
+                <span className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.07em] text-white/70 leading-snug">
                   {stat.label}
                 </span>
               </div>
