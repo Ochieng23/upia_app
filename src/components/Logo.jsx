@@ -3,6 +3,6 @@ import logo from "../images/images/UPIALogo-01.svg"
 
 export function Logo({ className, ...props }) {
   return (
-    <Image src={logo} alt="Logo" width={150} height={150} className={className} {...props} />
+    <Image src={logo} alt="Logo" width={200} height={200} className={className} {...props} />
   )
 }

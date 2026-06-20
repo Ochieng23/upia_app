@@ -47,7 +47,7 @@ export default function Login() {
         <div className="relative flex flex-col flex-1 px-12 py-12">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3">
-            <Logo className="h-10 w-auto brightness-0 invert" />
+            <Logo className="h-20 w-auto brightness-0 invert" />
           </Link>
 
           {/* Main copy */}
@@ -93,7 +93,7 @@ export default function Login() {
         {/* Mobile top bar */}
         <div className="flex items-center justify-between px-6 py-5 lg:hidden border-b border-[#E2DCDA]">
           <Link href="/">
-            <Logo className="h-9 w-auto" />
+            <Logo className="h-12 w-auto" />
           </Link>
           <Link href="/register" className="text-sm font-medium text-[#5A5450] hover:text-[#C25757]">
             Not a member? <span className="text-[#C25757]">Register</span>

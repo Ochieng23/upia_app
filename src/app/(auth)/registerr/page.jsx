@@ -56,7 +56,7 @@ export default function Register() {
 
         <div className="relative flex flex-col flex-1 px-12 py-12">
           <Link href="/" className="flex items-center gap-3">
-            <Logo className="h-10 w-auto brightness-0 invert" />
+            <Logo className="h-20 w-auto brightness-0 invert" />
           </Link>
 
           <div className="flex-1 flex flex-col justify-center">
@@ -100,7 +100,7 @@ export default function Register() {
         {/* Mobile top bar */}
         <div className="flex items-center justify-between px-6 py-5 lg:hidden border-b border-[#E2DCDA]">
           <Link href="/">
-            <Logo className="h-9 w-auto" />
+            <Logo className="h-12 w-auto" />
           </Link>
           <Link href="/login" className="text-sm font-medium text-[#5A5450] hover:text-[#C25757]">
             Already registered? <span className="text-[#C25757]">Sign in</span>

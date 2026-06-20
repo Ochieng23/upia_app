@@ -59,7 +59,7 @@ export function Header() {
   return (
     <header
       className={clsx(
-        'fixed top-0 z-50 w-full h-[60px] bg-white transition-all duration-300',
+        'fixed top-0 z-50 w-full h-[72px] bg-white transition-all duration-300',
         scrolled
           ? 'shadow-md border-b border-[#E2DCDA]'
           : 'border-b border-[#E2DCDA]',
@@ -75,7 +75,7 @@ export function Header() {
         <nav className="flex items-center justify-between h-full">
           {/* Logo */}
           <Link href="/" aria-label="Home" className="flex items-center flex-shrink-0 gap-2">
-            <Logo className="h-12 w-auto" />
+            <Logo className="h-16 w-auto" />
           </Link>
 
           {/* Desktop links */}
@@ -110,7 +110,7 @@ export function Header() {
                       className="fixed inset-0 z-50 flex flex-col bg-[#6B2626] transition duration-200 ease-out data-[closed]:opacity-0"
                     >
                       <div className="flex items-center justify-between px-5 h-[60px] border-b border-white/10">
-                        <Logo className="h-12 w-auto brightness-0 invert" />
+                        <Logo className="h-16 w-auto brightness-0 invert" />
                         <PopoverButton
                           className="flex h-10 w-10 items-center justify-center rounded-lg text-white/70 hover:text-white focus:outline-none"
                           aria-label="Close menu"
