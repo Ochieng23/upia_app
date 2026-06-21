@@ -21,14 +21,14 @@ export function Hero() {
           fill
           priority
           className="object-cover object-center"
-          style={{ filter: 'brightness(0.28) saturate(0.85)' }}
+          style={{ filter: 'brightness(0.52) saturate(0.9)' }}
         />
         {/* Directional overlay — denser on left for text contrast */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(110deg, rgba(13,32,18,0.90) 0%, rgba(13,32,18,0.78) 45%, rgba(13,32,18,0.55) 100%)',
+              'linear-gradient(110deg, rgba(13,32,18,0.72) 0%, rgba(13,32,18,0.52) 45%, rgba(13,32,18,0.28) 100%)',
           }}
         />
       </div>
