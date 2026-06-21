@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import Tero from '../images/images/hero-congress.jpg'
+import Tero from '../images/images/about-6.jpg'
 
 const stats = [
   { value: '1M+', label: 'Registered Members', accent: '#C25757' },
