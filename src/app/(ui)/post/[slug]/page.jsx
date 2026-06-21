@@ -5,16 +5,12 @@ import { notFound } from 'next/navigation'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
-export const dynamicParams = false
-
-export function generateStaticParams() {
-  return []
-}
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }) {
   try {
     const { slug } = await params
-    const res = await fetch(`${API}/api/posts/slug/${slug}`, { cache: 'force-cache' })
+    const res = await fetch(`${API}/api/posts/slug/${slug}`, { cache: 'no-store' })
     if (!res.ok) return {}
     const { data } = await res.json()
     return {
@@ -28,7 +24,7 @@ export async function generateMetadata({ params }) {
 }
 
 async function getPost(slug) {
-  const res = await fetch(`${API}/api/posts/slug/${slug}`, { cache: 'force-cache' })
+  const res = await fetch(`${API}/api/posts/slug/${slug}`, { cache: 'no-store' })
   if (!res.ok) return null
   const data = await res.json()
   return data.data || null
