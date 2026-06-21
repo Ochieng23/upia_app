@@ -151,8 +151,8 @@ export function Hero() {
                 className="relative flex flex-col overflow-hidden rounded-[10px] px-5 sm:px-6 py-5 sm:py-7"
                 style={{
                   background: 'rgba(255,255,255,0.06)',
-                  backdropFilter: 'blur(13px)',
-                  WebkitBackdropFilter: 'blur(13px)',
+                  backdropFilter: 'blur(7px)',
+                  WebkitBackdropFilter: 'blur(7px)',
                   border: '0.5px solid rgba(255,255,255,0.12)',
                 }}
               >
