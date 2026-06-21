@@ -4,8 +4,8 @@ import Tero from '../images/images/about-6.jpg'
 
 const stats = [
   { value: '1M+', label: 'Registered Members', accent: '#C25757' },
-  { value: '2',   label: 'MPs in Parliament',  accent: '#236331' },
-  { value: '30+', label: 'MCAs Elected',       accent: '#FFFFFF' },
+  { value: '500+', label: 'Aspirants',         accent: '#236331' },
+  { value: '29',  label: 'Years of Service',  accent: '#FFFFFF' },
   { value: '47',  label: 'Counties Reached',   accent: '#C25757' },
 ]
 
@@ -151,8 +151,8 @@ export function Hero() {
                 className="relative flex flex-col overflow-hidden rounded-[10px] px-5 sm:px-6 py-5 sm:py-7"
                 style={{
                   background: 'rgba(255,255,255,0.06)',
-                  backdropFilter: 'blur(16px)',
-                  WebkitBackdropFilter: 'blur(16px)',
+                  backdropFilter: 'blur(13px)',
+                  WebkitBackdropFilter: 'blur(13px)',
                   border: '0.5px solid rgba(255,255,255,0.12)',
                 }}
               >
