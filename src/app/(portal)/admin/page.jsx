@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../context/AuthContext'
@@ -53,6 +53,8 @@ export default function AdminDashboard() {
   const [issuing, setIssuing] = useState(false)
   const [postForm, setPostForm] = useState(null)
   const [postSaving, setPostSaving] = useState(false)
+  const [coverUploading, setCoverUploading] = useState(false)
+  const coverInputRef = useRef(null)
   const [eventForm, setEventForm] = useState(null)
   const [eventSaving, setEventSaving] = useState(false)
   const [structureForm, setStructureForm] = useState(null)
@@ -126,6 +128,23 @@ export default function AdminDashboard() {
   const deletePost = async (id) => { if (!confirm('Delete this post?')) return; await api.delete(`/posts/${id}`); showFlash('Post deleted'); loadData() }
   const togglePublish = async (post) => { await api.put(`/posts/${post._id}`, { published: !post.published }); showFlash(post.published ? 'Unpublished' : 'Published'); loadData() }
   const setPost = (field) => (e) => setPostForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
+
+  const uploadCoverImage = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setCoverUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('image', file)
+      const { url } = await api.post('/posts/upload-image', fd)
+      setPostForm((f) => ({ ...f, coverImage: url }))
+    } catch (err) {
+      alert('Image upload failed: ' + err.message)
+    } finally {
+      setCoverUploading(false)
+      if (coverInputRef.current) coverInputRef.current.value = ''
+    }
+  }
 
   /* ── Events ── */
   const saveEvent = async (e) => {
@@ -577,7 +596,17 @@ export default function AdminDashboard() {
           <form onSubmit={savePost} className="space-y-4">
             <Field label="Title *"><input className={inputCls} value={postForm.title} onChange={setPost('title')} placeholder="Post title" required /></Field>
             <Field label="Excerpt"><textarea className={inputCls} rows={2} value={postForm.description} onChange={setPost('description')} placeholder="Short summary…" /></Field>
-            <Field label="Cover Image URL"><input className={inputCls} type="url" value={postForm.coverImage} onChange={setPost('coverImage')} placeholder="https://…" />{postForm.coverImage&&<img src={postForm.coverImage} alt="" className="mt-2 h-28 w-full object-cover rounded-[6px]" onError={e=>{e.target.style.display='none'}} />}</Field>
+            <Field label="Cover Image">
+              <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={uploadCoverImage} />
+              <div className="flex gap-2">
+                <button type="button" onClick={()=>coverInputRef.current?.click()} disabled={coverUploading}
+                  className="shrink-0 rounded-[6px] border border-[#d1d5db] bg-white px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-50 transition-colors">
+                  {coverUploading ? 'Uploading…' : '⬆ Upload image'}
+                </button>
+                <input className={inputCls} type="url" value={postForm.coverImage} onChange={setPost('coverImage')} placeholder="or paste URL…" />
+              </div>
+              {postForm.coverImage&&<img src={postForm.coverImage} alt="Cover preview" className="mt-2 h-36 w-full object-cover rounded-[6px] border border-[#e5e7eb]" onError={e=>{e.target.style.display='none'}} />}
+            </Field>
             <Field label="Categories (comma-separated)"><input className={inputCls} value={postForm.categories} onChange={setPost('categories')} placeholder="Politics, News" /></Field>
             <div className="grid grid-cols-3 gap-3">
               <Field label="Author Name"><input className={inputCls} value={postForm.authorName} onChange={setPost('authorName')} /></Field>
