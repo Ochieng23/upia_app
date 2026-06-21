@@ -4,7 +4,7 @@ async function getPosts() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/posts?limit=3`,
-      { cache: 'force-cache' }
+      { next: { revalidate: 60 } }
     )
     if (!res.ok) return []
     const data = await res.json()

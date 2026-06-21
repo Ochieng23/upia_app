@@ -40,18 +40,17 @@ export default async function PostPage({ params }) {
       <Header />
       <div className="min-h-screen bg-white">
         {/* Hero */}
-        <section className="relative h-[60vh] min-h-[400px] overflow-hidden bg-[#14321e]">
+        <section className="relative h-[68vh] min-h-[460px] overflow-hidden bg-[#0d1f12]">
           {post.coverImage && (
             <img
               src={post.coverImage}
               alt={post.title}
-              className="absolute inset-0 h-full w-full object-cover opacity-40"
-              style={{ filter: 'blur(3px) brightness(0.55)' }}
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ opacity: 0.62, filter: 'brightness(0.75)' }}
             />
           )}
-          <div className="absolute inset-0 backdrop-blur-sm" style={{ background: 'linear-gradient(135deg, rgba(35,99,49,0.18) 0%, rgba(35,99,49,0.14) 50%, rgba(20,60,30,0.40) 100%)' }} />
-          <div className="absolute -bottom-16 -left-16 h-[280px] w-[280px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(107,38,38,0.50) 0%, transparent 70%)' }} />
-          <div className="absolute -top-10 right-0 h-[200px] w-[200px] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(194,87,87,0.25) 0%, transparent 70%)' }} />
+          {/* Gradient: dark at bottom for text legibility, lighter at top to show image */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(13,31,18,0.25) 0%, rgba(13,31,18,0.55) 55%, rgba(13,31,18,0.88) 100%)' }} />
 
           <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-12">
             <div className="mx-auto max-w-4xl">
