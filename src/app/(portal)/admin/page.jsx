@@ -49,6 +49,7 @@ export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const [viewAspirant, setViewAspirant] = useState(null)
   const [issueForm, setIssueForm] = useState(null)
   const [issuing, setIssuing] = useState(false)
   const [postForm, setPostForm] = useState(null)
@@ -362,16 +363,19 @@ export default function AdminDashboard() {
                 <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-[#E2DCDA] text-sm">
-                      <thead className="bg-[#F8F5F3]"><tr>{['Name','Email','Seat','IPPMS','Status','Actions'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
+                      <thead className="bg-[#F8F5F3]"><tr>{['Name','Email','Phone','Seat','County','IPPMS','Status','Actions'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
                       <tbody className="divide-y divide-[#E2DCDA]">
                         {aspirants.map(a=>(
-                          <tr key={a._id} className="hover:bg-[#F8F5F3]">
+                          <tr key={a._id} className="hover:bg-[#F8F5F3] cursor-pointer" onClick={()=>setViewAspirant(a)}>
                             <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{a.user?.firstName} {a.user?.lastName}</td>
                             <td className="px-4 py-3 text-[#5A5450]">{a.user?.email}</td>
+                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{a.user?.phone || '—'}</td>
                             <td className="px-4 py-3 text-[#5A5450] capitalize">{a.seatCategory?.replace('_',' ') || '—'}</td>
+                            <td className="px-4 py-3 text-[#5A5450]">{a.countyName || '—'}</td>
                             <td className="px-4 py-3"><Badge status={a.ippmsStatus} /></td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${a.isApproved?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}`}>{a.isApproved?'Approved':'Pending'}</span></td>
-                            <td className="px-4 py-3"><div className="flex items-center gap-3 whitespace-nowrap">
+                            <td className="px-4 py-3" onClick={e=>e.stopPropagation()}><div className="flex items-center gap-3 whitespace-nowrap">
+                              <button onClick={()=>setViewAspirant(a)} className="text-xs font-medium text-[#1a3c5e] hover:underline">View</button>
                               {!a.isApproved&&<button onClick={()=>approve(a._id)} className="text-xs font-medium text-green-700 hover:underline">Approve</button>}
                               {a.isApproved&&<button onClick={()=>reject(a._id)} className="text-xs font-medium text-red-600 hover:underline">Reject</button>}
                               <button onClick={()=>setIssueForm({aspirantId:a._id,type:'nomination',title:'',description:''})} className="text-xs font-medium text-[#1a3c5e] hover:underline">Issue Cert</button>
@@ -576,6 +580,79 @@ export default function AdminDashboard() {
           </div>
         </main>
       </div>
+
+      {/* ── Aspirant detail modal ── */}
+      {viewAspirant && (() => {
+        const a = viewAspirant
+        const name = `${a.user?.firstName || ''} ${a.user?.lastName || ''}`.trim()
+        const dob = a.dateOfBirth ? new Date(a.dateOfBirth).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '—'
+        const registered = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '—'
+        const Row = ({label, value}) => (
+          <div className="flex flex-col sm:flex-row sm:gap-4 py-2.5 border-b border-[#F0EDE9] last:border-0">
+            <span className="w-40 flex-shrink-0 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5A5450]">{label}</span>
+            <span className="text-sm text-[#111111] mt-0.5 sm:mt-0">{value || '—'}</span>
+          </div>
+        )
+        return (
+          <Modal title={`Aspirant Profile — ${name}`} onClose={()=>setViewAspirant(null)} wide>
+            <div className="space-y-6">
+
+              {/* Photo + status banner */}
+              <div className="flex items-center gap-4 p-4 rounded-[8px] bg-[#F8F5F3]">
+                {a.profilePhoto
+                  ? <img src={a.profilePhoto} alt={name} className="h-16 w-16 rounded-full object-cover ring-2 ring-white shadow" />
+                  : <div className="h-16 w-16 rounded-full bg-[#236331] flex items-center justify-center text-white text-xl font-semibold flex-shrink-0">{name[0]||'?'}</div>
+                }
+                <div>
+                  <p className="text-base font-semibold text-[#111111]">{name}</p>
+                  <p className="text-sm text-[#5A5450]">{a.user?.email}</p>
+                  <div className="mt-1 flex items-center gap-2">
+                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${a.isApproved?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}`}>{a.isApproved?'Approved':'Pending'}</span>
+                    <Badge status={a.ippmsStatus} />
+                  </div>
+                </div>
+                <div className="ml-auto flex gap-2">
+                  {!a.isApproved && <button onClick={()=>{approve(a._id);setViewAspirant(null)}} className="rounded-[6px] bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">Approve</button>}
+                  {a.isApproved && <button onClick={()=>{reject(a._id);setViewAspirant(null)}} className="rounded-[6px] bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600">Reject</button>}
+                  <button onClick={()=>{setViewAspirant(null);setIssueForm({aspirantId:a._id,type:'nomination',title:'',description:''})}} className="rounded-[6px] bg-[#1a3c5e] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#153150]">Issue Cert</button>
+                </div>
+              </div>
+
+              {/* Personal */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Personal Information</p>
+                <Row label="Full Name" value={name} />
+                <Row label="Email" value={a.user?.email} />
+                <Row label="Phone" value={a.user?.phone} />
+                <Row label="National ID" value={a.nationalId} />
+                <Row label="Date of Birth" value={dob} />
+                <Row label="Gender" value={a.gender === 'M' ? 'Male' : a.gender === 'F' ? 'Female' : a.gender} />
+                <Row label="PWD" value={a.hasPWD ? 'Yes' : 'No'} />
+              </div>
+
+              {/* Political */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Political Details</p>
+                <Row label="Seat Category" value={a.seatCategory?.replace(/_/g,' ')} />
+                <Row label="County" value={`${a.countyName || ''}${a.countyCode ? ` (${a.countyCode})` : ''}`} />
+                <Row label="Constituency" value={`${a.constituencyName || ''}${a.constituencyCode ? ` (${a.constituencyCode})` : ''}`} />
+                <Row label="Ward" value={`${a.wardName || ''}${a.wardCode ? ` (${a.wardCode})` : ''}`} />
+                <Row label="Is Elected" value={a.isElected ? 'Yes' : 'No'} />
+              </div>
+
+              {/* Verification */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Verification & System</p>
+                <Row label="IPPMS Status" value={a.ippmsStatus?.replace(/_/g,' ')} />
+                <Row label="Approval Status" value={a.isApproved ? `Approved${a.approvedAt ? ' on '+new Date(a.approvedAt).toLocaleDateString('en-KE') : ''}` : 'Pending'} />
+                {a.rejectionReason && <Row label="Rejection Reason" value={a.rejectionReason} />}
+                <Row label="Registered On" value={registered} />
+              </div>
+
+            </div>
+          </Modal>
+        )
+      })()}
 
       {/* ── Issue certificate modal ── */}
       {issueForm && (
