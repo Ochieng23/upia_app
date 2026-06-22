@@ -728,7 +728,16 @@ export default function AdminDashboard() {
               <Field label="Code"><input className={inputCls} value={structureForm.code||''} onChange={setSt('code')} placeholder="047" /></Field>
               <Field label="Parent Code"><input className={inputCls} value={structureForm.parentCode||''} onChange={setSt('parentCode')} placeholder="(county code)" /></Field>
             </div>
-            <Field label="Coordinator (User ID)"><input className={inputCls} value={structureForm.coordinator||''} onChange={setSt('coordinator')} placeholder="MongoDB user _id" /></Field>
+            <Field label="Coordinator">
+              <select className={selectCls} value={structureForm.coordinator||''} onChange={setSt('coordinator')}>
+                <option value="">— None —</option>
+                {users.map(u=>(
+                  <option key={u._id} value={u._id}>
+                    {u.firstName} {u.lastName} ({u.email})
+                  </option>
+                ))}
+              </select>
+            </Field>
             <Field label="Coordinator Title"><input className={inputCls} value={structureForm.coordinatorTitle||''} onChange={setSt('coordinatorTitle')} placeholder="County Coordinator" /></Field>
             <Field label="Notes"><textarea className={inputCls} rows={2} value={structureForm.notes||''} onChange={setSt('notes')} /></Field>
             <ModalActions onCancel={()=>setStructureForm(null)} saving={structureSaving} label={structureForm._id?'Save Changes':'Add Node'} />
