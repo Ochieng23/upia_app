@@ -108,7 +108,7 @@ export default function Login() {
               <h2 className="text-[26px] font-semibold text-[#111111]">Sign in</h2>
               <p className="mt-2 text-sm text-[#5A5450]">
                 Don&apos;t have an account?{' '}
-                <Link href="/registerr" className="font-medium text-[#C25757] hover:underline">
+                <Link href="/register" className="font-medium text-[#C25757] hover:underline">
                   Create one
                 </Link>
               </p>

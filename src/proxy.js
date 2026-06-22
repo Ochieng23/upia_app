@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 const PROTECTED = ['/portal', '/admin']
-const AUTH_ONLY = ['/login', '/registerr']
+const AUTH_ONLY = ['/login']
 
 export function proxy(request) {
   const { pathname } = request.nextUrl
@@ -29,5 +29,5 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ['/portal/:path*', '/admin/:path*', '/login', '/registerr'],
+  matcher: ['/portal/:path*', '/admin/:path*', '/login'],
 }

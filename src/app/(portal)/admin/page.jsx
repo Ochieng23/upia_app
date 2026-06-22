@@ -60,6 +60,8 @@ export default function AdminDashboard() {
   const [eventSaving, setEventSaving] = useState(false)
   const [structureForm, setStructureForm] = useState(null)
   const [structureSaving, setStructureSaving] = useState(false)
+  const [userForm, setUserForm] = useState(null)
+  const [userSaving, setUserSaving] = useState(false)
   const [flash, setFlash] = useState('')
 
   useEffect(() => {
@@ -171,6 +173,28 @@ export default function AdminDashboard() {
   }
   const deleteNode = async (id) => { if (!confirm('Remove this node?')) return; await api.delete(`/structure/${id}`); showFlash('Node removed'); loadData() }
   const setSt = (field) => (e) => setStructureForm((f) => ({ ...f, [field]: e.target.value }))
+
+  const BLANK_USER = { firstName: '', lastName: '', email: '', phone: '', role: 'member', password: '', isActive: true }
+  const saveUser = async (e) => {
+    e.preventDefault(); setUserSaving(true)
+    try {
+      if (userForm._id) {
+        const { firstName, lastName, phone, role, isActive } = userForm
+        await api.put(`/admin/users/${userForm._id}`, { firstName, lastName, phone, role, isActive })
+        showFlash('User updated')
+      } else {
+        await api.post('/admin/users', userForm)
+        showFlash('User created')
+      }
+      setUserForm(null); loadData()
+    } catch (err) { alert(err.message) } finally { setUserSaving(false) }
+  }
+  const deleteUser = async (u) => {
+    if (!confirm(`Delete ${u.firstName} ${u.lastName} (${u.email})? This cannot be undone.`)) return
+    await api.delete(`/admin/users/${u._id}`)
+    showFlash('User deleted'); loadData()
+  }
+  const setUsr = (field) => (e) => setUserForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
 
   if (authLoading || loading) {
     return <div className="min-h-screen bg-[#F8F5F3] flex items-center justify-center"><div className="animate-spin h-8 w-8 rounded-full border-4 border-[#1a3c5e] border-t-transparent" /></div>
@@ -520,22 +544,30 @@ export default function AdminDashboard() {
             {/* ── Users ── */}
             {tab === 'users' && (
               <div className="space-y-4">
-                <div><h1 className="text-xl font-semibold text-[#111111]">Users</h1><p className="text-sm text-[#5A5450] mt-0.5">{users.length} accounts</p></div>
+                <div className="flex items-center justify-between">
+                  <div><h1 className="text-xl font-semibold text-[#111111]">Users</h1><p className="text-sm text-[#5A5450] mt-0.5">{users.length} accounts</p></div>
+                  <button onClick={()=>setUserForm({...BLANK_USER})} className="rounded-[6px] bg-[#1a3c5e] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-colors">+ Add User</button>
+                </div>
                 <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-[#E2DCDA] text-sm">
-                      <thead className="bg-[#F8F5F3]"><tr>{['Name','Email','Role','Active','Joined'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
+                      <thead className="bg-[#F8F5F3]"><tr>{['Name','Email','Phone','Role','Active','Joined','Actions'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
                       <tbody className="divide-y divide-[#E2DCDA]">
                         {users.map(u=>(
                           <tr key={u._id} className="hover:bg-[#F8F5F3]">
                             <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{u.firstName} {u.lastName}</td>
                             <td className="px-4 py-3 text-[#5A5450]">{u.email}</td>
+                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{u.phone||'—'}</td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${u.role==='admin'?'bg-purple-100 text-purple-700':'bg-blue-100 text-blue-700'}`}>{u.role}</span></td>
-                            <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${u.isActive?'bg-green-100 text-green-700':'bg-gray-100 text-gray-600'}`}>{u.isActive?'Active':'Inactive'}</span></td>
+                            <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${u.isActive!==false?'bg-green-100 text-green-700':'bg-gray-100 text-gray-600'}`}>{u.isActive!==false?'Active':'Inactive'}</span></td>
                             <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{new Date(u.createdAt).toLocaleDateString('en-KE')}</td>
+                            <td className="px-4 py-3"><div className="flex items-center gap-3 whitespace-nowrap">
+                              <button onClick={()=>setUserForm({...u})} className="text-xs font-medium text-[#1a3c5e] hover:underline">Edit</button>
+                              <button onClick={()=>deleteUser(u)} className="text-xs font-medium text-red-600 hover:underline">Delete</button>
+                            </div></td>
                           </tr>
                         ))}
-                        {users.length===0&&<tr><td colSpan={5} className="px-4 py-12 text-center text-[#5A5450]">No users yet.</td></tr>}
+                        {users.length===0&&<tr><td colSpan={7} className="px-4 py-12 text-center text-[#5A5450]">No users yet.</td></tr>}
                       </tbody>
                     </table>
                   </div>
@@ -714,6 +746,33 @@ export default function AdminDashboard() {
             </div>
             <div className="flex items-center gap-3 pt-1"><input id="evpub" type="checkbox" checked={!!eventForm.isPublished} onChange={e=>setEventForm(f=>({...f,isPublished:e.target.checked}))} className="h-4 w-4 rounded text-[#1a3c5e]" /><label htmlFor="evpub" className="text-sm text-[#5A5450]">Publish (visible to aspirants)</label></div>
             <ModalActions onCancel={()=>setEventForm(null)} saving={eventSaving} label={eventForm._id?'Save Changes':'Create Event'} />
+          </form>
+        </Modal>
+      )}
+
+      {/* ── User modal ── */}
+      {userForm && (
+        <Modal title={userForm._id ? 'Edit User' : 'Add User'} onClose={()=>setUserForm(null)}>
+          <form onSubmit={saveUser} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="First Name *"><input className={inputCls} value={userForm.firstName} onChange={setUsr('firstName')} placeholder="John" required /></Field>
+              <Field label="Last Name *"><input className={inputCls} value={userForm.lastName} onChange={setUsr('lastName')} placeholder="Doe" required /></Field>
+            </div>
+            <Field label="Email *"><input className={inputCls} type="email" value={userForm.email} onChange={setUsr('email')} placeholder="john@example.com" required disabled={!!userForm._id} /></Field>
+            <Field label="Phone"><input className={inputCls} type="tel" value={userForm.phone||''} onChange={setUsr('phone')} placeholder="+254 7XX XXX XXX" /></Field>
+            <Field label="Role *">
+              <select className={selectCls} value={userForm.role} onChange={setUsr('role')} required>
+                {['member','aspirant','admin'].map(r=><option key={r} value={r} className="capitalize">{r}</option>)}
+              </select>
+            </Field>
+            {!userForm._id && (
+              <Field label="Password *"><input className={inputCls} type="password" value={userForm.password||''} onChange={setUsr('password')} placeholder="Minimum 8 characters" required minLength={8} /></Field>
+            )}
+            <div className="flex items-center gap-3 pt-1">
+              <input id="userActive" type="checkbox" checked={userForm.isActive!==false} onChange={setUsr('isActive')} className="h-4 w-4 rounded text-[#1a3c5e]" />
+              <label htmlFor="userActive" className="text-sm text-[#5A5450]">Account active</label>
+            </div>
+            <ModalActions onCancel={()=>setUserForm(null)} saving={userSaving} label={userForm._id?'Save Changes':'Create User'} />
           </form>
         </Modal>
       )}
