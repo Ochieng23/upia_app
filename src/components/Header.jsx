@@ -88,6 +88,12 @@ export function Header() {
           {/* CTA + mobile toggle */}
           <div className="flex items-center gap-3">
             <Link
+              href="/login"
+              className="hidden lg:inline-flex items-center rounded-[6px] border border-[#D1D5DB] bg-white px-[18px] py-2 text-sm font-medium text-[#111111] hover:bg-[#F9FAFB] active:scale-[0.98] transition-all duration-150"
+            >
+              Login
+            </Link>
+            <Link
               href="/donate"
               className="hidden lg:inline-flex items-center rounded-[6px] bg-[#236331] px-[18px] py-2 text-sm font-medium text-white hover:bg-[#2B753A] active:scale-[0.98] transition-all duration-150"
             >
