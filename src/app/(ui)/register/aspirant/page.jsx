@@ -39,9 +39,45 @@ async function safeJson(res) {
   return res.json()
 }
 
-// ─── Step 1 - Personal Details (+ passport photo) ────────────────────────────
+// ─── Reusable file upload box ─────────────────────────────────────────────────
+function FileUploadBox({ label, hint, accept, file, preview, inputRef, onChange, isImage, required }) {
+  return (
+    <div>
+      <label className={labelCls}>{label}</label>
+      <div
+        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] py-5 transition-colors hover:border-[#D46868]/50"
+        onClick={() => inputRef.current?.click()}
+      >
+        {isImage && preview ? (
+          <img src={preview} alt="Preview" className="h-20 w-20 rounded-full object-cover border-2 border-[#E2DCDA]" />
+        ) : preview ? (
+          <div className="flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#EBF5EC]">
+            <svg className="h-7 w-7 text-[#236331]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+          </div>
+        ) : (
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#E2DCDA]">
+            <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            </svg>
+          </div>
+        )}
+        <p className="text-xs text-[#5A5450] px-4 text-center">
+          {file ? file.name : hint}
+        </p>
+      </div>
+      <input ref={inputRef} type="file" accept={accept} className="sr-only" onChange={onChange} required={required && !file} />
+    </div>
+  )
+}
+
+// ─── Step 1 - Personal Details (+ passport photo + ID documents) ──────────────
 function StepPersonal({ onNext }) {
-  const fileRef = useRef()
+  const photoRef   = useRef()
+  const idFrontRef = useRef()
+  const idBackRef  = useRef()
+
   const [form, setForm] = useState({
     documentType: 1,
     idNumber: '',
@@ -53,8 +89,12 @@ function StepPersonal({ onNext }) {
     dob: '',
     isElected: false,
   })
-  const [photoFile, setPhotoFile]     = useState(null)
-  const [photoPreview, setPhotoPreview] = useState(null)
+  const [photoFile,      setPhotoFile]      = useState(null)
+  const [photoPreview,   setPhotoPreview]   = useState(null)
+  const [idFrontFile,    setIdFrontFile]    = useState(null)
+  const [idFrontPreview, setIdFrontPreview] = useState(null)
+  const [idBackFile,     setIdBackFile]     = useState(null)
+  const [idBackPreview,  setIdBackPreview]  = useState(null)
 
   const set = (field) => (e) =>
     setForm((f) => ({
@@ -62,46 +102,56 @@ function StepPersonal({ onNext }) {
       [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value,
     }))
 
-  const onFileChange = (e) => {
+  const makeFileHandler = (setFile, setPreview) => (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    setPhotoFile(file)
-    setPhotoPreview(URL.createObjectURL(file))
+    setFile(file)
+    setPreview(URL.createObjectURL(file))
   }
 
   const handleNext = (e) => {
     e.preventDefault()
-    onNext({ ...form, passportPhotoFile: photoFile })
+    onNext({ ...form, passportPhotoFile: photoFile, idFrontFile, idBackFile })
   }
+
+  const isPassport = Number(form.documentType) === 2
 
   return (
     <form onSubmit={handleNext} className="space-y-5">
-      {/* Passport photo */}
-      <div>
-        <label className={labelCls}>Passport Size Photo</label>
-        <div
-          className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] py-6 transition-colors hover:border-[#D46868]/50"
-          onClick={() => fileRef.current?.click()}
-        >
-          {photoPreview ? (
-            <img
-              src={photoPreview}
-              alt="Preview"
-              className="h-24 w-24 rounded-full object-cover border-2 border-[#E2DCDA]"
-            />
-          ) : (
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E2DCDA]">
-              <svg className="h-8 w-8 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-              </svg>
-            </div>
-          )}
-          <p className="text-xs text-[#5A5450]">
-            {photoFile ? photoFile.name : 'Click to upload passport photo (JPG/PNG, max 5 MB)'}
-          </p>
-        </div>
-        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={onFileChange} />
+
+      {/* Photo requirements notice */}
+      <div className="rounded-[8px] border border-[#1a3c5e]/20 bg-[#EDF3FA] p-4">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#1a3c5e] mb-1.5">
+          How to Upload Candidate Photo
+        </p>
+        <ul className="mb-2 space-y-0.5 text-[12px] text-[#1a3c5e]/80 leading-relaxed">
+          <li>- Click the upload button and select the saved photo from your device.</li>
+          <li className="font-semibold text-[#1a3c5e]">- Always upload the photo after filling in all mandatory fields.</li>
+        </ul>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[#1a3c5e]">Photo Requirements</p>
+        <ol className="mt-1 space-y-0.5 text-[12px] text-[#1a3c5e]/80 leading-relaxed list-decimal list-inside">
+          <li>Format: JPEG or PNG, in Color</li>
+          <li>Background: white with no shadows</li>
+          <li>Maximum size: <strong>1 MB</strong></li>
+          <li>Resolution: 1280x720 pixels (HD Quality)</li>
+          <li>Measurements: 50mm x 45mm (Height x Width)</li>
+          <li>Aspect ratio: 4:3</li>
+          <li>Portrait orientation</li>
+          <li>Face fully visible and facing forward</li>
+        </ol>
       </div>
+
+      {/* Passport photo */}
+      <FileUploadBox
+        label="Passport Size Photo *"
+        hint="Click to upload (JPG/PNG, max 1 MB, white background)"
+        accept="image/jpeg,image/png"
+        file={photoFile}
+        preview={photoPreview}
+        inputRef={photoRef}
+        onChange={makeFileHandler(setPhotoFile, setPhotoPreview)}
+        isImage
+      />
 
       {/* Document type */}
       <div>
@@ -181,8 +231,40 @@ function StepPersonal({ onNext }) {
         <label htmlFor="isElected" className="text-sm text-[#111111]">I currently hold an elected office</label>
       </div>
 
+      {/* ID document uploads */}
+      <div className="border-t border-[#E2DCDA] pt-5 space-y-4">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[#5A5450]">
+          {isPassport ? 'Passport' : 'National ID'} Document Upload
+        </p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FileUploadBox
+            label={isPassport ? 'Passport Photo Page *' : 'National ID - Front *'}
+            hint={isPassport ? 'Upload the bio-data page (JPG/PNG)' : 'Upload front side of your ID (JPG/PNG)'}
+            accept="image/jpeg,image/png"
+            file={idFrontFile}
+            preview={idFrontPreview}
+            inputRef={idFrontRef}
+            onChange={makeFileHandler(setIdFrontFile, setIdFrontPreview)}
+          />
+          {!isPassport && (
+            <FileUploadBox
+              label="National ID - Back *"
+              hint="Upload back side of your ID (JPG/PNG)"
+              accept="image/jpeg,image/png"
+              file={idBackFile}
+              preview={idBackPreview}
+              inputRef={idBackRef}
+              onChange={makeFileHandler(setIdBackFile, setIdBackPreview)}
+            />
+          )}
+        </div>
+        <p className="text-[11px] text-[#5A5450]">
+          Upload clear, legible photos. Blurry or incomplete documents will delay your application.
+        </p>
+      </div>
+
       <button type="submit" className="w-full rounded-[6px] bg-[#1a3c5e] px-6 py-3.5 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-all">
-        Next: Choose Your Seat →
+        Next: Choose Your Seat ->
       </button>
     </form>
   )
@@ -374,7 +456,7 @@ function StepPayment({ sessionToken, seatCategory, fee, onBack, onPaid }) {
 }
 
 // ─── Step 4 - Create Account ──────────────────────────────────────────────────
-function StepCreateAccount({ sessionToken, email, passportPhotoFile, onSuccess }) {
+function StepCreateAccount({ sessionToken, email, passportPhotoFile, idFrontFile, idBackFile, onSuccess }) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm]   = useState('')
   const [loading, setLoading]   = useState(false)
@@ -394,6 +476,8 @@ function StepCreateAccount({ sessionToken, email, passportPhotoFile, onSuccess }
       fd.append('sessionToken', sessionToken)
       fd.append('password', password)
       if (passportPhotoFile) fd.append('passportPhoto', passportPhotoFile)
+      if (idFrontFile)       fd.append('idFront', idFrontFile)
+      if (idBackFile)        fd.append('idBack', idBackFile)
 
       const res  = await fetch(`${BASE}/registration/complete`, { method: 'POST', body: fd })
       const data = await safeJson(res)
@@ -465,7 +549,9 @@ function AspirantWizard() {
 
   const [step, setStep]                     = useState(0)
   const [personalData, setPersonalData]     = useState(null)
-  const [passportPhoto, setPassportPhoto]   = useState(null) // File object
+  const [passportPhoto, setPassportPhoto]   = useState(null)
+  const [idFront, setIdFront]               = useState(null)
+  const [idBack, setIdBack]                 = useState(null)
   const [seatCategory, setSeatCategory]     = useState('')
   const [sessionToken, setSessionToken]     = useState('')
   const [fee, setFee]                       = useState(0)
@@ -502,9 +588,11 @@ function AspirantWizard() {
 
   // Step 1 → 2: just cache data locally, no API call yet
   const onPersonalNext = (data) => {
-    const { passportPhotoFile, ...rest } = data
+    const { passportPhotoFile, idFrontFile, idBackFile, ...rest } = data
     setPersonalData(rest)
     setPassportPhoto(passportPhotoFile)
+    setIdFront(idFrontFile)
+    setIdBack(idBackFile)
     setEmail(rest.email)
     setStep(1)
   }
@@ -644,8 +732,14 @@ function AspirantWizard() {
                 onBack={() => setStep(1)} onPaid={() => setStep(3)} />
             )}
             {step === 3 && (
-              <StepCreateAccount sessionToken={sessionToken} email={email} passportPhotoFile={passportPhoto}
-                onSuccess={(u) => { setDoneUser(u); setDone(true) }} />
+              <StepCreateAccount
+                sessionToken={sessionToken}
+                email={email}
+                passportPhotoFile={passportPhoto}
+                idFrontFile={idFront}
+                idBackFile={idBack}
+                onSuccess={(u) => { setDoneUser(u); setDone(true) }}
+              />
             )}
           </div>
         </div>
