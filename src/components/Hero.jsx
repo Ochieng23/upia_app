@@ -23,7 +23,7 @@ export function Hero() {
           className="object-cover object-center"
           style={{ filter: 'brightness(0.52) saturate(0.9)' }}
         />
-        {/* Directional overlay — denser on left for text contrast */}
+        {/* Directional overlay - denser on left for text contrast */}
         <div
           className="absolute inset-0"
           style={{
@@ -42,13 +42,13 @@ export function Hero() {
         }}
       />
 
-      {/* Maroon radial glow — bottom-left */}
+      {/* Maroon radial glow - bottom-left */}
       <div
         className="absolute -bottom-40 -left-40 h-[600px] w-[600px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(107,38,38,0.40) 0%, transparent 60%)' }}
       />
 
-      {/* Green radial glow — top-right */}
+      {/* Green radial glow - top-right */}
       <div
         className="absolute -top-24 -right-24 h-[480px] w-[480px] rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(35,99,49,0.18) 0%, transparent 60%)' }}
@@ -100,7 +100,7 @@ export function Hero() {
             {/* Body copy */}
             <p className="mt-5 text-[15.5px] leading-[1.82] text-white/80 max-w-[460px]">
               Building a nation where every voice is heard, every opportunity is
-              accessible, and every Kenyan can thrive — join the movement for
+              accessible, and every Kenyan can thrive - join the movement for
               real, lasting change.
             </p>
 

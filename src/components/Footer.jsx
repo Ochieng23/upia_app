@@ -116,7 +116,7 @@ export function Footer() {
           <div className="lg:col-span-2">
             <Logo className="h-16 w-auto brightness-0 invert" />
             <p className="mt-4 text-sm leading-relaxed text-white/40 max-w-xs">
-              United Party of Independent Alliance — building a Kenya that is united,
+              United Party of Independent Alliance - building a Kenya that is united,
               prosperous, and equitable for every citizen.
             </p>
 

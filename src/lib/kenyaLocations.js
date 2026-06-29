@@ -1,4 +1,4 @@
-// Kenya counties, constituencies and wards — IEBC official delimitation
+// Kenya counties, constituencies and wards - IEBC official delimitation
 const KENYA_LOCATIONS = [
   { code:'001', name:'Mombasa', constituencies:[
     { code:'001', name:'Changamwe', wards:[{code:'001',name:'Port Reitz'},{code:'002',name:'Kipevu'},{code:'003',name:'Airport'},{code:'004',name:'Changamwe'},{code:'005',name:'Chaani'}] },

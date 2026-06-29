@@ -76,7 +76,7 @@ function CallbackInner() {
             </div>
             <h1 className="text-lg font-medium text-[#111111]">Payment Not Confirmed</h1>
             <p className="mt-2 text-sm text-[#5A5450]">
-              The payment was not completed or could not be verified. You can go back and try again — your registration details are saved.
+              The payment was not completed or could not be verified. You can go back and try again - your registration details are saved.
             </p>
             <Link
               href="/register/aspirant"

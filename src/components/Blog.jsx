@@ -28,7 +28,7 @@ export default async function Blog() {
             News &amp; Press
           </h2>
           <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
-            Leaving no one behind — stay informed on UPIA&apos;s latest developments
+            Leaving no one behind - stay informed on UPIA&apos;s latest developments
           </p>
         </div>
 

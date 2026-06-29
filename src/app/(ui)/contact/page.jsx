@@ -46,7 +46,7 @@ const contactInfo = [
       </svg>
     ),
     label: 'Office Hours',
-    value: 'Monday – Friday: 9:00 AM – 5:00 PM\nWeekends: Closed',
+    value: 'Monday - Friday: 9:00 AM - 5:00 PM\nWeekends: Closed',
     iconBg: 'bg-[#A84545]',
   },
 ]
@@ -110,7 +110,7 @@ export default function Contact() {
               Contact UPIA Kenya
             </h1>
             <p className="mt-4 text-[15px] leading-[1.75] text-white/55 max-w-xl mx-auto">
-              We are a progressive political party committed to unbiased development. Reach out — we&apos;d love to hear from you.
+              We are a progressive political party committed to unbiased development. Reach out - we&apos;d love to hear from you.
             </p>
           </div>
           <div className="flex h-1">

@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const documents = [
   {
-    title: 'Public Notice — Special National Delegates Congress',
+    title: 'Public Notice - Special National Delegates Congress',
     description:
       'Official public notice issued by UPIA Kenya regarding the Special National Delegates Congress. All members and the public are encouraged to read and take note.',
     href: '/documents/public-notice-special-national-delegates-congress.pdf',
@@ -14,7 +14,7 @@ const documents = [
     category: 'Press Releases',
   },
   {
-    title: 'UPIA Annual Report & Financial Statements — FY Ended 30th June 2023',
+    title: 'UPIA Annual Report & Financial Statements - FY Ended 30th June 2023',
     description:
       'Comprehensive financial statements and annual report for the fiscal year ended 30th June 2023, audited and approved by the party board.',
     href: 'https://drive.google.com/uc?export=download&id=1hhbeMv9xkCgPZtvp71q8mhrq0da5WQQ-',
@@ -66,7 +66,7 @@ export default function Resources() {
             Party Resources
           </h1>
           <p className="mt-4 text-[15px] leading-[1.75] text-white/55 max-w-xl mx-auto">
-            Official documents, financial statements, and publications from UPIA Kenya — open to all citizens.
+            Official documents, financial statements, and publications from UPIA Kenya - open to all citizens.
           </p>
         </div>
         <div className="flex h-1">

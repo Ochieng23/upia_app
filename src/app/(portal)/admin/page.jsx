@@ -393,9 +393,9 @@ export default function AdminDashboard() {
                           <tr key={a._id} className="hover:bg-[#F8F5F3] cursor-pointer" onClick={()=>setViewAspirant(a)}>
                             <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{a.user?.firstName} {a.user?.lastName}</td>
                             <td className="px-4 py-3 text-[#5A5450]">{a.user?.email}</td>
-                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{a.user?.phone || '—'}</td>
-                            <td className="px-4 py-3 text-[#5A5450] capitalize">{a.seatCategory?.replace('_',' ') || '—'}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{a.countyName || '—'}</td>
+                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{a.user?.phone || '-'}</td>
+                            <td className="px-4 py-3 text-[#5A5450] capitalize">{a.seatCategory?.replace('_',' ') || '-'}</td>
+                            <td className="px-4 py-3 text-[#5A5450]">{a.countyName || '-'}</td>
                             <td className="px-4 py-3"><Badge status={a.ippmsStatus} /></td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${a.isApproved?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}`}>{a.isApproved?'Approved':'Pending'}</span></td>
                             <td className="px-4 py-3" onClick={e=>e.stopPropagation()}><div className="flex items-center gap-3 whitespace-nowrap">
@@ -486,8 +486,8 @@ export default function AdminDashboard() {
                           <tr key={ev._id} className="hover:bg-[#F8F5F3]">
                             <td className="px-4 py-3 font-medium text-[#111111] max-w-[180px] truncate">{ev.title}</td>
                             <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{new Date(ev.date).toLocaleDateString('en-KE')}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{ev.venue||'—'}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{ev.countyName||'—'}</td>
+                            <td className="px-4 py-3 text-[#5A5450]">{ev.venue||'-'}</td>
+                            <td className="px-4 py-3 text-[#5A5450]">{ev.countyName||'-'}</td>
                             <td className="px-4 py-3 text-[#111111]">{ev.rsvps?.length||0}{ev.capacity?` / ${ev.capacity}`:''}</td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${ev.isPublished?'bg-green-100 text-green-700':'bg-gray-100 text-gray-600'}`}>{ev.isPublished?'Published':'Draft'}</span></td>
                             <td className="px-4 py-3"><div className="flex items-center gap-3 whitespace-nowrap">
@@ -557,7 +557,7 @@ export default function AdminDashboard() {
                           <tr key={u._id} className="hover:bg-[#F8F5F3]">
                             <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{u.firstName} {u.lastName}</td>
                             <td className="px-4 py-3 text-[#5A5450]">{u.email}</td>
-                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{u.phone||'—'}</td>
+                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{u.phone||'-'}</td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${u.role==='admin'?'bg-purple-100 text-purple-700':'bg-blue-100 text-blue-700'}`}>{u.role}</span></td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${u.isActive!==false?'bg-green-100 text-green-700':'bg-gray-100 text-gray-600'}`}>{u.isActive!==false?'Active':'Inactive'}</span></td>
                             <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{new Date(u.createdAt).toLocaleDateString('en-KE')}</td>
@@ -590,8 +590,8 @@ export default function AdminDashboard() {
                         {posts.map(p=>(
                           <tr key={p._id} className="hover:bg-[#F8F5F3]">
                             <td className="px-4 py-3 font-medium text-[#111111] max-w-[200px] truncate">{p.title}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{p.categories?.slice(0,2).join(', ') || '—'}</td>
-                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{p.author?.name||'—'}</td>
+                            <td className="px-4 py-3 text-[#5A5450]">{p.categories?.slice(0,2).join(', ') || '-'}</td>
+                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{p.author?.name||'-'}</td>
                             <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${p.published?'bg-green-100 text-green-700':'bg-gray-100 text-gray-600'}`}>{p.published?'Published':'Draft'}</span></td>
                             <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{new Date(p.publishedAt||p.createdAt).toLocaleDateString('en-KE')}</td>
                             <td className="px-4 py-3"><div className="flex items-center gap-3 whitespace-nowrap">
@@ -617,16 +617,16 @@ export default function AdminDashboard() {
       {viewAspirant && (() => {
         const a = viewAspirant
         const name = `${a.user?.firstName || ''} ${a.user?.lastName || ''}`.trim()
-        const dob = a.dateOfBirth ? new Date(a.dateOfBirth).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '—'
-        const registered = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '—'
+        const dob = a.dateOfBirth ? new Date(a.dateOfBirth).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '-'
+        const registered = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '-'
         const Row = ({label, value}) => (
           <div className="flex flex-col sm:flex-row sm:gap-4 py-2.5 border-b border-[#F0EDE9] last:border-0">
             <span className="w-40 flex-shrink-0 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5A5450]">{label}</span>
-            <span className="text-sm text-[#111111] mt-0.5 sm:mt-0">{value || '—'}</span>
+            <span className="text-sm text-[#111111] mt-0.5 sm:mt-0">{value || '-'}</span>
           </div>
         )
         return (
-          <Modal title={`Aspirant Profile — ${name}`} onClose={()=>setViewAspirant(null)} wide>
+          <Modal title={`Aspirant Profile - ${name}`} onClose={()=>setViewAspirant(null)} wide>
             <div className="space-y-6">
 
               {/* Photo + status banner */}
@@ -733,7 +733,7 @@ export default function AdminDashboard() {
       {eventForm && (
         <Modal title={eventForm._id?'Edit Event':'New Event'} onClose={()=>setEventForm(null)}>
           <form onSubmit={saveEvent} className="space-y-4">
-            <Field label="Title *"><input className={inputCls} value={eventForm.title} onChange={setEv('title')} placeholder="Party Rally — Nairobi" required /></Field>
+            <Field label="Title *"><input className={inputCls} value={eventForm.title} onChange={setEv('title')} placeholder="Party Rally - Nairobi" required /></Field>
             <Field label="Description"><textarea className={inputCls} rows={2} value={eventForm.description||''} onChange={setEv('description')} /></Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Start Date & Time *"><input type="datetime-local" className={inputCls} value={eventForm.date||''} onChange={setEv('date')} required /></Field>
@@ -789,7 +789,7 @@ export default function AdminDashboard() {
             </div>
             <Field label="Coordinator">
               <select className={selectCls} value={structureForm.coordinator||''} onChange={setSt('coordinator')}>
-                <option value="">— None —</option>
+                <option value="">- None -</option>
                 {users.map(u=>(
                   <option key={u._id} value={u._id}>
                     {u.firstName} {u.lastName} ({u.email})

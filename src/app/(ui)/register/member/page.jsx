@@ -459,7 +459,7 @@ export default function RegisterPage() {
           <span className="inline-block rounded-full bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-white/60 mb-4">Party Membership · Free</span>
           <h1 className="text-[32px] font-semibold text-white sm:text-5xl">Party Member Registration</h1>
           <p className="mt-4 text-[15px] leading-[1.75] text-white/55 max-w-xl mx-auto">
-            Register as a UPIA party member via the ORPP IPPMS system. Verified with your National ID or Passport — completely free.
+            Register as a UPIA party member via the ORPP IPPMS system. Verified with your National ID or Passport - completely free.
           </p>
         </div>
         <div className="flex h-1">

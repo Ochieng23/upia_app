@@ -14,7 +14,7 @@ function Location() {
             Our Location
           </h2>
           <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
-            Visit our headquarters in Nairobi — we&apos;re always open to connect
+            Visit our headquarters in Nairobi - we&apos;re always open to connect
           </p>
         </div>
 
@@ -32,8 +32,8 @@ function Location() {
                 </div>
                 <div>
                   <h3 className="font-medium text-[#111111]">Opening Hours</h3>
-                  <p className="mt-1 text-sm text-[#5A5450]">Monday – Friday</p>
-                  <p className="text-sm font-medium text-[#236331]">9:00 AM – 5:00 PM</p>
+                  <p className="mt-1 text-sm text-[#5A5450]">Monday - Friday</p>
+                  <p className="text-sm font-medium text-[#236331]">9:00 AM - 5:00 PM</p>
                   <p className="mt-1 text-sm text-[#5A5450] italic">Weekends closed</p>
                 </div>
               </div>

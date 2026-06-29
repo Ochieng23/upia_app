@@ -10,7 +10,7 @@ export function CallToAction() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-stretch">
 
-          {/* Left — image */}
+          {/* Left - image */}
           <div className="relative rounded-[12px] overflow-hidden min-h-[280px] sm:min-h-[360px] lg:min-h-0 lg:h-full">
             <Image
               src={backgroundImage}
@@ -23,11 +23,11 @@ export function CallToAction() {
               <blockquote className="text-sm sm:text-base font-medium italic leading-relaxed text-white">
                 &ldquo;Together, we can build a Kenya where no one is left behind.&rdquo;
               </blockquote>
-              <p className="mt-2 text-sm font-medium text-[#EBF5EC]">— UPIA Party Leadership</p>
+              <p className="mt-2 text-sm font-medium text-[#EBF5EC]">- UPIA Party Leadership</p>
             </div>
           </div>
 
-          {/* Right — content */}
+          {/* Right - content */}
           <div className="flex flex-col items-center justify-center text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#E2DCDA] bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#236331] animate-pulse" />

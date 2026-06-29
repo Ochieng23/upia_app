@@ -27,7 +27,7 @@ const inputCls =
 const labelCls =
   'block text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-2'
 
-// Safely parse JSON — if the server returns HTML/text on error, surface a readable message
+// Safely parse JSON - if the server returns HTML/text on error, surface a readable message
 async function safeJson(res) {
   const ct = res.headers.get('content-type') || ''
   if (!ct.includes('application/json')) {
@@ -39,7 +39,7 @@ async function safeJson(res) {
   return res.json()
 }
 
-// ─── Step 1 — Personal Details (+ passport photo) ────────────────────────────
+// ─── Step 1 - Personal Details (+ passport photo) ────────────────────────────
 function StepPersonal({ onNext }) {
   const fileRef = useRef()
   const [form, setForm] = useState({
@@ -188,7 +188,7 @@ function StepPersonal({ onNext }) {
   )
 }
 
-// ─── Step 2 — Election Level + Location ──────────────────────────────────────
+// ─── Step 2 - Election Level + Location ──────────────────────────────────────
 function StepElectionLevel({ onNext, onBack }) {
   const [seat, setSeat] = useState('')
   const [loc, setLoc] = useState({
@@ -262,12 +262,12 @@ function StepElectionLevel({ onNext, onBack }) {
         </div>
       </div>
 
-      {/* Location — only shown once a seat is selected */}
+      {/* Location - only shown once a seat is selected */}
       {seat && (
         <div className="space-y-4 border-t border-[#E2DCDA] pt-5">
           <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">Location</p>
 
-          {/* County — always */}
+          {/* County - always */}
           <div>
             <label className={labelCls}>County *</label>
             <select className={inputCls} style={{ height: '42px' }} value={loc.countyCode} onChange={(e) => onCountyChange(e.target.value)} required>
@@ -276,7 +276,7 @@ function StepElectionLevel({ onNext, onBack }) {
             </select>
           </div>
 
-          {/* Constituency — MP + MCA */}
+          {/* Constituency - MP + MCA */}
           {needsConst && (
             <div>
               <label className={labelCls}>Constituency *</label>
@@ -288,7 +288,7 @@ function StepElectionLevel({ onNext, onBack }) {
             </div>
           )}
 
-          {/* Ward — MCA only */}
+          {/* Ward - MCA only */}
           {needsWard && (
             <div>
               <label className={labelCls}>Ward *</label>
@@ -317,7 +317,7 @@ function StepElectionLevel({ onNext, onBack }) {
   )
 }
 
-// ─── Step 3 — Payment ─────────────────────────────────────────────────────────
+// ─── Step 3 - Payment ─────────────────────────────────────────────────────────
 function StepPayment({ sessionToken, seatCategory, fee, onBack, onPaid }) {
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
@@ -348,11 +348,11 @@ function StepPayment({ sessionToken, seatCategory, fee, onBack, onPaid }) {
       <div className="rounded-[8px] border border-[#E2DCDA] bg-[#F8F5F3] p-5">
         <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">Registration Fee</p>
         <p className="mt-1 text-2xl font-semibold text-[#111111]">KES {(fee || 0).toLocaleString()}</p>
-        {seat && <p className="mt-1 text-sm text-[#5A5450]">{seat.sub} — one-time registration fee</p>}
+        {seat && <p className="mt-1 text-sm text-[#5A5450]">{seat.sub} - one-time registration fee</p>}
       </div>
 
       <div className="rounded-[6px] border border-[#EBF5EC] bg-[#EBF5EC] px-4 py-3 text-sm text-[#184824]">
-        You will be redirected to Paystack to complete payment securely. Your registration details are saved — you can return at any time.
+        You will be redirected to Paystack to complete payment securely. Your registration details are saved - you can return at any time.
       </div>
 
       {error && (
@@ -373,7 +373,7 @@ function StepPayment({ sessionToken, seatCategory, fee, onBack, onPaid }) {
   )
 }
 
-// ─── Step 4 — Create Account ──────────────────────────────────────────────────
+// ─── Step 4 - Create Account ──────────────────────────────────────────────────
 function StepCreateAccount({ sessionToken, email, passportPhotoFile, onSuccess }) {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm]   = useState('')
@@ -587,7 +587,7 @@ function AspirantWizard() {
   const stepDescs = [
     'Enter your personal details exactly as they appear on your ID.',
     'Select the position you intend to contest and your location.',
-    `Pay the one-time registration fee of KES ${fee ? fee.toLocaleString() : '—'}.`,
+    `Pay the one-time registration fee of KES ${fee ? fee.toLocaleString() : '-'}.`,
     'Set your password to complete your account.',
   ]
 

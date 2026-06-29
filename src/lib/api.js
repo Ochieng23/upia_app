@@ -33,7 +33,7 @@ async function request(path, options = {}) {
     ...options.headers,
   }
 
-  // Don't set Content-Type for FormData — browser sets it with boundary
+  // Don't set Content-Type for FormData - browser sets it with boundary
   if (options.body instanceof FormData) {
     delete headers['Content-Type']
   }
@@ -57,7 +57,7 @@ async function request(path, options = {}) {
       refreshPromise = null
       clearAuth()
       if (typeof window !== 'undefined') window.location.href = '/login'
-      throw new Error('Session expired — redirecting to login')
+      throw new Error('Session expired - redirecting to login')
     }
   }
 

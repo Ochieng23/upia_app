@@ -81,7 +81,7 @@ export default function Leadership() {
               key={i}
               className="group relative bg-white overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300 rounded-sm"
             >
-              {/* Fixed-ratio photo container — all cards identical height */}
+              {/* Fixed-ratio photo container - all cards identical height */}
               <div className="relative w-full" style={{ paddingBottom: '120%' }}>
                 <Image
                   src={person.imageUrl}
@@ -93,10 +93,10 @@ export default function Leadership() {
                   style={{ objectPosition: person.objectPosition }}
                 />
 
-                {/* Gradient overlay — ensures text area is always legible */}
+                {/* Gradient overlay - ensures text area is always legible */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-                {/* Index badge — top-right */}
+                {/* Index badge - top-right */}
                 <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center">
                   <span className="text-[11px] font-bold text-white leading-none">
                     {String(i + 1).padStart(2, '0')}

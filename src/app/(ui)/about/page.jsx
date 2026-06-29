@@ -197,7 +197,7 @@ export default function About() {
               </div>
             </div>
 
-            {/* Image collage — aspect-ratio based, no fixed px heights */}
+            {/* Image collage - aspect-ratio based, no fixed px heights */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-3 sm:space-y-4">
                 <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
@@ -229,7 +229,7 @@ export default function About() {
               <p className="text-2xl font-semibold italic text-white sm:text-3xl">
                 &ldquo;Together, we are shaping a future where every voice matters.&rdquo;
               </p>
-              <footer className="mt-4 text-[#EBF5EC] font-medium">— UPIA Party</footer>
+              <footer className="mt-4 text-[#EBF5EC] font-medium">- UPIA Party</footer>
             </blockquote>
           </div>
         </div>

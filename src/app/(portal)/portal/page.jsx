@@ -75,7 +75,7 @@ export default function Portal() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      // Token present means login just happened and auth state is still settling — wait
+      // Token present means login just happened and auth state is still settling - wait
       if (getToken()) return
       router.replace('/login')
       return
@@ -376,11 +376,11 @@ export default function Portal() {
                     {[
                       { label: 'Full Name', value: `${user.firstName} ${user.lastName}` },
                       { label: 'Email', value: user.email },
-                      { label: 'Phone', value: user.phone || '—' },
-                      { label: 'Seat', value: profile?.seatCategory ? SEAT_LABELS[profile.seatCategory] : '—' },
-                      { label: 'County', value: profile?.countyName || '—' },
-                      { label: 'Constituency', value: profile?.constituencyName || '—' },
-                      { label: 'Ward', value: profile?.wardName || '—' },
+                      { label: 'Phone', value: user.phone || '-' },
+                      { label: 'Seat', value: profile?.seatCategory ? SEAT_LABELS[profile.seatCategory] : '-' },
+                      { label: 'County', value: profile?.countyName || '-' },
+                      { label: 'Constituency', value: profile?.constituencyName || '-' },
+                      { label: 'Ward', value: profile?.wardName || '-' },
                     ].map(({ label, value }) => (
                       <div key={label} className="flex items-center justify-between px-6 py-3 text-sm">
                         <dt className="text-[#5A5450]">{label}</dt>
@@ -505,7 +505,7 @@ export default function Portal() {
                 {payments.some(p => p.type === 'nomination_fee' && p.status === 'success') && (
                   <div className="rounded-xl bg-green-50 border border-green-200 p-5 flex items-center gap-3">
                     <svg className="h-5 w-5 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <p className="text-sm font-medium text-green-800">Nomination fee paid — your payment has been confirmed.</p>
+                    <p className="text-sm font-medium text-green-800">Nomination fee paid - your payment has been confirmed.</p>
                   </div>
                 )}
 

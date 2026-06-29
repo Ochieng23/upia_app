@@ -48,7 +48,7 @@ export default function AboutHome() {
             Our Mission Statement
           </h2>
           <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
-            Guided by principle, driven by purpose — for every Kenyan.
+            Guided by principle, driven by purpose - for every Kenyan.
           </p>
         </div>
 

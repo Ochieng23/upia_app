@@ -103,9 +103,9 @@ export default function RegisterChoicePage() {
 
               <ul className="mt-5 space-y-2.5 flex-1">
                 {[
-                  'MCA — KES 2,000',
-                  'Women\'s Rep / Senator / MP — KES 5,000',
-                  'Governor — KES 10,000',
+                  'MCA - KES 2,000',
+                  'Women\'s Rep / Senator / MP - KES 5,000',
+                  'Governor - KES 10,000',
                   'Secure Paystack payment',
                   'Full aspirant portal access',
                 ].map((item) => (
