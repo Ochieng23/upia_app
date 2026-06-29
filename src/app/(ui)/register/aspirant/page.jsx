@@ -264,7 +264,7 @@ function StepPersonal({ onNext }) {
       </div>
 
       <button type="submit" className="w-full rounded-[6px] bg-[#1a3c5e] px-6 py-3.5 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-all">
-        Next: Choose Your Seat ->
+        Next: Choose Your Seat &rarr;
       </button>
     </form>
   )
