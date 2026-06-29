@@ -45,7 +45,7 @@ function FileUploadBox({ label, hint, accept, file, preview, inputRef, onChange,
     <div>
       <label className={labelCls}>{label}</label>
       <div
-        className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] py-5 transition-colors hover:border-[#D46868]/50"
+        className="flex h-[130px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] transition-colors hover:border-[#D46868]/50"
         onClick={() => inputRef.current?.click()}
       >
         {isImage && preview ? (
