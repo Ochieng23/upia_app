@@ -79,6 +79,7 @@ function StepPersonal({ onNext }) {
   const idBackRef  = useRef()
 
   const [form, setForm] = useState({
+    aspirantType: 'elective',
     documentType: 1,
     idNumber: '',
     firstName: '',
@@ -159,6 +160,56 @@ function StepPersonal({ onNext }) {
 
   return (
     <form onSubmit={handleNext} className="space-y-5">
+
+      {/* Aspirant type */}
+      <div>
+        <label className={labelCls}>How are you seeking your position? *</label>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            {
+              value: 'elective',
+              title: 'Elective Seat',
+              desc: 'I will campaign in a specific constituency and be voted in by registered voters.',
+              icon: (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 20h10M9 20V10m6 10V10M4 7l8-4 8 4M5 7v1a7 7 0 0014 0V7" />
+                </svg>
+              ),
+            },
+            {
+              value: 'nominated',
+              title: 'Party Nomination',
+              desc: 'I am seeking to be nominated by UPIA to fill a seat through the party nomination process.',
+              icon: (
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                </svg>
+              ),
+            },
+          ].map((opt) => {
+            const active = form.aspirantType === opt.value
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, aspirantType: opt.value }))}
+                className={`flex flex-col gap-2 rounded-[8px] border-2 p-4 text-left transition-all ${
+                  active ? 'border-[#C25757] bg-[#FBF0F0]' : 'border-[#E2DCDA] bg-white hover:border-[#D46868]/40'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className={`mt-0.5 flex-shrink-0 ${active ? 'text-[#C25757]' : 'text-[#5A5450]'}`}>{opt.icon}</div>
+                  <div className={`ml-auto h-4 w-4 flex-shrink-0 rounded-full border-2 flex items-center justify-center ${active ? 'border-[#C25757]' : 'border-[#E2DCDA]'}`}>
+                    {active && <div className="h-2 w-2 rounded-full bg-[#C25757]" />}
+                  </div>
+                </div>
+                <p className="text-sm font-semibold text-[#111111]">{opt.title}</p>
+                <p className="text-xs leading-relaxed text-[#5A5450]">{opt.desc}</p>
+              </button>
+            )
+          })}
+        </div>
+      </div>
 
       {/* Photo requirements notice */}
       <div className="rounded-[8px] border border-[#1a3c5e]/20 bg-[#EDF3FA] p-4">
@@ -352,7 +403,8 @@ function StepPersonal({ onNext }) {
 }
 
 // ─── Step 2 - Election Level + Location ──────────────────────────────────────
-function StepElectionLevel({ onNext, onBack }) {
+function StepElectionLevel({ aspirantType, onNext, onBack }) {
+  const isNominated = aspirantType === 'nominated'
   const [seat, setSeat] = useState('')
   const [loc, setLoc] = useState({
     countyCode: '', countyName: '',
@@ -388,8 +440,8 @@ function StepElectionLevel({ onNext, onBack }) {
 
   const canProceed = () => {
     if (!seat || !loc.countyCode) return false
-    if (NEEDS_CONSTITUENCY.has(seat) && !loc.constituencyCode) return false
-    if (NEEDS_WARD.has(seat) && !loc.wardCode) return false
+    if (!isNominated && NEEDS_CONSTITUENCY.has(seat) && !loc.constituencyCode) return false
+    if (!isNominated && NEEDS_WARD.has(seat) && !loc.wardCode) return false
     return true
   }
 
@@ -403,6 +455,13 @@ function StepElectionLevel({ onNext, onBack }) {
 
   return (
     <div className="space-y-6">
+      {/* Nomination mode banner */}
+      {isNominated && (
+        <div className="rounded-[8px] border border-[#C25757]/30 bg-[#FBF0F0] px-4 py-3 text-sm text-[#8B3232]">
+          <span className="font-semibold">Party Nomination path.</span> Select the seat category you are interested in and your preferred county. Constituency and ward are not required for nominated positions.
+        </div>
+      )}
+
       {/* Seat cards */}
       <div>
         <label className={labelCls}>Position *</label>
@@ -439,8 +498,8 @@ function StepElectionLevel({ onNext, onBack }) {
             </select>
           </div>
 
-          {/* Constituency - MP + MCA */}
-          {needsConst && (
+          {/* Constituency - MP + MCA, elective only */}
+          {needsConst && !isNominated && (
             <div>
               <label className={labelCls}>Constituency *</label>
               <select className={inputCls} style={{ height: '42px' }} value={loc.constituencyCode}
@@ -451,8 +510,8 @@ function StepElectionLevel({ onNext, onBack }) {
             </div>
           )}
 
-          {/* Ward - MCA only */}
-          {needsWard && (
+          {/* Ward - MCA only, elective only */}
+          {needsWard && !isNominated && (
             <div>
               <label className={labelCls}>Ward *</label>
               <select className={inputCls} style={{ height: '42px' }} value={loc.wardCode}
@@ -807,7 +866,7 @@ function AspirantWizard() {
           </div>
           <div className="px-7 py-7">
             {step === 0 && <StepPersonal onNext={onPersonalNext} />}
-            {step === 1 && <StepElectionLevel onNext={onElectionNext} onBack={() => setStep(0)} />}
+            {step === 1 && <StepElectionLevel aspirantType={personalData?.aspirantType} onNext={onElectionNext} onBack={() => setStep(0)} />}
             {step === 2 && (
               <StepPayment sessionToken={sessionToken} seatCategory={seatCategory} fee={fee}
                 onBack={() => setStep(1)} onPaid={() => setStep(3)} />
