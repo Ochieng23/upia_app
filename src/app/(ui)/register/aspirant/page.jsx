@@ -169,7 +169,7 @@ function StepPersonal({ onNext }) {
             {
               value: 'elective',
               title: 'Elective Seat',
-              desc: 'I will campaign in a specific constituency and be voted in by registered voters.',
+              desc: 'I will contest for an elected position and be voted in by registered voters in my jurisdiction.',
               icon: (
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M7 20h10M9 20V10m6 10V10M4 7l8-4 8 4M5 7v1a7 7 0 0014 0V7" />
