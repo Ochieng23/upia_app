@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../context/AuthContext'
 import { api } from '../../../lib/api'
 import { Logo } from '../../../components/Logo'
+import KENYA_LOCATIONS from '../../../lib/kenyaLocations'
 
 const BLANK_POST = {
   title: '', description: '', body: '', coverImage: '',
@@ -49,7 +50,6 @@ export default function AdminDashboard() {
   const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  const [viewAspirant, setViewAspirant] = useState(null)
   const [issueForm, setIssueForm] = useState(null)
   const [issuing, setIssuing] = useState(false)
   const [postForm, setPostForm] = useState(null)
@@ -102,10 +102,6 @@ export default function AdminDashboard() {
   const showFlash = (msg) => { setFlash(msg); setTimeout(() => setFlash(''), 4000) }
   const handleNav = (id) => { setTab(id); setSidebarOpen(false) }
   const handleLogout = () => { logout(); router.push('/') }
-
-  /* ── Aspirants ── */
-  const approve = async (id) => { await api.put(`/admin/aspirants/${id}/approve`, {}); showFlash('Aspirant approved'); loadData() }
-  const reject = async (id) => { const reason = prompt('Rejection reason:'); await api.put(`/admin/aspirants/${id}/reject`, { reason }); showFlash('Aspirant rejected'); loadData() }
 
   /* ── Certificates ── */
   const issueCertificate = async (e) => {
@@ -202,7 +198,7 @@ export default function AdminDashboard() {
   if (!user || user.role !== 'admin') return null
 
   const initials = `${user.firstName[0]}${user.lastName[0]}`
-  const pendingCount = aspirants.filter(a => !a.isApproved).length
+  const pendingCount = analytics?.totals?.pendingApprovals ?? aspirants.filter(a => !a.isApproved).length
 
   return (
     <div className="flex h-screen bg-[#F8F5F3] overflow-hidden">
@@ -381,38 +377,7 @@ export default function AdminDashboard() {
             )}
 
             {/* ── Aspirants ── */}
-            {tab === 'aspirants' && (
-              <div className="space-y-4">
-                <div><h1 className="text-xl font-semibold text-[#111111]">Aspirants</h1><p className="text-sm text-[#5A5450] mt-0.5">{aspirants.length} total · {pendingCount} pending</p></div>
-                <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-[#E2DCDA] text-sm">
-                      <thead className="bg-[#F8F5F3]"><tr>{['Name','Email','Phone','Seat','County','IPPMS','Status','Actions'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
-                      <tbody className="divide-y divide-[#E2DCDA]">
-                        {aspirants.map(a=>(
-                          <tr key={a._id} className="hover:bg-[#F8F5F3] cursor-pointer" onClick={()=>setViewAspirant(a)}>
-                            <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{a.user?.firstName} {a.user?.lastName}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{a.user?.email}</td>
-                            <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{a.user?.phone || '-'}</td>
-                            <td className="px-4 py-3 text-[#5A5450] capitalize">{a.seatCategory?.replace('_',' ') || '-'}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{a.countyName || '-'}</td>
-                            <td className="px-4 py-3"><Badge status={a.ippmsStatus} /></td>
-                            <td className="px-4 py-3"><span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${a.isApproved?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}`}>{a.isApproved?'Approved':'Pending'}</span></td>
-                            <td className="px-4 py-3" onClick={e=>e.stopPropagation()}><div className="flex items-center gap-3 whitespace-nowrap">
-                              <button onClick={()=>setViewAspirant(a)} className="text-xs font-medium text-[#1a3c5e] hover:underline">View</button>
-                              {!a.isApproved&&<button onClick={()=>approve(a._id)} className="text-xs font-medium text-green-700 hover:underline">Approve</button>}
-                              {a.isApproved&&<button onClick={()=>reject(a._id)} className="text-xs font-medium text-red-600 hover:underline">Reject</button>}
-                              <button onClick={()=>setIssueForm({aspirantId:a._id,type:'nomination',title:'',description:''})} className="text-xs font-medium text-[#1a3c5e] hover:underline">Issue Cert</button>
-                            </div></td>
-                          </tr>
-                        ))}
-                        {aspirants.length===0&&<tr><td colSpan={6} className="px-4 py-12 text-center text-[#5A5450]">No aspirants yet.</td></tr>}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
+            {tab === 'aspirants' && <AspirantManagement showFlash={showFlash} setIssueForm={setIssueForm} />}
 
             {/* ── Certificates ── */}
             {tab === 'certificates' && (
@@ -613,78 +578,6 @@ export default function AdminDashboard() {
         </main>
       </div>
 
-      {/* ── Aspirant detail modal ── */}
-      {viewAspirant && (() => {
-        const a = viewAspirant
-        const name = `${a.user?.firstName || ''} ${a.user?.lastName || ''}`.trim()
-        const dob = a.dateOfBirth ? new Date(a.dateOfBirth).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '-'
-        const registered = a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '-'
-        const Row = ({label, value}) => (
-          <div className="flex flex-col sm:flex-row sm:gap-4 py-2.5 border-b border-[#F0EDE9] last:border-0">
-            <span className="w-40 flex-shrink-0 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5A5450]">{label}</span>
-            <span className="text-sm text-[#111111] mt-0.5 sm:mt-0">{value || '-'}</span>
-          </div>
-        )
-        return (
-          <Modal title={`Aspirant Profile - ${name}`} onClose={()=>setViewAspirant(null)} wide>
-            <div className="space-y-6">
-
-              {/* Photo + status banner */}
-              <div className="flex items-center gap-4 p-4 rounded-[8px] bg-[#F8F5F3]">
-                {a.profilePhoto
-                  ? <img src={a.profilePhoto} alt={name} className="h-16 w-16 rounded-full object-cover ring-2 ring-white shadow" />
-                  : <div className="h-16 w-16 rounded-full bg-[#236331] flex items-center justify-center text-white text-xl font-semibold flex-shrink-0">{name[0]||'?'}</div>
-                }
-                <div>
-                  <p className="text-base font-semibold text-[#111111]">{name}</p>
-                  <p className="text-sm text-[#5A5450]">{a.user?.email}</p>
-                  <div className="mt-1 flex items-center gap-2">
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${a.isApproved?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700'}`}>{a.isApproved?'Approved':'Pending'}</span>
-                    <Badge status={a.ippmsStatus} />
-                  </div>
-                </div>
-                <div className="ml-auto flex gap-2">
-                  {!a.isApproved && <button onClick={()=>{approve(a._id);setViewAspirant(null)}} className="rounded-[6px] bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">Approve</button>}
-                  {a.isApproved && <button onClick={()=>{reject(a._id);setViewAspirant(null)}} className="rounded-[6px] bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600">Reject</button>}
-                  <button onClick={()=>{setViewAspirant(null);setIssueForm({aspirantId:a._id,type:'nomination',title:'',description:''})}} className="rounded-[6px] bg-[#1a3c5e] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#153150]">Issue Cert</button>
-                </div>
-              </div>
-
-              {/* Personal */}
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Personal Information</p>
-                <Row label="Full Name" value={name} />
-                <Row label="Email" value={a.user?.email} />
-                <Row label="Phone" value={a.user?.phone} />
-                <Row label="National ID" value={a.nationalId} />
-                <Row label="Date of Birth" value={dob} />
-                <Row label="Gender" value={a.gender === 'M' ? 'Male' : a.gender === 'F' ? 'Female' : a.gender} />
-                <Row label="PWD" value={a.hasPWD ? 'Yes' : 'No'} />
-              </div>
-
-              {/* Political */}
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Political Details</p>
-                <Row label="Seat Category" value={a.seatCategory?.replace(/_/g,' ')} />
-                <Row label="County" value={`${a.countyName || ''}${a.countyCode ? ` (${a.countyCode})` : ''}`} />
-                <Row label="Constituency" value={`${a.constituencyName || ''}${a.constituencyCode ? ` (${a.constituencyCode})` : ''}`} />
-                <Row label="Ward" value={`${a.wardName || ''}${a.wardCode ? ` (${a.wardCode})` : ''}`} />
-                <Row label="Is Elected" value={a.isElected ? 'Yes' : 'No'} />
-              </div>
-
-              {/* Verification */}
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Verification & System</p>
-                <Row label="IPPMS Status" value={a.ippmsStatus?.replace(/_/g,' ')} />
-                <Row label="Approval Status" value={a.isApproved ? `Approved${a.approvedAt ? ' on '+new Date(a.approvedAt).toLocaleDateString('en-KE') : ''}` : 'Pending'} />
-                {a.rejectionReason && <Row label="Rejection Reason" value={a.rejectionReason} />}
-                <Row label="Registered On" value={registered} />
-              </div>
-
-            </div>
-          </Modal>
-        )
-      })()}
 
       {/* ── Issue certificate modal ── */}
       {issueForm && (
@@ -803,6 +696,356 @@ export default function AdminDashboard() {
           </form>
         </Modal>
       )}
+    </div>
+  )
+}
+
+/* ─── Aspirant Management component ─────────────────────────────────────────── */
+
+const PIPELINE_TABS = [
+  { id: 'pending_review', label: 'Pending Review' },
+  { id: 'approved',       label: 'Approved' },
+  { id: 'nominated',      label: 'Nominated' },
+  { id: 'rejected',       label: 'Rejected' },
+]
+
+function AspirantManagement({ showFlash, setIssueForm }) {
+  const [pipelineTab, setPipelineTab]       = useState('pending_review')
+  const [aspirants,   setAspirants]         = useState([])
+  const [stats,       setStats]             = useState(null)
+  const [loading,     setLoading]           = useState(true)
+  const [viewAspirant,setViewAspirant]      = useState(null)
+  const [search,      setSearch]            = useState('')
+  const [filterSeat,  setFilterSeat]        = useState('')
+  const [filterType,  setFilterType]        = useState('')
+  const [filterCounty,setFilterCounty]      = useState('')
+  const [filterConst, setFilterConst]       = useState('')
+  const [filterWard,  setFilterWard]        = useState('')
+  const [rejectModal, setRejectModal]       = useState(null)
+  const [rejectReason,setRejectReason]      = useState('')
+  const [rejectSaving,setRejectSaving]      = useState(false)
+  const [actionId,    setActionId]          = useState(null)
+
+  const selectedCounty  = KENYA_LOCATIONS.find(c => c.code === filterCounty)
+  const constituencies  = selectedCounty?.constituencies || []
+  const selectedConstit = constituencies.find(c => c.code === filterConst)
+  const wards           = selectedConstit?.wards || []
+
+  const loadStats = useCallback(async () => {
+    try { const d = await api.get('/admin/aspirants/stats'); setStats(d.data) } catch {}
+  }, [])
+
+  const loadAspirants = useCallback(async () => {
+    setLoading(true)
+    try {
+      const p = new URLSearchParams({ applicationStatus: pipelineTab, limit: '100' })
+      if (filterSeat)   p.set('seatCategory', filterSeat)
+      if (filterType)   p.set('aspirantType', filterType)
+      if (filterCounty) p.set('countyCode', filterCounty)
+      if (filterConst)  p.set('constituencyCode', filterConst)
+      if (filterWard)   p.set('wardCode', filterWard)
+      if (search)       p.set('search', search)
+      const d = await api.get(`/admin/aspirants?${p}`)
+      setAspirants(d.data || [])
+    } catch {} finally { setLoading(false) }
+  }, [pipelineTab, filterSeat, filterType, filterCounty, filterConst, filterWard, search])
+
+  useEffect(() => { loadStats() }, [loadStats])
+  useEffect(() => { loadAspirants() }, [loadAspirants])
+
+  const reload = () => { loadStats(); loadAspirants() }
+
+  const handleApprove = async (id) => {
+    setActionId(id)
+    try { await api.put(`/admin/aspirants/${id}/approve`, {}); showFlash('Aspirant approved'); reload() }
+    catch (e) { alert(e.message) } finally { setActionId(null) }
+  }
+  const openReject = (a) => {
+    setRejectModal({ id: a._id, name: `${a.user?.firstName || ''} ${a.user?.lastName || ''}`.trim() })
+    setRejectReason('')
+  }
+  const handleReject = async () => {
+    setRejectSaving(true)
+    try { await api.put(`/admin/aspirants/${rejectModal.id}/reject`, { reason: rejectReason || 'Rejected by admin' }); showFlash('Aspirant rejected'); setRejectModal(null); reload() }
+    catch (e) { alert(e.message) } finally { setRejectSaving(false) }
+  }
+  const handleMarkFeePaid = async (id) => {
+    if (!confirm('Confirm: mark nomination fee as received for this aspirant?')) return
+    setActionId(id)
+    try { await api.patch(`/admin/aspirants/${id}/mark-fee-paid`, {}); showFlash('Nomination fee marked as paid'); reload() }
+    catch (e) { alert(e.message) } finally { setActionId(null) }
+  }
+  const handleNominate = async (id) => {
+    if (!confirm('Officially nominate and stamp this aspirant? This cannot be undone.')) return
+    setActionId(id)
+    try { await api.patch(`/admin/aspirants/${id}/nominate`, {}); showFlash('Aspirant officially nominated'); reload() }
+    catch (e) { alert(e.message) } finally { setActionId(null) }
+  }
+
+  const clearFilters = () => { setSearch(''); setFilterSeat(''); setFilterType(''); setFilterCounty(''); setFilterConst(''); setFilterWard('') }
+  const hasFilters = !!(search || filterSeat || filterType || filterCounty || filterConst || filterWard)
+
+  const tabCount = {
+    pending_review: stats?.pending ?? 0,
+    approved: (stats?.approved ?? 0) + (stats?.approvedFeePaid ?? 0),
+    nominated: stats?.nominated ?? 0,
+    rejected: stats?.rejected ?? 0,
+  }
+  const tabColors = { pending_review: 'bg-amber-100 text-amber-700', approved: 'bg-blue-100 text-blue-700', nominated: 'bg-green-100 text-green-700', rejected: 'bg-red-100 text-red-700' }
+
+  const statusBadge = (a) => {
+    const st = a.applicationStatus || 'pending_review'
+    if (st === 'nominated') return <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-700">Nominated</span>
+    if (st === 'rejected')  return <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-700">Rejected</span>
+    if (st === 'approved' && a.nominationFeePaid) return <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-indigo-100 text-indigo-700">Fee Paid</span>
+    if (st === 'approved')  return <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-blue-100 text-blue-700">Approved</span>
+    return <span className="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-amber-100 text-amber-700">Pending</span>
+  }
+
+  const rowActions = (a) => {
+    const busy = actionId === a._id
+    const st   = a.applicationStatus || 'pending_review'
+    const btns = [
+      <button key="v" onClick={() => setViewAspirant(a)} className="text-xs font-medium text-[#1a3c5e] hover:underline">View</button>,
+    ]
+    if (st === 'pending_review') {
+      btns.push(<button key="ap" disabled={busy} onClick={() => handleApprove(a._id)} className="text-xs font-medium text-green-700 hover:underline disabled:opacity-40">{busy?'…':'Approve'}</button>)
+      btns.push(<button key="rj" disabled={busy} onClick={() => openReject(a)} className="text-xs font-medium text-red-600 hover:underline disabled:opacity-40">Reject</button>)
+    } else if (st === 'approved' && !a.nominationFeePaid) {
+      btns.push(<button key="fp" disabled={busy} onClick={() => handleMarkFeePaid(a._id)} className="text-xs font-medium text-indigo-600 hover:underline disabled:opacity-40">{busy?'…':'Mark Fee Paid'}</button>)
+      btns.push(<button key="rj" disabled={busy} onClick={() => openReject(a)} className="text-xs font-medium text-red-600 hover:underline disabled:opacity-40">Reject</button>)
+    } else if (st === 'approved' && a.nominationFeePaid) {
+      btns.push(<button key="nm" disabled={busy} onClick={() => handleNominate(a._id)} className="text-xs font-medium text-green-700 hover:underline disabled:opacity-40">{busy?'…':'Stamp / Nominate'}</button>)
+      btns.push(<button key="rj" disabled={busy} onClick={() => openReject(a)} className="text-xs font-medium text-red-600 hover:underline disabled:opacity-40">Reject</button>)
+    } else if (st === 'rejected') {
+      btns.push(<button key="ra" disabled={busy} onClick={() => handleApprove(a._id)} className="text-xs font-medium text-green-700 hover:underline disabled:opacity-40">{busy?'…':'Re-approve'}</button>)
+    }
+    btns.push(<button key="cert" onClick={() => setIssueForm({ aspirantId: a._id, type: 'nomination', title: '', description: '' })} className="text-xs font-medium text-[#5A5450] hover:underline">Issue Cert</button>)
+    return <div className="flex items-center gap-3 whitespace-nowrap">{btns}</div>
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h1 className="text-xl font-semibold text-[#111111]">Aspirants</h1>
+        <p className="text-sm text-[#5A5450] mt-0.5">{stats ? `${stats.total} total · ${stats.pending} pending review` : 'Loading…'}</p>
+      </div>
+
+      {/* Stats tiles */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+        {[
+          { label: 'Pending Review', count: stats?.pending ?? 0, color: 'text-amber-700', bg: 'bg-amber-50', border: 'border-amber-200' },
+          { label: 'Approved',       count: stats?.approved ?? 0, color: 'text-blue-700',  bg: 'bg-blue-50',  border: 'border-blue-200' },
+          { label: 'Fee Paid',       count: stats?.approvedFeePaid ?? 0, color: 'text-indigo-700', bg: 'bg-indigo-50', border: 'border-indigo-200' },
+          { label: 'Nominated',      count: stats?.nominated ?? 0, color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-200' },
+          { label: 'Rejected',       count: stats?.rejected ?? 0, color: 'text-red-700',   bg: 'bg-red-50',   border: 'border-red-200' },
+        ].map(s => (
+          <div key={s.label} className={`rounded-xl ${s.bg} px-4 py-3 border ${s.border}`}>
+            <p className="text-[11px] font-medium uppercase tracking-wide text-[#5A5450]">{s.label}</p>
+            <p className={`text-2xl font-semibold mt-1 ${s.color}`}>{s.count}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter bar */}
+      <div className="rounded-xl bg-white border border-[#E2DCDA] p-4 shadow-sm">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="xl:col-span-2">
+            <input className={inputCls} placeholder="Search name or email…" value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+          <select className={selectCls} value={filterSeat} onChange={e => setFilterSeat(e.target.value)}>
+            <option value="">All seats</option>
+            {['president','governor','senator','mp','mca','women_rep'].map(s => (
+              <option key={s} value={s}>{s === 'women_rep' ? 'Women Rep' : s === 'mp' ? 'MP' : s === 'mca' ? 'MCA' : s.charAt(0).toUpperCase() + s.slice(1)}</option>
+            ))}
+          </select>
+          <select className={selectCls} value={filterType} onChange={e => setFilterType(e.target.value)}>
+            <option value="">All types</option>
+            <option value="elective">Elective</option>
+            <option value="nominated">Party Nominated</option>
+          </select>
+          <select className={selectCls} value={filterCounty} onChange={e => { setFilterCounty(e.target.value); setFilterConst(''); setFilterWard('') }}>
+            <option value="">All counties</option>
+            {KENYA_LOCATIONS.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+          </select>
+          <select className={selectCls} value={filterConst} onChange={e => { setFilterConst(e.target.value); setFilterWard('') }} disabled={!filterCounty}>
+            <option value="">All constituencies</option>
+            {constituencies.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+          </select>
+        </div>
+        {filterConst && wards.length > 0 && (
+          <div className="mt-3 max-w-xs">
+            <select className={selectCls} value={filterWard} onChange={e => setFilterWard(e.target.value)}>
+              <option value="">All wards</option>
+              {wards.map(w => <option key={w.code} value={w.code}>{w.name}</option>)}
+            </select>
+          </div>
+        )}
+        {hasFilters && (
+          <button onClick={clearFilters} className="mt-3 text-xs font-medium text-[#C25757] hover:underline">Clear all filters</button>
+        )}
+      </div>
+
+      {/* Pipeline tabs + table */}
+      <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
+        {/* Tabs */}
+        <div className="flex border-b border-[#E2DCDA] overflow-x-auto">
+          {PIPELINE_TABS.map(t => (
+            <button key={t.id} onClick={() => setPipelineTab(t.id)}
+              className={`flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${pipelineTab === t.id ? 'border-[#1a3c5e] text-[#1a3c5e]' : 'border-transparent text-[#5A5450] hover:text-[#111111]'}`}>
+              {t.label}
+              <span className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold ${tabColors[t.id]}`}>
+                {tabCount[t.id]}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Approved pipeline hint */}
+        {pipelineTab === 'approved' && (
+          <div className="bg-blue-50 border-b border-blue-100 px-5 py-2.5 text-xs text-blue-700 flex flex-wrap gap-x-4 gap-y-1">
+            <span>Pipeline: <strong>Approved → Mark Fee Paid → Stamp / Nominate</strong></span>
+            <span className="text-blue-500">Awaiting fee: {stats?.approved ?? 0} · Ready to stamp: {stats?.approvedFeePaid ?? 0}</span>
+          </div>
+        )}
+
+        {/* Table */}
+        <div className="overflow-x-auto">
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="animate-spin h-6 w-6 rounded-full border-4 border-[#1a3c5e] border-t-transparent" />
+            </div>
+          ) : aspirants.length === 0 ? (
+            <div className="py-16 text-center text-[#5A5450] text-sm">
+              No aspirants in this stage{hasFilters ? ' matching your filters' : ''}.
+            </div>
+          ) : (
+            <table className="min-w-full divide-y divide-[#E2DCDA] text-sm">
+              <thead className="bg-[#F8F5F3]">
+                <tr>
+                  {['Name','Email','Type','Seat','Location','IPPMS','Status','Actions'].map(h => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E2DCDA]">
+                {aspirants.map(a => (
+                  <tr key={a._id} className="hover:bg-[#F8F5F3] cursor-pointer" onClick={() => setViewAspirant(a)}>
+                    <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{a.user?.firstName} {a.user?.lastName}</td>
+                    <td className="px-4 py-3 text-[#5A5450] max-w-[160px] truncate">{a.user?.email}</td>
+                    <td className="px-4 py-3 text-[#5A5450] text-xs whitespace-nowrap">{a.aspirantType === 'nominated' ? 'Party Nom.' : 'Elective'}</td>
+                    <td className="px-4 py-3 text-[#5A5450] capitalize whitespace-nowrap">{a.seatCategory?.replace(/_/g,' ') || '-'}</td>
+                    <td className="px-4 py-3 text-[#5A5450] text-xs max-w-[150px] truncate">
+                      {[a.wardName, a.constituencyName, a.countyName].filter(Boolean).join(', ') || '-'}
+                    </td>
+                    <td className="px-4 py-3"><Badge status={a.ippmsStatus} /></td>
+                    <td className="px-4 py-3">{statusBadge(a)}</td>
+                    <td className="px-4 py-3" onClick={e => e.stopPropagation()}>{rowActions(a)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Reject modal */}
+      {rejectModal && (
+        <Modal title={`Reject — ${rejectModal.name}`} onClose={() => setRejectModal(null)}>
+          <div className="space-y-4">
+            <p className="text-sm text-[#5A5450]">Provide a reason for rejecting this aspirant.</p>
+            <div>
+              <label className="block text-xs font-medium uppercase tracking-wide text-[#5A5450] mb-1">Rejection Reason</label>
+              <textarea
+                className={inputCls}
+                rows={3}
+                value={rejectReason}
+                onChange={e => setRejectReason(e.target.value)}
+                placeholder="e.g. Incomplete documentation, failed verification…"
+                autoFocus
+              />
+            </div>
+            <ModalActions onCancel={() => setRejectModal(null)} saving={rejectSaving} label="Confirm Rejection" />
+          </div>
+        </Modal>
+      )}
+
+      {/* View aspirant modal */}
+      {viewAspirant && (() => {
+        const a    = viewAspirant
+        const name = `${a.user?.firstName || ''} ${a.user?.lastName || ''}`.trim()
+        const dob  = a.dateOfBirth ? new Date(a.dateOfBirth).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '-'
+        const reg  = a.createdAt   ? new Date(a.createdAt).toLocaleDateString('en-KE',{day:'numeric',month:'long',year:'numeric'}) : '-'
+        const busy = actionId === a._id
+        const Row = ({ label, value }) => (
+          <div className="flex flex-col sm:flex-row sm:gap-4 py-2.5 border-b border-[#F0EDE9] last:border-0">
+            <span className="w-44 flex-shrink-0 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#5A5450]">{label}</span>
+            <span className="text-sm text-[#111111] mt-0.5 sm:mt-0">{value || '-'}</span>
+          </div>
+        )
+        const st = a.applicationStatus || 'pending_review'
+        return (
+          <Modal title={`Aspirant Profile — ${name}`} onClose={() => setViewAspirant(null)} wide>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4 p-4 rounded-[8px] bg-[#F8F5F3]">
+                {a.profilePhoto
+                  ? <img src={a.profilePhoto} alt={name} className="h-16 w-16 rounded-full object-cover ring-2 ring-white shadow flex-shrink-0" />
+                  : <div className="h-16 w-16 rounded-full bg-[#236331] flex items-center justify-center text-white text-xl font-semibold flex-shrink-0">{name[0]||'?'}</div>
+                }
+                <div className="flex-1 min-w-0">
+                  <p className="text-base font-semibold text-[#111111]">{name}</p>
+                  <p className="text-sm text-[#5A5450]">{a.user?.email}</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">{statusBadge(a)}<Badge status={a.ippmsStatus} /></div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(st === 'pending_review') && <button disabled={busy} onClick={() => { handleApprove(a._id); setViewAspirant(null) }} className="rounded-[6px] bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50">{busy?'…':'Approve'}</button>}
+                  {(st === 'approved' && !a.nominationFeePaid) && <button disabled={busy} onClick={() => { handleMarkFeePaid(a._id); setViewAspirant(null) }} className="rounded-[6px] bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50">{busy?'…':'Mark Fee Paid'}</button>}
+                  {(st === 'approved' && a.nominationFeePaid) && <button disabled={busy} onClick={() => { handleNominate(a._id); setViewAspirant(null) }} className="rounded-[6px] bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50">{busy?'…':'Stamp / Nominate'}</button>}
+                  {(st === 'pending_review' || st === 'approved') && <button onClick={() => { setViewAspirant(null); openReject(a) }} className="rounded-[6px] bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600">Reject</button>}
+                  <button onClick={() => { setViewAspirant(null); setIssueForm({ aspirantId:a._id, type:'nomination', title:'', description:'' }) }} className="rounded-[6px] bg-[#1a3c5e] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#153150]">Issue Cert</button>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Personal Information</p>
+                <Row label="Full Name"    value={name} />
+                <Row label="Email"        value={a.user?.email} />
+                <Row label="Phone"        value={a.user?.phone} />
+                <Row label="National ID"  value={a.nationalId} />
+                <Row label="Date of Birth" value={dob} />
+                <Row label="Gender"       value={a.gender === 'M' ? 'Male' : a.gender === 'F' ? 'Female' : a.gender} />
+                <Row label="PWD"          value={a.hasPWD ? 'Yes' : 'No'} />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Political Details</p>
+                <Row label="Aspirant Type"  value={a.aspirantType === 'nominated' ? 'Party Nominated' : 'Elective'} />
+                <Row label="Seat Category"  value={a.seatCategory?.replace(/_/g,' ')} />
+                <Row label="County"         value={`${a.countyName||''}${a.countyCode?` (${a.countyCode})`:''}`} />
+                <Row label="Constituency"   value={`${a.constituencyName||''}${a.constituencyCode?` (${a.constituencyCode})`:''}`} />
+                <Row label="Ward"           value={`${a.wardName||''}${a.wardCode?` (${a.wardCode})`:''}`} />
+                <Row label="Currently Elected" value={a.isElected ? 'Yes' : 'No'} />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Nomination Pipeline</p>
+                <Row label="Status"         value={(a.applicationStatus || 'pending_review').replace(/_/g,' ')} />
+                {a.approvedAt   && <Row label="Approved On"  value={new Date(a.approvedAt).toLocaleDateString('en-KE')} />}
+                {a.nominationFeePaid && <Row label="Nom. Fee Paid"  value={`Yes${a.nominationFeePaidAt?' — '+new Date(a.nominationFeePaidAt).toLocaleDateString('en-KE'):''}`} />}
+                {a.nominatedAt  && <Row label="Nominated On" value={new Date(a.nominatedAt).toLocaleDateString('en-KE')} />}
+                {a.rejectionReason && <Row label="Rejection Reason" value={a.rejectionReason} />}
+                {a.rejectedAt   && <Row label="Rejected On"  value={new Date(a.rejectedAt).toLocaleDateString('en-KE')} />}
+              </div>
+
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#5A5450] mb-2">Verification &amp; System</p>
+                <Row label="IPPMS Status"  value={a.ippmsStatus?.replace(/_/g,' ')} />
+                <Row label="Registered On" value={reg} />
+              </div>
+            </div>
+          </Modal>
+        )
+      })()}
     </div>
   )
 }
