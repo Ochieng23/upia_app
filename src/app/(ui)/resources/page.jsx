@@ -1,54 +1,55 @@
+'use client'
+import { useState, useEffect } from 'react'
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
 import Link from 'next/link'
 
-const documents = [
-  {
-    title: 'Public Notice - Special National Delegates Congress',
-    description:
-      'Official public notice issued by UPIA Kenya regarding the Special National Delegates Congress. All members and the public are encouraged to read and take note.',
-    href: '/documents/public-notice-special-national-delegates-congress.pdf',
-    type: 'PDF',
-    date: '2025',
-    size: 'Public Notice',
-    category: 'Press Releases',
-  },
-  {
-    title: 'UPIA Annual Report & Financial Statements - FY Ended 30th June 2023',
-    description:
-      'Comprehensive financial statements and annual report for the fiscal year ended 30th June 2023, audited and approved by the party board.',
-    href: 'https://drive.google.com/uc?export=download&id=1hhbeMv9xkCgPZtvp71q8mhrq0da5WQQ-',
-    type: 'PDF',
-    date: 'June 2023',
-    size: 'Annual Report',
-    category: 'Financial Reports',
-  },
-]
-
-const categories = [
-  { name: 'Financial Reports', icon: (
+const CATEGORY_ICONS = {
+  'Financial Reports': (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
-  ), count: 1 },
-  { name: 'Press Releases', icon: (
+  ),
+  'Press Releases': (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
     </svg>
-  ), count: 1 },
-  { name: 'Party Manifesto', icon: (
+  ),
+  'Party Manifesto': (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
     </svg>
-  ), count: 0 },
-  { name: 'Party Constitution', icon: (
+  ),
+  'Party Constitution': (
     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
-  ), count: 0 },
-]
+  ),
+  'Other': (
+    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+    </svg>
+  ),
+}
+
+const ALL_CATEGORIES = ['Financial Reports', 'Press Releases', 'Party Manifesto', 'Party Constitution', 'Other']
 
 export default function Resources() {
+  const [resources,    setResources]    = useState([])
+  const [loading,      setLoading]      = useState(true)
+  const [activeCategory, setActiveCategory] = useState(null)
+
+  useEffect(() => {
+    fetch('/api/backend/resources')
+      .then(r => r.json())
+      .then(d => setResources(d.data || []))
+      .catch(() => setResources([]))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const filtered = activeCategory ? resources.filter(r => r.category === activeCategory) : resources
+  const counts   = ALL_CATEGORIES.reduce((acc, c) => ({ ...acc, [c]: resources.filter(r => r.category === c).length }), {})
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -66,7 +67,7 @@ export default function Resources() {
             Party Resources
           </h1>
           <p className="mt-4 text-[15px] leading-[1.75] text-white/55 max-w-xl mx-auto">
-            Official documents, financial statements, and publications from UPIA Kenya - open to all citizens.
+            Official documents, financial statements, and publications from UPIA Kenya — open to all citizens.
           </p>
         </div>
         <div className="flex h-1">
@@ -84,15 +85,32 @@ export default function Resources() {
             <div className="rounded-[12px] bg-white p-5 sm:p-6 md:sticky md:top-20" style={{ border: '0.5px solid #E2DCDA' }}>
               <h2 className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-4">Categories</h2>
               <ul className="space-y-1">
-                {categories.map((cat) => (
-                  <li key={cat.name}>
-                    <button className="flex w-full items-center justify-between gap-3 rounded-[6px] px-3 py-2.5 text-left text-sm font-medium text-[#5A5450] hover:bg-[#FBF0F0] hover:text-[#C25757] transition-colors duration-150">
+                <li>
+                  <button
+                    onClick={() => setActiveCategory(null)}
+                    className={`flex w-full items-center justify-between gap-3 rounded-[6px] px-3 py-2.5 text-left text-sm font-medium transition-colors duration-150 ${!activeCategory ? 'bg-[#FBF0F0] text-[#C25757]' : 'text-[#5A5450] hover:bg-[#FBF0F0] hover:text-[#C25757]'}`}>
+                    <span className="flex items-center gap-2">
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                      </svg>
+                      All Documents
+                    </span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${!activeCategory ? 'bg-[#C25757] text-white' : 'bg-[#F8F5F3] text-[#5A5450]/50'}`}>
+                      {resources.length}
+                    </span>
+                  </button>
+                </li>
+                {ALL_CATEGORIES.map(cat => (
+                  <li key={cat}>
+                    <button
+                      onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                      className={`flex w-full items-center justify-between gap-3 rounded-[6px] px-3 py-2.5 text-left text-sm font-medium transition-colors duration-150 ${activeCategory === cat ? 'bg-[#FBF0F0] text-[#C25757]' : 'text-[#5A5450] hover:bg-[#FBF0F0] hover:text-[#C25757]'}`}>
                       <span className="flex items-center gap-2">
-                        <span className="text-[#5A5450]">{cat.icon}</span>
-                        {cat.name}
+                        <span className="text-[#5A5450]">{CATEGORY_ICONS[cat]}</span>
+                        {cat}
                       </span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${cat.count > 0 ? 'bg-[#FBF0F0] text-[#C25757]' : 'bg-[#F8F5F3] text-[#5A5450]/50'}`}>
-                        {cat.count}
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${counts[cat] > 0 ? (activeCategory === cat ? 'bg-[#C25757] text-white' : 'bg-[#FBF0F0] text-[#C25757]') : 'bg-[#F8F5F3] text-[#5A5450]/50'}`}>
+                        {counts[cat]}
                       </span>
                     </button>
                   </li>
@@ -118,72 +136,98 @@ export default function Resources() {
           <div className="md:col-span-3">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-[22px] font-medium text-[#111111]">All Documents</h2>
-                <p className="text-sm text-[#5A5450] mt-1">{documents.length} document{documents.length !== 1 ? 's' : ''} available</p>
+                <h2 className="text-[22px] font-medium text-[#111111]">
+                  {activeCategory || 'All Documents'}
+                </h2>
+                <p className="text-sm text-[#5A5450] mt-1">
+                  {loading ? 'Loading…' : `${filtered.length} document${filtered.length !== 1 ? 's' : ''} available`}
+                </p>
               </div>
             </div>
 
-            <div className="space-y-4">
-              {documents.map((doc) => (
-                <a
-                  key={doc.title}
-                  href={doc.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col gap-4 rounded-[12px] bg-white p-[20px] transition-all duration-150 hover:border-[#D46868] sm:flex-row sm:items-center"
-                  style={{ border: doc.category === 'Press Releases' ? '0.5px solid #C25757' : '0.5px solid #E2DCDA' }}
-                >
-                  {/* File icon */}
-                  <div className="flex-shrink-0 flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#FBF0F0] ring-1 ring-[#E2DCDA] group-hover:bg-[#C25757] transition-all duration-150">
-                    <svg className="h-7 w-7 text-[#C25757] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      {doc.category === 'Press Releases' && (
-                        <span className="rounded-full bg-[#FBF0F0] px-2.5 py-0.5 text-[11px] font-semibold uppercase text-[#C25757]">
-                          Public Notice
-                        </span>
-                      )}
-                      <span className="rounded-full bg-[#F8F5F3] px-2.5 py-0.5 text-[11px] font-medium uppercase text-[#5A5450]">
-                        {doc.type}
-                      </span>
-                      <span className="rounded-full bg-[#EBF5EC] px-2.5 py-0.5 text-[11px] font-medium text-[#236331]">
-                        {doc.date}
-                      </span>
-                      <span className="text-xs text-[#5A5450]">{doc.size}</span>
+            {loading ? (
+              <div className="flex items-center justify-center py-24">
+                <div className="animate-spin h-8 w-8 rounded-full border-4 border-[#1a3c5e] border-t-transparent" />
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="rounded-[12px] border-2 border-dashed border-[#E2DCDA] p-10 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F8F5F3] mb-4">
+                  <svg className="h-6 w-6 text-[#5A5450]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-[15px] font-medium text-[#5A5450]">No documents in this category yet</h3>
+                <p className="mt-1 text-sm text-[#5A5450]/70">Check back soon.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filtered.map(doc => (
+                  <a
+                    key={doc._id}
+                    href={doc.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex flex-col gap-4 rounded-[12px] bg-white p-[20px] transition-all duration-150 hover:border-[#D46868] sm:flex-row sm:items-center"
+                    style={{ border: doc.category === 'Press Releases' ? '0.5px solid #C25757' : '0.5px solid #E2DCDA' }}
+                  >
+                    {/* File icon */}
+                    <div className="flex-shrink-0 flex h-14 w-14 items-center justify-center rounded-[8px] bg-[#FBF0F0] ring-1 ring-[#E2DCDA] group-hover:bg-[#C25757] transition-all duration-150">
+                      <svg className="h-7 w-7 text-[#C25757] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                      </svg>
                     </div>
-                    <h3 className="text-[15px] font-medium text-[#111111] group-hover:text-[#C25757] transition-colors leading-snug">
-                      {doc.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-[#5A5450] line-clamp-2">{doc.description}</p>
-                  </div>
 
-                  {/* Download icon */}
-                  <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-[6px] bg-[#F8F5F3] group-hover:bg-[#C25757] transition-colors duration-150">
-                    <svg className="h-5 w-5 text-[#5A5450] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                  </div>
-                </a>
-              ))}
-            </div>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        {doc.category === 'Press Releases' && (
+                          <span className="rounded-full bg-[#FBF0F0] px-2.5 py-0.5 text-[11px] font-semibold uppercase text-[#C25757]">
+                            Public Notice
+                          </span>
+                        )}
+                        <span className="rounded-full bg-[#F8F5F3] px-2.5 py-0.5 text-[11px] font-medium uppercase text-[#5A5450]">
+                          {doc.fileType || 'PDF'}
+                        </span>
+                        {doc.date && (
+                          <span className="rounded-full bg-[#EBF5EC] px-2.5 py-0.5 text-[11px] font-medium text-[#236331]">
+                            {doc.date}
+                          </span>
+                        )}
+                        <span className="text-xs text-[#5A5450]">{doc.category}</span>
+                      </div>
+                      <h3 className="text-[15px] font-medium text-[#111111] group-hover:text-[#C25757] transition-colors leading-snug">
+                        {doc.title}
+                      </h3>
+                      {doc.description && (
+                        <p className="mt-1 text-sm text-[#5A5450] line-clamp-2">{doc.description}</p>
+                      )}
+                    </div>
 
-            {/* Coming soon */}
-            <div className="mt-8 rounded-[12px] border-2 border-dashed border-[#E2DCDA] p-10 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F8F5F3] mb-4">
-                <svg className="h-6 w-6 text-[#5A5450]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                    {/* Download icon */}
+                    <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-[6px] bg-[#F8F5F3] group-hover:bg-[#C25757] transition-colors duration-150">
+                      <svg className="h-5 w-5 text-[#5A5450] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                    </div>
+                  </a>
+                ))}
               </div>
-              <h3 className="text-[15px] font-medium text-[#5A5450]">More documents coming soon</h3>
-              <p className="mt-1 text-sm text-[#5A5450]/70">
-                Additional party publications and reports will be uploaded here as they become available.
-              </p>
-            </div>
+            )}
+
+            {/* Coming soon footer */}
+            {!loading && (
+              <div className="mt-8 rounded-[12px] border-2 border-dashed border-[#E2DCDA] p-10 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#F8F5F3] mb-4">
+                  <svg className="h-6 w-6 text-[#5A5450]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-[15px] font-medium text-[#5A5450]">More documents coming soon</h3>
+                <p className="mt-1 text-sm text-[#5A5450]/70">
+                  Additional party publications and reports will be uploaded here as they become available.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>

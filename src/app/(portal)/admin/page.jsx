@@ -26,6 +26,7 @@ const NAV = [
   { id: 'structure',     label: 'Party Structure',  icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
   { id: 'users',         label: 'Users',            icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
   { id: 'news',          label: 'News Posts',       icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' },
+  { id: 'resources',     label: 'Resources',        icon: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z' },
 ]
 
 const NavIcon = ({ d }) => (
@@ -574,6 +575,9 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+
+            {/* ── Resources ── */}
+            {tab === 'resources' && <ResourceManagement showFlash={showFlash} />}
           </div>
         </main>
       </div>
@@ -693,6 +697,213 @@ export default function AdminDashboard() {
             <Field label="Coordinator Title"><input className={inputCls} value={structureForm.coordinatorTitle||''} onChange={setSt('coordinatorTitle')} placeholder="County Coordinator" /></Field>
             <Field label="Notes"><textarea className={inputCls} rows={2} value={structureForm.notes||''} onChange={setSt('notes')} /></Field>
             <ModalActions onCancel={()=>setStructureForm(null)} saving={structureSaving} label={structureForm._id?'Save Changes':'Add Node'} />
+          </form>
+        </Modal>
+      )}
+    </div>
+  )
+}
+
+/* ─── Resource Management component ─────────────────────────────────────────── */
+
+const RESOURCE_CATEGORIES = ['Financial Reports', 'Press Releases', 'Party Manifesto', 'Party Constitution', 'Other']
+const BLANK_RESOURCE = { title: '', description: '', category: 'Press Releases', fileUrl: '', fileType: 'PDF', date: '', tags: '', published: false }
+
+function ResourceManagement({ showFlash }) {
+  const [resources,     setResources]     = useState([])
+  const [loading,       setLoading]       = useState(true)
+  const [form,          setForm]          = useState(null)  // null | resource object (new or edit)
+  const [saving,        setSaving]        = useState(false)
+  const [fileUploading, setFileUploading] = useState(false)
+  const [filterCat,     setFilterCat]     = useState('')
+  const fileInputRef = useRef(null)
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    try { const d = await api.get('/resources/admin/all'); setResources(d.data || []) }
+    catch {} finally { setLoading(false) }
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  const filtered = filterCat ? resources.filter(r => r.category === filterCat) : resources
+  const counts = RESOURCE_CATEGORIES.reduce((acc, c) => ({ ...acc, [c]: resources.filter(r => r.category === c).length }), {})
+
+  const handleSave = async (e) => {
+    e.preventDefault()
+    setSaving(true)
+    try {
+      if (form._id) {
+        await api.put(`/resources/${form._id}`, form)
+        showFlash('Resource updated')
+      } else {
+        await api.post('/resources', form)
+        showFlash('Resource created')
+      }
+      setForm(null)
+      load()
+    } catch (err) { alert(err.message) } finally { setSaving(false) }
+  }
+
+  const handleDelete = async (r) => {
+    if (!confirm(`Delete "${r.title}"? This cannot be undone.`)) return
+    await api.delete(`/resources/${r._id}`)
+    showFlash('Resource deleted')
+    load()
+  }
+
+  const togglePublish = async (r) => {
+    await api.patch(`/resources/${r._id}/toggle-publish`, {})
+    showFlash(r.published ? 'Resource unpublished' : 'Resource published')
+    load()
+  }
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setFileUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const data = await api.post('/resources/upload-file', fd)
+      setForm(f => ({ ...f, fileUrl: data.url, fileType: data.fileType || f.fileType }))
+      showFlash('File uploaded')
+    } catch (err) { alert(err.message) } finally {
+      setFileUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
+  const setF = (field) => (e) => setForm(f => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
+
+  const publishedCount = resources.filter(r => r.published).length
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-[#111111]">Resources</h1>
+          <p className="text-sm text-[#5A5450] mt-0.5">{resources.length} total · {publishedCount} published</p>
+        </div>
+        <button onClick={() => setForm({ ...BLANK_RESOURCE })} className="rounded-[6px] bg-[#1a3c5e] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-colors">
+          + Add Resource
+        </button>
+      </div>
+
+      {/* Category filter chips */}
+      <div className="flex flex-wrap gap-2">
+        <button onClick={() => setFilterCat('')} className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${!filterCat ? 'bg-[#1a3c5e] text-white' : 'bg-[#F8F5F3] text-[#5A5450] hover:bg-[#E2DCDA]'}`}>
+          All ({resources.length})
+        </button>
+        {RESOURCE_CATEGORIES.map(c => (
+          <button key={c} onClick={() => setFilterCat(filterCat === c ? '' : c)}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${filterCat === c ? 'bg-[#1a3c5e] text-white' : 'bg-[#F8F5F3] text-[#5A5450] hover:bg-[#E2DCDA]'}`}>
+            {c} ({counts[c] || 0})
+          </button>
+        ))}
+      </div>
+
+      <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          {loading ? (
+            <div className="flex items-center justify-center py-16"><div className="animate-spin h-6 w-6 rounded-full border-4 border-[#1a3c5e] border-t-transparent" /></div>
+          ) : filtered.length === 0 ? (
+            <div className="py-16 text-center text-sm text-[#5A5450]">No resources yet. Click "+ Add Resource" to get started.</div>
+          ) : (
+            <table className="min-w-full divide-y divide-[#E2DCDA] text-sm">
+              <thead className="bg-[#F8F5F3]">
+                <tr>
+                  {['Title', 'Category', 'Type', 'Date', 'Status', 'Actions'].map(h => (
+                    <th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E2DCDA]">
+                {filtered.map(r => (
+                  <tr key={r._id} className="hover:bg-[#F8F5F3]">
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-[#111111] max-w-[260px] truncate">{r.title}</div>
+                      {r.description && <div className="text-xs text-[#5A5450] mt-0.5 max-w-[260px] truncate">{r.description}</div>}
+                    </td>
+                    <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap text-xs">{r.category}</td>
+                    <td className="px-4 py-3">
+                      <span className="inline-flex rounded-full bg-[#F8F5F3] px-2 py-0.5 text-xs font-medium text-[#5A5450]">{r.fileType || 'PDF'}</span>
+                    </td>
+                    <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{r.date || '-'}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${r.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        {r.published ? 'Published' : 'Draft'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3 whitespace-nowrap">
+                        <a href={r.fileUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-[#1a3c5e] hover:underline">View</a>
+                        <button onClick={() => setForm({ ...r, tags: Array.isArray(r.tags) ? r.tags.join(', ') : r.tags || '' })} className="text-xs font-medium text-[#1a3c5e] hover:underline">Edit</button>
+                        <button onClick={() => togglePublish(r)} className="text-xs font-medium text-amber-600 hover:underline">{r.published ? 'Unpublish' : 'Publish'}</button>
+                        <button onClick={() => handleDelete(r)} className="text-xs font-medium text-red-600 hover:underline">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      {/* Create / Edit modal */}
+      {form && (
+        <Modal title={form._id ? 'Edit Resource' : 'Add Resource'} onClose={() => setForm(null)} wide>
+          <form onSubmit={handleSave} className="space-y-4">
+            <Field label="Title *">
+              <input className={inputCls} value={form.title} onChange={setF('title')} placeholder="Annual Report FY2024" required />
+            </Field>
+            <Field label="Description">
+              <textarea className={inputCls} rows={2} value={form.description || ''} onChange={setF('description')} placeholder="Brief summary of the document…" />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Category *">
+                <select className={selectCls} value={form.category} onChange={setF('category')} required>
+                  {RESOURCE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </Field>
+              <Field label="File Type">
+                <select className={selectCls} value={form.fileType || 'PDF'} onChange={setF('fileType')}>
+                  {['PDF', 'DOC', 'DOCX', 'XLS', 'XLSX', 'OTHER'].map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </Field>
+            </div>
+
+            <Field label="File">
+              <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,application/pdf" className="hidden" onChange={handleFileUpload} />
+              <div className="flex gap-2 items-start">
+                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={fileUploading}
+                  className="shrink-0 rounded-[6px] border border-[#d1d5db] bg-white px-3 py-2 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-50 transition-colors whitespace-nowrap">
+                  {fileUploading ? 'Uploading…' : '⬆ Upload File'}
+                </button>
+                <input className={inputCls} type="url" value={form.fileUrl} onChange={setF('fileUrl')} placeholder="or paste URL (Google Drive, website…)" required />
+              </div>
+              {form.fileUrl && (
+                <p className="mt-1 text-xs text-[#236331] truncate">
+                  ✓ <a href={form.fileUrl} target="_blank" rel="noreferrer" className="hover:underline">{form.fileUrl}</a>
+                </p>
+              )}
+            </Field>
+
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Display Date">
+                <input className={inputCls} value={form.date || ''} onChange={setF('date')} placeholder="e.g. June 2023 or 2025" />
+              </Field>
+              <Field label="Tags (comma-separated)">
+                <input className={inputCls} value={form.tags || ''} onChange={setF('tags')} placeholder="finance, 2024, audited" />
+              </Field>
+            </div>
+
+            <div className="flex items-center gap-3 pt-1">
+              <input id="respub" type="checkbox" checked={!!form.published} onChange={setF('published')} className="h-4 w-4 rounded text-[#1a3c5e]" />
+              <label htmlFor="respub" className="text-sm text-[#5A5450]">Publish immediately (visible on public Resources page)</label>
+            </div>
+            <ModalActions onCancel={() => setForm(null)} saving={saving} label={form._id ? 'Save Changes' : 'Create Resource'} />
           </form>
         </Modal>
       )}
