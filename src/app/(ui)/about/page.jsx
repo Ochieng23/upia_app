@@ -10,12 +10,6 @@ import Leadership from '../../../components/Leadership'
 import Image from 'next/image'
 import Link from 'next/link'
 
-const stats = [
-  { label: 'Lawfully Elected', value: '0',   unit: 'Governors' },
-  { label: 'Voter Oriented',   value: '2',   unit: 'MPs' },
-  { label: 'Grassroots',       value: '30+', unit: 'MCAs' },
-]
-
 const values = [
   {
     name: 'Inclusivity',
@@ -148,21 +142,6 @@ export default function About() {
           <div className="flex-1 bg-[#236331]" />
           <div className="flex-1 bg-white" />
           <div className="flex-1 bg-[#111111]" />
-        </div>
-      </section>
-
-      {/* Stats bar */}
-      <section className="bg-[#111111] py-10 sm:py-12">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 gap-4 sm:gap-8">
-            {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-2xl sm:text-4xl font-semibold text-white">{stat.value}</div>
-                <div className="mt-1 text-sm sm:text-lg font-medium text-white/80">{stat.unit}</div>
-                <div className="text-xs sm:text-sm text-white/50">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
