@@ -1,48 +1,102 @@
-import React from 'react'
+'use client'
+import { useState } from 'react'
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
 import Link from 'next/link'
 
+const BASE = '/api/backend'
+
 const donationTiers = [
   {
+    id: 'supporter',
     name: 'Supporter',
-    amount: 'KES 500',
+    amount: 500,
+    label: 'KES 500',
     description: 'Help us spread the message of change across Kenya.',
     features: ['Campaign materials', 'Monthly newsletter', 'Digital membership card'],
     border: 'border-[#E2DCDA]',
     badgeBg: 'bg-[#F8F5F3] text-[#5A5450]',
+    btnClass: 'bg-[#1a3c5e] hover:bg-[#1a3c5e]/90 text-white',
     featured: false,
   },
   {
+    id: 'champion',
     name: 'Champion',
-    amount: 'KES 2,000',
+    amount: 2000,
+    label: 'KES 2,000',
     description: 'Power our grassroots outreach and community programs.',
     features: ['Everything in Supporter', 'Priority event invites', 'Dedicated support channel'],
     border: 'border-[#236331]',
     badgeBg: 'bg-[#236331] text-white',
+    btnClass: 'bg-[#236331] hover:bg-[#2B753A] text-white',
     featured: true,
   },
   {
+    id: 'patron',
     name: 'Patron',
-    amount: 'KES 10,000+',
+    amount: 10000,
+    label: 'KES 10,000+',
     description: "Make a major impact on Kenya's political future.",
     features: ['Everything in Champion', 'Direct leadership access', 'Recognition in publications'],
     border: 'border-[#C25757]',
     badgeBg: 'bg-[#C25757] text-white',
+    btnClass: 'bg-[#C25757] hover:bg-[#b34747] text-white',
     featured: false,
   },
 ]
 
 const steps = [
-  { step: '01', title: 'Open M-Pesa',             description: 'Go to M-Pesa menu on your phone' },
-  { step: '02', title: 'Select Lipa na M-Pesa',    description: 'Choose "Lipa na M-Pesa" then "Pay Bill"' },
-  { step: '03', title: 'Enter Paybill Number',     description: 'Enter Business Number: 247247' },
-  { step: '04', title: 'Enter Account Number',     description: 'Enter Account: 1010272135531' },
-  { step: '05', title: 'Enter Amount',             description: 'Type your desired donation amount' },
-  { step: '06', title: 'Confirm Payment',          description: 'Enter your M-Pesa PIN and confirm' },
+  { step: '01', title: 'Open M-Pesa',           description: 'Go to M-Pesa menu on your phone' },
+  { step: '02', title: 'Select Lipa na M-Pesa',  description: 'Choose "Lipa na M-Pesa" then "Pay Bill"' },
+  { step: '03', title: 'Enter Paybill Number',   description: 'Enter Business Number: 247247' },
+  { step: '04', title: 'Enter Account Number',   description: 'Enter Account: 1010272135531' },
+  { step: '05', title: 'Enter Amount',           description: 'Type your desired donation amount' },
+  { step: '06', title: 'Confirm Payment',        description: 'Enter your M-Pesa PIN and confirm' },
 ]
 
 export default function Donate() {
+  const [modal, setModal]         = useState(null) // tier object or null
+  const [name, setName]           = useState('')
+  const [email, setEmail]         = useState('')
+  const [patronAmt, setPatronAmt] = useState('')
+  const [loading, setLoading]     = useState(false)
+  const [error, setError]         = useState('')
+
+  const openModal = (tier) => {
+    setModal(tier)
+    setError('')
+    setName('')
+    setEmail('')
+    setPatronAmt('')
+  }
+  const closeModal = () => { setModal(null); setError('') }
+
+  const handleDonate = async (e) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const body = {
+        email: email.trim(),
+        name: name.trim(),
+        tier: modal.id,
+        ...(modal.id === 'patron' ? { amount: patronAmt } : {}),
+      }
+      const res = await fetch(`${BASE}/donations/initialize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Could not initialize payment')
+      // Redirect to Paystack
+      window.location.href = data.authorization_url
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.')
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       <Header />
@@ -71,17 +125,11 @@ export default function Donate() {
               Every shilling counts.
             </p>
             <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-6">
-              <div
-                className="rounded-[12px] px-6 sm:px-8 py-4 sm:py-5 text-center"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)' }}
-              >
+              <div className="rounded-[12px] px-6 sm:px-8 py-4 sm:py-5 text-center" style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)' }}>
                 <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-white/40 mb-1">Paybill Number</p>
                 <p className="text-2xl sm:text-3xl font-semibold text-[#EBF5EC]">247247</p>
               </div>
-              <div
-                className="rounded-[12px] px-6 sm:px-8 py-4 sm:py-5 text-center"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)' }}
-              >
+              <div className="rounded-[12px] px-6 sm:px-8 py-4 sm:py-5 text-center" style={{ background: 'rgba(255,255,255,0.08)', border: '0.5px solid rgba(255,255,255,0.15)' }}>
                 <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-white/40 mb-1">Account Number</p>
                 <p className="text-2xl sm:text-3xl font-semibold text-[#EBF5EC]">1010272135531</p>
               </div>
@@ -102,14 +150,13 @@ export default function Donate() {
               <span className="inline-block rounded-full bg-[#EBF5EC] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#236331] mb-4">
                 Give Today
               </span>
-              <h2 className="text-[32px] font-semibold text-[#111111]">
-                Choose Your Impact Level
-              </h2>
+              <h2 className="text-[32px] font-semibold text-[#111111]">Choose Your Impact Level</h2>
+              <p className="mt-3 text-[15px] text-[#5A5450]">Pay instantly online with M-Pesa, Visa, or Mastercard — or via the Paybill below.</p>
             </div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {donationTiers.map((tier) => (
                 <div
-                  key={tier.name}
+                  key={tier.id}
                   className={`relative bg-white border-2 p-5 sm:p-8 flex flex-col rounded-[12px] ${tier.border} ${tier.featured ? 'shadow-lg' : ''}`}
                 >
                   {tier.featured && (
@@ -123,7 +170,7 @@ export default function Donate() {
                     <span className={`inline-block rounded-[6px] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.07em] mb-4 ${tier.badgeBg}`}>
                       {tier.name}
                     </span>
-                    <div className="text-[26px] sm:text-[32px] font-semibold text-[#111111]">{tier.amount}</div>
+                    <div className="text-[26px] sm:text-[32px] font-semibold text-[#111111]">{tier.label}</div>
                     <p className="mt-2 text-[15px] text-[#5A5450]">{tier.description}</p>
                   </div>
                   <ul className="space-y-3 flex-1 mb-8">
@@ -136,8 +183,18 @@ export default function Donate() {
                       </li>
                     ))}
                   </ul>
-                  <div className="rounded-[6px] bg-[#F8F5F3] p-4 text-center" style={{ border: '0.5px solid #E2DCDA' }}>
-                    <p className="text-xs font-medium text-[#5A5450] mb-1">Via M-Pesa Paybill</p>
+
+                  {/* Paystack button */}
+                  <button
+                    onClick={() => openModal(tier)}
+                    className={`w-full rounded-[6px] px-5 py-3 text-sm font-medium transition-all active:scale-[0.98] mb-3 ${tier.btnClass}`}
+                  >
+                    Donate {tier.id !== 'patron' ? tier.label : 'KES 10,000+'} Online →
+                  </button>
+
+                  {/* M-Pesa fallback */}
+                  <div className="rounded-[6px] bg-[#F8F5F3] p-3 text-center" style={{ border: '0.5px solid #E2DCDA' }}>
+                    <p className="text-[11px] font-medium text-[#5A5450] mb-0.5">Or pay via M-Pesa Paybill</p>
                     <p className="text-sm font-medium text-[#236331]">247247 → 1010272135531</p>
                   </div>
                 </div>
@@ -146,24 +203,18 @@ export default function Donate() {
           </div>
         </section>
 
-        {/* How to donate steps */}
+        {/* M-Pesa steps */}
         <section className="bg-[#F8F5F3] py-20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-14">
               <span className="inline-block rounded-full bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757] mb-4">
                 Easy Steps
               </span>
-              <h2 className="text-[32px] font-semibold text-[#111111]">
-                How to Donate via M-Pesa
-              </h2>
+              <h2 className="text-[32px] font-semibold text-[#111111]">How to Donate via M-Pesa</h2>
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {steps.map((s) => (
-                <div
-                  key={s.step}
-                  className="flex gap-4 rounded-[12px] bg-white p-[20px]"
-                  style={{ border: '0.5px solid #E2DCDA' }}
-                >
+                <div key={s.step} className="flex gap-4 rounded-[12px] bg-white p-[20px]" style={{ border: '0.5px solid #E2DCDA' }}>
                   <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#C25757] text-white font-medium text-sm">
                     {s.step}
                   </div>
@@ -180,12 +231,8 @@ export default function Donate() {
         {/* Bottom CTA */}
         <section className="bg-[#236331] py-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-[32px] font-semibold text-white">
-              Questions about donating?
-            </h2>
-            <p className="mt-3 text-[15px] text-white/70">
-              Our team is happy to assist you with any donation inquiries.
-            </p>
+            <h2 className="text-[32px] font-semibold text-white">Questions about donating?</h2>
+            <p className="mt-3 text-[15px] text-white/70">Our team is happy to assist you with any donation inquiries.</p>
             <Link
               href="/contact"
               className="mt-6 inline-flex items-center gap-2 rounded-[6px] bg-white px-8 py-3 text-sm font-medium text-[#236331] hover:bg-[#EBF5EC] active:scale-[0.98] transition-all duration-150 shadow-sm"
@@ -197,6 +244,106 @@ export default function Donate() {
 
         <Footer />
       </div>
+
+      {/* Donation modal */}
+      {modal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.5)' }}
+          onClick={(e) => { if (e.target === e.currentTarget) closeModal() }}
+        >
+          <div className="bg-white rounded-[12px] w-full max-w-sm p-8" style={{ border: '0.5px solid #E2DCDA' }}>
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <span className={`inline-block rounded-[6px] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.07em] mb-2 ${modal.badgeBg}`}>
+                  {modal.name}
+                </span>
+                <h2 className="text-lg font-semibold text-[#111111]">
+                  {modal.id === 'patron' ? 'Set your amount' : `Donate ${modal.label}`}
+                </h2>
+                <p className="text-sm text-[#5A5450] mt-1">You'll be taken to Paystack to complete payment securely.</p>
+              </div>
+              <button onClick={closeModal} className="text-[#5A5450] hover:text-[#111111] ml-4 flex-shrink-0 mt-1">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleDonate} className="space-y-4">
+              {modal.id === 'patron' && (
+                <div>
+                  <label className="block text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-1.5">
+                    Amount (KES) *
+                  </label>
+                  <input
+                    type="number"
+                    min={10000}
+                    step={500}
+                    value={patronAmt}
+                    onChange={(e) => setPatronAmt(e.target.value)}
+                    placeholder="Minimum KES 10,000"
+                    required
+                    className="block w-full rounded-[6px] border border-[#E2DCDA] bg-white px-[14px] text-sm text-[#111111] placeholder:text-[#5A5450]/50 focus:border-[#236331] focus:outline-none focus:ring-[3px] focus:ring-[rgba(35,99,49,0.12)] transition-all"
+                    style={{ height: '42px' }}
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-1.5">Full Name *</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Your name"
+                  required
+                  className="block w-full rounded-[6px] border border-[#E2DCDA] bg-white px-[14px] text-sm text-[#111111] placeholder:text-[#5A5450]/50 focus:border-[#236331] focus:outline-none focus:ring-[3px] focus:ring-[rgba(35,99,49,0.12)] transition-all"
+                  style={{ height: '42px' }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-1.5">Email Address *</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@email.com"
+                  required
+                  className="block w-full rounded-[6px] border border-[#E2DCDA] bg-white px-[14px] text-sm text-[#111111] placeholder:text-[#5A5450]/50 focus:border-[#236331] focus:outline-none focus:ring-[3px] focus:ring-[rgba(35,99,49,0.12)] transition-all"
+                  style={{ height: '42px' }}
+                />
+              </div>
+
+              {error && (
+                <div className="rounded-[6px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-[6px] bg-[#236331] px-6 py-3.5 text-sm font-medium text-white hover:bg-[#2B753A] disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                    Redirecting to Paystack…
+                  </>
+                ) : (
+                  <>
+                    Pay Securely with Paystack →
+                  </>
+                )}
+              </button>
+
+              <p className="text-center text-xs text-[#5A5450]">
+                Secured by Paystack · M-Pesa, Visa & Mastercard accepted
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   )
 }
