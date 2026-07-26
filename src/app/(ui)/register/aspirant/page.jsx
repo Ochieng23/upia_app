@@ -737,17 +737,26 @@ function AspirantWizard() {
     setStep(1)
   }
 
-  // Step 2 → 3: POST to /registration/initiate with full data
+  // Step 2 → 3: POST to /registration/initiate with full data + photos
+  // Photos are sent as multipart so the server stores them on Azure Blob before
+  // the Paystack redirect — once the browser navigates away, React state (files)
+  // is gone, so we must persist them server-side here.
   const onElectionNext = async (electionData) => {
     setSeatCategory(electionData.seatCategory)
     setFee(SEAT_OPTIONS.find((s) => s.value === electionData.seatCategory)?.fee || 0)
 
     try {
-      const res  = await fetch(`${BASE}/registration/initiate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...personalData, ...electionData }),
+      const combined = { ...personalData, ...electionData }
+      const fd = new FormData()
+      Object.entries(combined).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') fd.append(k, String(v))
       })
+      if (passportPhoto) fd.append('passportPhoto', passportPhoto)
+      if (idFront)       fd.append('idFront', idFront)
+      if (idBack)        fd.append('idBack', idBack)
+
+      // No Content-Type header — browser sets multipart/form-data with boundary
+      const res  = await fetch(`${BASE}/registration/initiate`, { method: 'POST', body: fd })
       const data = await safeJson(res)
       if (!res.ok) throw new Error(data.message || 'Failed to save details')
 

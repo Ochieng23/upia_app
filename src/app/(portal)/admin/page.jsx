@@ -420,8 +420,10 @@ export default function AdminDashboard() {
                         {payments.map(p=>(
                           <tr key={p._id} className="hover:bg-[#F8F5F3]">
                             <td className="px-4 py-3 font-mono text-xs text-[#5A5450]">{p.reference}</td>
-                            <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">{p.user?.firstName} {p.user?.lastName}</td>
-                            <td className="px-4 py-3 text-[#5A5450]">{p.user?.email}</td>
+                            <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">
+                              {p.user ? `${p.user.firstName} ${p.user.lastName}` : p.metadata?.firstName ? `${p.metadata.firstName} ${p.metadata.lastName}` : <span className="text-[#5A5450] italic text-xs">Registration incomplete</span>}
+                            </td>
+                            <td className="px-4 py-3 text-[#5A5450]">{p.user?.email || p.metadata?.email || '-'}</td>
                             <td className="px-4 py-3 capitalize text-[#5A5450]">{p.type?.replace(/_/g,' ')}</td>
                             <td className="px-4 py-3 font-medium text-[#111111]">KES {(p.amount||0).toLocaleString()}</td>
                             <td className="px-4 py-3"><PaymentBadge status={p.status} /></td>
