@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import heroPhoto from '../images/images/about-6.jpg'
+
+const heroPhoto = 'https://res.cloudinary.com/dhz4c0oae/image/upload/v1718805108/about-5_oov7bi.jpg'
 
 const GUTTER = 'clamp(18px, 5vw, 72px)'
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
@@ -53,6 +54,7 @@ export function Hero() {
             alt="UPIA Party members"
             fill
             priority
+            sizes="(max-width: 768px) 100vw, 50vw"
             style={{ objectFit: 'cover', objectPosition: 'center top' }}
           />
         </div>
