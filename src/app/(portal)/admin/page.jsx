@@ -957,8 +957,17 @@ function AspirantManagement({ showFlash, setIssueForm }) {
   const [rejectReason,setRejectReason]      = useState('')
   const [rejectSaving,setRejectSaving]      = useState(false)
   const [actionId,    setActionId]          = useState(null)
-  const [createForm,  setCreateForm]        = useState(null)
-  const [createSaving,setCreateSaving]      = useState(false)
+  const [createForm,     setCreateForm]     = useState(null)
+  const [createSaving,   setCreateSaving]   = useState(false)
+  const [caPhoto,        setCaPhoto]        = useState(null)
+  const [caPhotoPreview, setCaPhotoPreview] = useState(null)
+  const [caIdFront,      setCaIdFront]      = useState(null)
+  const [caIdFrontPrev,  setCaIdFrontPrev]  = useState(null)
+  const [caIdBack,       setCaIdBack]       = useState(null)
+  const [caIdBackPrev,   setCaIdBackPrev]   = useState(null)
+  const caPhotoRef   = useRef(null)
+  const caIdFrontRef = useRef(null)
+  const caIdBackRef  = useRef(null)
 
   const selectedCounty  = KENYA_LOCATIONS.find(c => c.code === filterCounty)
   const constituencies  = selectedCounty?.constituencies || []
@@ -1021,13 +1030,35 @@ function AspirantManagement({ showFlash, setIssueForm }) {
 
   const setC = (field) => (e) => setCreateForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
 
+  const clearCreateFiles = () => {
+    setCaPhoto(null); setCaPhotoPreview(null)
+    setCaIdFront(null); setCaIdFrontPrev(null)
+    setCaIdBack(null); setCaIdBackPrev(null)
+  }
+
+  const makeFileHandler = (setFile, setPreview) => (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setFile(file)
+    setPreview(URL.createObjectURL(file))
+  }
+
   const handleCreateAspirant = async (e) => {
     e.preventDefault()
     setCreateSaving(true)
     try {
-      await api.post('/admin/aspirants', createForm)
+      const fd = new FormData()
+      Object.entries(createForm).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== '') fd.append(k, String(v))
+      })
+      if (caPhoto)   fd.append('passportPhoto', caPhoto)
+      if (caIdFront) fd.append('idFront', caIdFront)
+      if (caIdBack)  fd.append('idBack', caIdBack)
+
+      await api.post('/admin/aspirants', fd)
       showFlash('Aspirant account created successfully')
       setCreateForm(null)
+      clearCreateFiles()
       reload()
     } catch (err) {
       alert(err.message || 'Failed to create aspirant account')
@@ -1254,7 +1285,7 @@ function AspirantManagement({ showFlash, setIssueForm }) {
         }
 
         return (
-          <Modal title="Create Aspirant Account" onClose={() => setCreateForm(null)} wide>
+          <Modal title="Create Aspirant Account" onClose={() => { setCreateForm(null); clearCreateFiles() }} wide>
             <div className="mb-4 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <strong>Admin fallback.</strong> Use this only when the self-service payment flow could not be completed. The account will be created with payment bypassed.
             </div>
@@ -1307,6 +1338,67 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                 <div className="mt-3 flex items-center gap-3">
                   <input id="ca-elected" type="checkbox" checked={createForm.isElected} onChange={setC('isElected')} className="h-4 w-4 rounded border-[#E2DCDA] text-[#1a3c5e]" />
                   <label htmlFor="ca-elected" className="text-sm text-[#5A5450]">Currently holds an elected office</label>
+                </div>
+              </div>
+
+              <hr className="border-[#E2DCDA]" />
+
+              {/* Documents */}
+              <div>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5A5450]">Documents (optional)</p>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+                  {/* Passport photo */}
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-[#5A5450]">Passport Photo</label>
+                    <div
+                      className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] hover:border-[#1a3c5e]/40 transition-colors"
+                      onClick={() => caPhotoRef.current?.click()}
+                    >
+                      {caPhotoPreview
+                        ? <img src={caPhotoPreview} alt="Passport" className="h-14 w-14 rounded-full object-cover border-2 border-[#E2DCDA]" />
+                        : <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                      }
+                      <p className="px-2 text-center text-[10px] text-[#5A5450]">{caPhoto ? caPhoto.name : 'Click to upload'}</p>
+                    </div>
+                    <input ref={caPhotoRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={makeFileHandler(setCaPhoto, setCaPhotoPreview)} />
+                  </div>
+
+                  {/* ID front */}
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-[#5A5450]">
+                      {createForm.documentType === 2 ? 'Passport Bio Page' : 'National ID - Front'}
+                    </label>
+                    <div
+                      className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] hover:border-[#1a3c5e]/40 transition-colors"
+                      onClick={() => caIdFrontRef.current?.click()}
+                    >
+                      {caIdFrontPrev
+                        ? <img src={caIdFrontPrev} alt="ID front" className="h-14 w-auto max-w-full rounded object-cover" />
+                        : <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" /></svg>
+                      }
+                      <p className="px-2 text-center text-[10px] text-[#5A5450]">{caIdFront ? caIdFront.name : 'Click to upload'}</p>
+                    </div>
+                    <input ref={caIdFrontRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={makeFileHandler(setCaIdFront, setCaIdFrontPrev)} />
+                  </div>
+
+                  {/* ID back — only for National ID */}
+                  {createForm.documentType !== 2 && (
+                    <div>
+                      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-[#5A5450]">National ID - Back</label>
+                      <div
+                        className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] hover:border-[#1a3c5e]/40 transition-colors"
+                        onClick={() => caIdBackRef.current?.click()}
+                      >
+                        {caIdBackPrev
+                          ? <img src={caIdBackPrev} alt="ID back" className="h-14 w-auto max-w-full rounded object-cover" />
+                          : <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" /></svg>
+                        }
+                        <p className="px-2 text-center text-[10px] text-[#5A5450]">{caIdBack ? caIdBack.name : 'Click to upload'}</p>
+                      </div>
+                      <input ref={caIdBackRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={makeFileHandler(setCaIdBack, setCaIdBackPrev)} />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1367,7 +1459,7 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                 <textarea className={inputCls} rows={2} value={createForm.adminNote} onChange={setC('adminNote')} placeholder="e.g. Paystack registration fee confirmed paid via reference TXN-XXXXX — account created manually after session expiry" />
               </Field>
 
-              <ModalActions onCancel={() => setCreateForm(null)} saving={createSaving} label="Create Aspirant Account" />
+              <ModalActions onCancel={() => { setCreateForm(null); clearCreateFiles() }} saving={createSaving} label="Create Aspirant Account" />
             </form>
           </Modal>
         )
