@@ -5,7 +5,7 @@ const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
 const SERIF = "Georgia, 'Times New Roman', Times, serif"
 
 const pillars = [
-  { num: '01', title: 'Equality', href: '/about', description: 'Everyone deserves the same rights, opportunities, and treatment regardless of background. Fairness is not uniformity — it is ensuring every Kenyan can fully participate in national life.' },
+  { num: '01', title: 'Equality', href: '/about', description: 'Everyone deserves the same rights, opportunities, and treatment regardless of background. Fairness is not uniformity - it is ensuring every Kenyan can fully participate in national life.' },
   { num: '02', title: 'Economic Empowerment', href: '/about', description: 'Gaining control over financial resources gives every Kenyan the power to make choices that improve their lives. We champion entrepreneurship, fair wages, and inclusive access to capital.' },
   { num: '03', title: 'Education', href: '/about', description: 'High-quality education ignites curiosity and equips students with the knowledge and skills to thrive. We commit to accessible, relevant education from early childhood through tertiary level.' },
   { num: '04', title: 'Eradication of Corruption', href: '/about', description: 'Eliminating dishonest acts for personal gain requires systemic transparency and accountability at every level of government. We hold zero tolerance for graft.' },

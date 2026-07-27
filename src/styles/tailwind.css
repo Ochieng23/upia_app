@@ -12,7 +12,7 @@
     --green:        #236331;
     --green-mid:    #2B753A;
     --green-tint:   #EBF5EC;
-    --off-white:    #F8F5F3;
+    --off-white:    #FBFAF7;
     --gray-text:    #5A5450;
     --gray-border:  #E2DCDA;
   }
@@ -24,7 +24,6 @@
   body {
     @apply antialiased;
     font-family: var(--font-inter), sans-serif;
-    background-color: var(--off-white);
     color: var(--gray-text);
   }
 }

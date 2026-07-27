@@ -30,7 +30,7 @@ export function Hero() {
           </p>
 
           <p style={{ margin: '24px 0 0', maxWidth: '46ch', fontSize: 'clamp(16px, 1.2vw, 18px)', lineHeight: 1.65, color: '#3C423A' }}>
-            Building a nation where every voice is heard, every opportunity is accessible, and every Kenyan can thrive — join the movement for real, lasting change.
+            Building a nation where every voice is heard, every opportunity is accessible, and every Kenyan can thrive - join the movement for real, lasting change.
           </p>
 
           <div style={{ marginTop: 36, display: 'flex', flexWrap: 'wrap', gap: 12 }}>

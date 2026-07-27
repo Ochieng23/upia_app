@@ -56,7 +56,7 @@ export default async function Blog() {
               <article style={{ position: 'relative' }} className="group">
                 {featured.coverImage && (
                   <div style={{ aspectRatio: '3/2', overflow: 'hidden', background: '#F1EEE6', marginBottom: 24 }}>
-                    <img src={featured.coverImage} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s' }} className="group-hover:scale-105" />
+                    <img src={featured.coverImage} alt={featured.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s' }} className="group-hover:scale-105" />
                   </div>
                 )}
                 <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 16 }}>
@@ -102,7 +102,7 @@ export default async function Blog() {
                 <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
                   {post.coverImage && (
                     <div style={{ width: 72, height: 60, flexShrink: 0, overflow: 'hidden', background: '#F1EEE6' }}>
-                      <img src={post.coverImage} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      <img src={post.coverImage} alt={post.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                     </div>
                   )}
                   <div>

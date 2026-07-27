@@ -12,7 +12,7 @@ const infoCells = [
   },
   {
     label: 'Opening Hours',
-    content: 'Monday – Friday\n9:00 AM – 5:00 PM\nWeekends closed',
+    content: 'Monday - Friday\n9:00 AM - 5:00 PM\nWeekends closed',
   },
   {
     label: 'Contact',
@@ -45,7 +45,7 @@ export default function Location() {
             Our Location
           </h2>
           <p style={{ margin: 0, fontFamily: SANS, fontSize: 16, lineHeight: 1.65, color: '#3C423A', maxWidth: '54ch' }}>
-            Visit our headquarters in Nairobi — we&apos;re always open to connect with members and aspirants.
+            Visit our headquarters in Nairobi - we&apos;re always open to connect with members and aspirants.
           </p>
         </div>
 

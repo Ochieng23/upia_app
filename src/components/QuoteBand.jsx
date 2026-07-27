@@ -17,6 +17,7 @@ export default function QuoteBand() {
               src={communityPhoto}
               alt="UPIA community gathering"
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               style={{ objectFit: 'cover', objectPosition: 'center' }}
             />
           </div>

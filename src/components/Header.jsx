@@ -20,7 +20,7 @@ const SERIF = "Georgia, 'Times New Roman', Times, serif"
 function Wordmark({ light }) {
   return (
     <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
-      <Logo className={`h-14 w-auto${light ? ' brightness-0 invert' : ''}`} />
+      <Logo className={`h-16 w-auto${light ? ' brightness-0 invert' : ''}`} />
     </Link>
   )
 }

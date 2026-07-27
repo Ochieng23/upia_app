@@ -34,7 +34,7 @@ export default function AboutHome() {
           </h2>
         </div>
         <p style={{ margin: 0, fontSize: 17, lineHeight: 1.65, color: '#3C423A', maxWidth: '44ch', alignSelf: 'flex-end' }}>
-          Guided by principle, driven by purpose — for every Kenyan.
+          Guided by principle, driven by purpose -for every Kenyan.
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export default function AboutHome() {
               paddingRight: i < 2 ? 'clamp(14px, 2.5vw, 30px)' : 0,
             }}>
               <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#0F4D2E', marginBottom: 16, fontWeight: 500 }}>
-                {col.num} — {col.head}
+                {col.num} -{col.head}
               </div>
               <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.72, color: '#3C423A' }}>
                 {col.body}

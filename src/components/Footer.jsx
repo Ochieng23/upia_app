@@ -95,7 +95,7 @@ export function Footer() {
             </Link>
 
             <p style={{ margin: '0 0 24px', fontFamily: SANS, fontSize: 13.5, lineHeight: 1.70, color: '#8FA694', maxWidth: '28ch' }}>
-              United Party of Independent Alliance — building a Kenya that is united, prosperous, and equitable for every citizen.
+              United Party of Independent Alliance - building a Kenya that is united, prosperous, and equitable for every citizen.
             </p>
 
             {/* Social circles */}
