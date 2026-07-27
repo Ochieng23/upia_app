@@ -922,6 +922,25 @@ const PIPELINE_TABS = [
   { id: 'rejected',       label: 'Rejected' },
 ]
 
+const SEAT_OPTIONS = [
+  { value: 'mca',       label: 'MCA (Member of County Assembly)',     needsConst: true,  needsWard: true  },
+  { value: 'women_rep', label: "Women's Representative",              needsConst: false, needsWard: false },
+  { value: 'senator',   label: 'Senator',                             needsConst: false, needsWard: false },
+  { value: 'mp',        label: 'MP (Member of Parliament)',           needsConst: true,  needsWard: false },
+  { value: 'governor',  label: 'Governor',                            needsConst: false, needsWard: false },
+]
+
+const BLANK_CREATE = {
+  firstName: '', lastName: '', email: '', password: '', phone: '',
+  nationalId: '', documentType: 1,
+  dob: '', gender: 'M', isElected: false, aspirantType: 'elective',
+  seatCategory: '',
+  countyCode: '', countyName: '',
+  constituencyCode: '', constituencyName: '',
+  wardCode: '', wardName: '',
+  adminNote: '',
+}
+
 function AspirantManagement({ showFlash, setIssueForm }) {
   const [pipelineTab, setPipelineTab]       = useState('pending_review')
   const [aspirants,   setAspirants]         = useState([])
@@ -938,6 +957,8 @@ function AspirantManagement({ showFlash, setIssueForm }) {
   const [rejectReason,setRejectReason]      = useState('')
   const [rejectSaving,setRejectSaving]      = useState(false)
   const [actionId,    setActionId]          = useState(null)
+  const [createForm,  setCreateForm]        = useState(null)
+  const [createSaving,setCreateSaving]      = useState(false)
 
   const selectedCounty  = KENYA_LOCATIONS.find(c => c.code === filterCounty)
   const constituencies  = selectedCounty?.constituencies || []
@@ -998,6 +1019,23 @@ function AspirantManagement({ showFlash, setIssueForm }) {
   const clearFilters = () => { setSearch(''); setFilterSeat(''); setFilterType(''); setFilterCounty(''); setFilterConst(''); setFilterWard('') }
   const hasFilters = !!(search || filterSeat || filterType || filterCounty || filterConst || filterWard)
 
+  const setC = (field) => (e) => setCreateForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
+
+  const handleCreateAspirant = async (e) => {
+    e.preventDefault()
+    setCreateSaving(true)
+    try {
+      await api.post('/admin/aspirants', createForm)
+      showFlash('Aspirant account created successfully')
+      setCreateForm(null)
+      reload()
+    } catch (err) {
+      alert(err.message || 'Failed to create aspirant account')
+    } finally {
+      setCreateSaving(false)
+    }
+  }
+
   const tabCount = {
     pending_review: stats?.pending ?? 0,
     approved: (stats?.approved ?? 0) + (stats?.approvedFeePaid ?? 0),
@@ -1039,9 +1077,17 @@ function AspirantManagement({ showFlash, setIssueForm }) {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-semibold text-[#111111]">Aspirants</h1>
-        <p className="text-sm text-[#5A5450] mt-0.5">{stats ? `${stats.total} total · ${stats.pending} pending review` : 'Loading…'}</p>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold text-[#111111]">Aspirants</h1>
+          <p className="text-sm text-[#5A5450] mt-0.5">{stats ? `${stats.total} total · ${stats.pending} pending review` : 'Loading…'}</p>
+        </div>
+        <button
+          onClick={() => setCreateForm({ ...BLANK_CREATE })}
+          className="shrink-0 rounded-[6px] bg-[#236331] px-4 py-2 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
+        >
+          + Create Aspirant
+        </button>
       </div>
 
       {/* Stats tiles */}
@@ -1182,6 +1228,150 @@ function AspirantManagement({ showFlash, setIssueForm }) {
           </div>
         </Modal>
       )}
+
+      {/* Create Aspirant modal */}
+      {createForm && (() => {
+        const seat = SEAT_OPTIONS.find((s) => s.value === createForm.seatCategory)
+        const county = KENYA_LOCATIONS.find((c) => c.code === createForm.countyCode)
+        const constits = county?.constituencies || []
+        const constit = constits.find((c) => c.code === createForm.constituencyCode)
+        const wards = constit?.wards || []
+
+        const onCountyChange = (code) => {
+          const c = KENYA_LOCATIONS.find((x) => x.code === code)
+          setCreateForm((f) => ({ ...f, countyCode: code, countyName: c?.name || '', constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' }))
+        }
+        const onConstituencyChange = (code) => {
+          const c = constits.find((x) => x.code === code)
+          setCreateForm((f) => ({ ...f, constituencyCode: code, constituencyName: c?.name || '', wardCode: '', wardName: '' }))
+        }
+        const onWardChange = (code) => {
+          const w = wards.find((x) => x.code === code)
+          setCreateForm((f) => ({ ...f, wardCode: code, wardName: w?.name || '' }))
+        }
+        const onSeatChange = (val) => {
+          setCreateForm((f) => ({ ...f, seatCategory: val, constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' }))
+        }
+
+        return (
+          <Modal title="Create Aspirant Account" onClose={() => setCreateForm(null)} wide>
+            <div className="mb-4 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+              <strong>Admin fallback.</strong> Use this only when the self-service payment flow could not be completed. The account will be created with payment bypassed.
+            </div>
+            <form onSubmit={handleCreateAspirant} className="space-y-5">
+
+              {/* Account credentials */}
+              <div>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5A5450]">Account Credentials</p>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="First Name *"><input className={inputCls} value={createForm.firstName} onChange={setC('firstName')} placeholder="John" required /></Field>
+                  <Field label="Last Name *"><input className={inputCls} value={createForm.lastName} onChange={setC('lastName')} placeholder="Doe" required /></Field>
+                </div>
+                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="Email *"><input className={inputCls} type="email" value={createForm.email} onChange={setC('email')} placeholder="aspirant@example.com" required /></Field>
+                  <Field label="Phone"><input className={inputCls} type="tel" value={createForm.phone} onChange={setC('phone')} placeholder="07XX XXX XXX" /></Field>
+                </div>
+                <div className="mt-3">
+                  <Field label="Temporary Password *">
+                    <input className={inputCls} type="password" value={createForm.password} onChange={setC('password')} placeholder="Minimum 8 characters" required minLength={8} />
+                    <p className="mt-1 text-[11px] text-[#5A5450]">Share this with the aspirant — they can change it after first login.</p>
+                  </Field>
+                </div>
+              </div>
+
+              <hr className="border-[#E2DCDA]" />
+
+              {/* Personal details */}
+              <div>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5A5450]">Personal Details</p>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="Document Type">
+                    <select className={selectCls} value={createForm.documentType} onChange={(e) => setCreateForm((f) => ({ ...f, documentType: Number(e.target.value), nationalId: '' }))}>
+                      <option value={1}>National ID</option>
+                      <option value={2}>Passport</option>
+                    </select>
+                  </Field>
+                  <Field label={createForm.documentType === 2 ? 'Passport Number' : 'National ID Number'}>
+                    <input className={inputCls} value={createForm.nationalId} onChange={setC('nationalId')} placeholder={createForm.documentType === 2 ? 'AK123456' : '20123456'} />
+                  </Field>
+                </div>
+                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="Date of Birth"><input type="date" className={inputCls} value={createForm.dob} onChange={setC('dob')} /></Field>
+                  <Field label="Gender">
+                    <select className={selectCls} value={createForm.gender} onChange={setC('gender')}>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                    </select>
+                  </Field>
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <input id="ca-elected" type="checkbox" checked={createForm.isElected} onChange={setC('isElected')} className="h-4 w-4 rounded border-[#E2DCDA] text-[#1a3c5e]" />
+                  <label htmlFor="ca-elected" className="text-sm text-[#5A5450]">Currently holds an elected office</label>
+                </div>
+              </div>
+
+              <hr className="border-[#E2DCDA]" />
+
+              {/* Political details */}
+              <div>
+                <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#5A5450]">Political Details</p>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <Field label="Aspirant Type *">
+                    <select className={selectCls} value={createForm.aspirantType} onChange={setC('aspirantType')} required>
+                      <option value="elective">Elective</option>
+                      <option value="nominated">Party Nominated</option>
+                    </select>
+                  </Field>
+                  <Field label="Seat Category *">
+                    <select className={selectCls} value={createForm.seatCategory} onChange={(e) => onSeatChange(e.target.value)} required>
+                      <option value="">Select seat</option>
+                      {SEAT_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    </select>
+                  </Field>
+                </div>
+
+                {createForm.seatCategory && (
+                  <div className="mt-3 space-y-3">
+                    <Field label="County *">
+                      <select className={selectCls} value={createForm.countyCode} onChange={(e) => onCountyChange(e.target.value)} required>
+                        <option value="">Select county</option>
+                        {KENYA_LOCATIONS.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+                      </select>
+                    </Field>
+
+                    {seat?.needsConst && createForm.aspirantType === 'elective' && (
+                      <Field label="Constituency *">
+                        <select className={selectCls} value={createForm.constituencyCode} onChange={(e) => onConstituencyChange(e.target.value)} disabled={!createForm.countyCode} required>
+                          <option value="">Select constituency</option>
+                          {constits.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+                        </select>
+                      </Field>
+                    )}
+
+                    {seat?.needsWard && createForm.aspirantType === 'elective' && (
+                      <Field label="Ward *">
+                        <select className={selectCls} value={createForm.wardCode} onChange={(e) => onWardChange(e.target.value)} disabled={!createForm.constituencyCode} required>
+                          <option value="">Select ward</option>
+                          {wards.map((w) => <option key={w.code} value={w.code}>{w.name}</option>)}
+                        </select>
+                      </Field>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <hr className="border-[#E2DCDA]" />
+
+              {/* Admin note */}
+              <Field label="Admin Note (internal)">
+                <textarea className={inputCls} rows={2} value={createForm.adminNote} onChange={setC('adminNote')} placeholder="e.g. Paystack registration fee confirmed paid via reference TXN-XXXXX — account created manually after session expiry" />
+              </Field>
+
+              <ModalActions onCancel={() => setCreateForm(null)} saving={createSaving} label="Create Aspirant Account" />
+            </form>
+          </Modal>
+        )
+      })()}
 
       {/* View aspirant modal */}
       {viewAspirant && (() => {
