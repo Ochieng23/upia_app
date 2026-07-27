@@ -1,88 +1,100 @@
-'use client'
-import React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import img2 from '../images/images/about-2.jpg'
+import img3 from '../images/images/about-3.jpg'
+import img4 from '../images/images/about-4.jpg'
+import img5 from '../images/images/about-5.jpg'
 
-const cards = [
+const pillars = [
   {
-    name: 'IDEOLOGY',
-    description:
-      'The party aims to establish political stability, advance economic empowerment, create social justice, and ensure equitable resource sharing for all Kenyans.',
-    icon: (
-      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
+    label: 'Ideology',
+    text: 'Political stability, economic empowerment, social justice, and equitable resource sharing for all Kenyans.',
+    color: '#C25757',
   },
   {
-    name: 'VISION',
-    description:
-      'To have a country that is united, prosperous, and sustainably developed with equal opportunities for all Kenyans to develop their potential and be free from poverty.',
-    icon: (
-      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-      </svg>
-    ),
+    label: 'Vision',
+    text: 'A united, prosperous, and sustainably developed Kenya with equal opportunities for every citizen.',
+    color: '#236331',
   },
   {
-    name: 'MISSION',
-    description:
-      'To identify and build capacity for all Kenyans to realize and exercise their political, social, economic, and cultural rights and fundamental freedoms enshrined in the constitution.',
-    icon: (
-      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
+    label: 'Mission',
+    text: 'Build capacity for all Kenyans to realise and exercise their political, social, economic, and cultural rights.',
+    color: '#6B2626',
   },
 ]
 
 export default function AboutHome() {
   return (
-    <section className="relative bg-[#F8F5F3] py-20 sm:py-28 overflow-hidden">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
-        <div className="mx-auto max-w-2xl text-center mb-16">
-          <span className="inline-block rounded-full bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757] mb-4">
-            Who We Are
-          </span>
-          <h2 className="text-[32px] font-semibold tracking-tight text-[#111111]">
-            Our Mission Statement
-          </h2>
-          <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
-            Guided by principle, driven by purpose - for every Kenyan.
-          </p>
-        </div>
+    <section id="mission" className="relative bg-white py-20 sm:py-28 overflow-hidden scroll-mt-16">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20 lg:items-center">
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {cards.map((card) => (
-            <div
-              key={card.name}
-              className="flex flex-col overflow-hidden rounded-[12px] bg-white transition-all duration-150 hover:border-[#D46868]"
-              style={{
-                border: '0.5px solid #E2DCDA',
-                borderLeft: '3px solid #C25757',
-                borderRadius: '0 12px 12px 0',
-              }}
+          {/* ── Left: copy ─────────────────────────────── */}
+          <div>
+            <span className="inline-block rounded-full bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757] mb-6">
+              Who We Are
+            </span>
+            <h2 className="text-[28px] sm:text-[34px] font-semibold tracking-tight text-[#111111] leading-snug">
+              Building bridges,<br className="hidden sm:block" /> not walls
+            </h2>
+            <p className="mt-5 text-[15px] leading-[1.82] text-[#5A5450]">
+              By leveraging cutting-edge technology and user-centric design, we empower
+              parties and leaders to transcend geographical and ideological boundaries —
+              reaching every Kenyan, from Mandera to Mombasa.
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.82] text-[#5A5450]">
+              We are democratising access to political discourse, amplifying the voices of
+              marginalised groups and building a more resilient, responsive political ecosystem.
+            </p>
+
+            {/* Ideology / Vision / Mission */}
+            <ul className="mt-8 space-y-4">
+              {pillars.map((p) => (
+                <li key={p.label} className="flex gap-4 items-start">
+                  <span
+                    className="mt-1.5 flex-shrink-0 h-2 w-2 rounded-full"
+                    style={{ background: p.color }}
+                  />
+                  <div>
+                    <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#111111]">
+                      {p.label}
+                    </span>
+                    <p className="mt-0.5 text-[14px] leading-[1.75] text-[#5A5450]">{p.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <Link
+              href="/about"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#236331] hover:text-[#2B753A] transition-colors"
             >
-              {/* Card header */}
-              <div className="flex items-center gap-4 px-[22px] pt-[20px] pb-4">
-                <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#C25757]">
-                  {card.icon}
-                </div>
-                <span className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">
-                  {card.name}
-                </span>
+              Learn more about UPIA
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+
+          {/* ── Right: image collage ────────────────────── */}
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
+                <Image src={img2} alt="" fill className="object-cover" />
               </div>
-
-              {/* Divider */}
-              <div className="mx-[22px] h-px bg-[#E2DCDA]" />
-
-              {/* Content */}
-              <div className="flex-1 px-[22px] py-5">
-                <p className="text-[15px] leading-[1.75] text-[#5A5450]">{card.description}</p>
+              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '85%' }}>
+                <Image src={img3} alt="" fill className="object-cover" />
               </div>
             </div>
-          ))}
+            <div className="space-y-3 sm:space-y-4 pt-6 sm:pt-10">
+              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '85%' }}>
+                <Image src={img4} alt="" fill className="object-cover" />
+              </div>
+              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
+                <Image src={img5} alt="" fill className="object-cover" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

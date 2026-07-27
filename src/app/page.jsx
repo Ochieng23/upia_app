@@ -1,79 +1,29 @@
-
-import { CallToAction } from '../components/CallToAction'
-import { Footer } from '../components/Footer'
 import { Header } from '../components/Header'
+import { Footer } from '../components/Footer'
 import { Hero } from '../components/Hero'
-import Location from '../components/location'
+import StatsStrip from '../components/StatsStrip'
 import AboutHome from '../components/About'
+import FocusAreas from '../components/Focus'
+import QuoteBand from '../components/QuoteBand'
+import { CallToAction } from '../components/CallToAction'
 import Blog from '../components/Blog'
-import { HoverEffect } from '../components/Focus'
-import {
-  FaBalanceScaleRight,
-  FaClinicMedical,
-  FaBuilding,
-  FaRegSnowflake,
-  FaDonate,
-  FaGraduationCap,
-} from 'react-icons/fa'
-
-
-const items = [
-  {
-    title: 'Equality',
-    description:
-      "Equality means everyone having the same rights, opportunities, and treatment, regardless of background or traits. It's about fairness, not everyone getting the exact same thing.",
-    link: '/about',
-    icon: <FaBalanceScaleRight className="h-10 w-10 " />,
-  },
-  {
-    title: 'Economic Empowerment',
-    description:
-      'Economic empowerment is gaining control over your financial resources, giving you the power to make your own choices and improve your life.',
-    link: '/about',
-    icon: <FaDonate className="h-10 w-10" />,
-  },
-  {
-    title: 'Education',
-    description:
-      'High-quality education ignites curiosity, fosters critical thinking, and equips students with the knowledge and skills to thrive in a changing world.',
-    link: '/about',
-    icon: <FaGraduationCap className="h-10 w-10" />,
-  },
-  {
-    title: 'Eradication of Corruption',
-    description:
-      'Eradicating corruption means eliminating dishonest acts for personal gain, fostering a system of transparency and accountability.',
-    link: '/about',
-    icon: <FaBuilding className="h-10 w-10" />,
-  },
-  {
-    title: 'Universal Healthcare',
-    description:
-      'Universal healthcare ensures everyone gets the medical treatment they need, without facing financial hardship.',
-    link: '/about',
-    icon: <FaClinicMedical className="h-10 w-10" />,
-  },
-  {
-    title: 'Climate Change',
-    description:
-      "Earth's climate is heating up, mainly due to greenhouse gases trapping heat. This disrupts weather patterns, causing rising seas, extreme weather, and harm to ecosystems.",
-    link: '/about',
-    icon: <FaRegSnowflake className="h-10 w-10" />,
-  },
-]
+import Newsletter from '../components/Newsletter'
+import Location from '../components/location'
 
 export default function Home() {
   return (
     <>
-      <Header  />
+      <Header />
       <main>
-    
         <Hero />
+        <StatsStrip />
         <AboutHome />
-        <HoverEffect items={items} />
+        <FocusAreas />
+        <QuoteBand />
         <CallToAction />
-        <Location />
         <Blog />
+        <Newsletter />
+        <Location />
       </main>
       <Footer />
     </>
