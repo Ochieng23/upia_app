@@ -2,6 +2,7 @@
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
+import { Logo } from '../components/Logo'
 
 const navLinks = [
   { href: '/',          label: 'Home' },
@@ -18,18 +19,8 @@ const SERIF = "Georgia, 'Times New Roman', Times, serif"
 
 function Wordmark({ light }) {
   return (
-    <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-      <div style={{
-        width: 34, height: 34, borderRadius: '50%', flexShrink: 0,
-        background: light ? '#FBFAF7' : '#0F4D2E',
-        display: 'grid', placeItems: 'center',
-      }}>
-        <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 13, color: light ? '#0F4D2E' : '#FBFAF7' }}>U</span>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, lineHeight: 1 }}>
-        <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 15, color: light ? '#EDEFE9' : '#161A14', letterSpacing: '0.04em' }}>UPIA</span>
-        <span style={{ fontFamily: SANS, fontSize: 7.5, letterSpacing: '0.16em', color: light ? '#8FA694' : '#5C6157', textTransform: 'uppercase' }}>Party of Kenya</span>
-      </div>
+    <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+      <Logo className={`h-14 w-auto${light ? ' brightness-0 invert' : ''}`} />
     </Link>
   )
 }

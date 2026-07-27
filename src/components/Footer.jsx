@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Logo } from '../components/Logo'
 
 const GUTTER = 'clamp(18px, 5vw, 72px)'
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
@@ -88,15 +89,9 @@ export function Footer() {
 
           {/* Brand column */}
           <div>
-            {/* Wordmark */}
-            <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginBottom: 18 }}>
-              <div style={{ width: 34, height: 34, borderRadius: '50%', background: '#FBFAF7', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
-                <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 13, color: '#0F4D2E' }}>U</span>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 15, color: '#EDEFE9', letterSpacing: '0.04em' }}>UPIA</span>
-                <span style={{ fontFamily: SANS, fontSize: 7.5, letterSpacing: '0.16em', color: '#8FA694', textTransform: 'uppercase' }}>Party of Kenya</span>
-              </div>
+            {/* Logo */}
+            <Link href="/" style={{ display: 'inline-flex', marginBottom: 18, textDecoration: 'none' }}>
+              <Logo className="h-16 w-auto brightness-0 invert" />
             </Link>
 
             <p style={{ margin: '0 0 24px', fontFamily: SANS, fontSize: 13.5, lineHeight: 1.70, color: '#8FA694', maxWidth: '28ch' }}>
