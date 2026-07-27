@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={clsx('h-full scroll-smooth antialiased', inter.variable)}
     >
-      <body className="flex h-full flex-col bg-[#F8F5F3]" suppressHydrationWarning>
+      <body className="flex h-full flex-col bg-[#FBFAF7]" suppressHydrationWarning>
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

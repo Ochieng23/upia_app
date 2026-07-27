@@ -1,4 +1,9 @@
 import Link from 'next/link'
+import NewsletterCard from './NewsletterCard'
+
+const GUTTER = 'clamp(18px, 5vw, 72px)'
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+const SERIF = "Georgia, 'Times New Roman', Times, serif"
 
 async function getPosts() {
   try {
@@ -15,30 +20,7 @@ async function getPosts() {
 }
 
 function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('en-KE', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-}
-
-function AuthorChip({ post }) {
-  return (
-    <div className="flex items-center gap-2">
-      {post.author?.imageUrl ? (
-        <img
-          src={post.author.imageUrl}
-          alt={post.author.name}
-          className="h-7 w-7 rounded-full object-cover ring-2 ring-[#FBF0F0]"
-        />
-      ) : (
-        <div className="h-7 w-7 rounded-full bg-[#236331] flex items-center justify-center text-white text-[11px] font-semibold flex-shrink-0">
-          {post.author?.name?.[0] || 'U'}
-        </div>
-      )}
-      <span className="text-[12px] font-medium text-[#5A5450]">{post.author?.name || 'UPIA'}</span>
-    </div>
-  )
+  return new Date(dateStr).toLocaleDateString('en-KE', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 export default async function Blog() {
@@ -46,144 +28,105 @@ export default async function Blog() {
   const [featured, ...briefs] = posts
 
   return (
-    <section id="news" className="bg-white py-20 sm:py-28 scroll-mt-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="news" style={{ scrollMarginTop: 106, maxWidth: 1240, margin: '0 auto', padding: `clamp(60px, 7.5vw, 108px) ${GUTTER}` }}>
 
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-14">
-          <div>
-            <span className="inline-block rounded-full bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757] mb-4">
-              Latest Updates
-            </span>
-            <h2 className="text-[32px] font-semibold tracking-tight text-[#111111]">News &amp; Press</h2>
-            <p className="mt-2 text-[15px] text-[#5A5450]">Stay informed on UPIA&apos;s latest developments</p>
+      {/* Section header */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between" style={{ gap: '12px 24px', marginBottom: 'clamp(36px, 5vw, 56px)' }}>
+        <div>
+          <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.20em', textTransform: 'uppercase', color: '#8A6520', marginBottom: 18 }}>
+            News &amp; Press
           </div>
-          <Link
-            href="/news"
-            className="flex-shrink-0 inline-flex items-center gap-2 rounded-[6px] border border-[#E2DCDA] px-5 py-2.5 text-sm font-medium text-[#5A5450] hover:border-[#C25757] hover:text-[#C25757] transition-all duration-150"
-          >
-            All Articles
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </Link>
+          <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: 'clamp(30px, 3.8vw, 50px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#161A14' }}>
+            Latest Updates
+          </h2>
         </div>
+        <Link href="/news" style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, color: '#0F4D2E', textDecoration: 'none', flexShrink: 0, alignSelf: 'flex-end' }}>
+          View all articles →
+        </Link>
+      </div>
 
-        {posts.length === 0 ? (
-          <p className="text-center text-[#5A5450] py-12">No articles published yet.</p>
-        ) : briefs.length === 0 ? (
-          /* Only one post — show it wide */
-          <FeaturedCard post={featured} wide />
-        ) : (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:grid-rows-1">
-            {/* Featured — takes 2 of 3 columns */}
-            <div className="lg:col-span-2">
-              <FeaturedCard post={featured} />
+      {posts.length === 0 ? (
+        <p style={{ fontFamily: SANS, fontSize: 15, color: '#5C6157', textAlign: 'center', padding: '48px 0' }}>No articles published yet.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr]" style={{ gap: 0 }}>
+
+          {/* Featured article */}
+          {featured && (
+            <div style={{ paddingRight: 'clamp(24px, 4vw, 48px)', borderRight: '2px solid #161A14' }} className="md:pr-[clamp(24px,4vw,48px)]">
+              <article style={{ position: 'relative' }} className="group">
+                {featured.coverImage && (
+                  <div style={{ aspectRatio: '3/2', overflow: 'hidden', background: '#F1EEE6', marginBottom: 24 }}>
+                    <img src={featured.coverImage} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.4s' }} className="group-hover:scale-105" />
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 16 }}>
+                  <time style={{ fontFamily: SANS, fontSize: 11, letterSpacing: '0.10em', textTransform: 'uppercase', color: '#5C6157' }}>
+                    {formatDate(featured.publishedAt || featured.createdAt)}
+                  </time>
+                  {featured.categories?.[0] && (
+                    <>
+                      <span style={{ color: '#DFDCD1' }}>·</span>
+                      <span style={{ fontFamily: SANS, fontSize: 11, letterSpacing: '0.10em', textTransform: 'uppercase', color: '#B8862B' }}>{featured.categories[0]}</span>
+                    </>
+                  )}
+                </div>
+                <h3 style={{ margin: '0 0 14px', fontFamily: SERIF, fontWeight: 400, fontSize: 'clamp(22px, 2.4vw, 28px)', lineHeight: 1.25, letterSpacing: '-0.01em', color: '#161A14' }} className="group-hover:text-[#0F4D2E] transition-colors">
+                  <Link href={`/post/${featured.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <span className="absolute inset-0" aria-hidden />
+                    {featured.title}
+                  </Link>
+                </h3>
+                {featured.description && (
+                  <p style={{ margin: '0 0 20px', fontFamily: SANS, fontSize: 15, lineHeight: 1.68, color: '#3C423A' }} className="line-clamp-3">
+                    {featured.description}
+                  </p>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 16, borderTop: '1px solid #E4E1D6' }}>
+                  {featured.author?.imageUrl ? (
+                    <img src={featured.author.imageUrl} alt={featured.author.name} style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                  ) : (
+                    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#0F4D2E', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+                      <span style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, color: '#FBFAF7' }}>{(featured.author?.name?.[0] || 'U').toUpperCase()}</span>
+                    </div>
+                  )}
+                  <span style={{ fontFamily: SANS, fontSize: 12.5, color: '#5C6157' }}>{featured.author?.name || 'UPIA'}</span>
+                </div>
+              </article>
             </div>
-            {/* Brief list — 1 of 3 columns */}
-            <div className="flex flex-col gap-4">
-              {briefs.slice(0, 3).map((post) => (
-                <BriefCard key={post._id} post={post} />
-              ))}
+          )}
+
+          {/* Right: briefs + newsletter */}
+          <div style={{ paddingLeft: 'clamp(24px, 4vw, 48px)', display: 'flex', flexDirection: 'column', gap: 0 }} className="mt-8 md:mt-0">
+            {briefs.slice(0, 3).map((post, i) => (
+              <article key={post._id} style={{ position: 'relative', paddingTop: 20, paddingBottom: 20, borderTop: i > 0 ? '1px solid #E4E1D6' : 'none' }} className="group">
+                <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                  {post.coverImage && (
+                    <div style={{ width: 72, height: 60, flexShrink: 0, overflow: 'hidden', background: '#F1EEE6' }}>
+                      <img src={post.coverImage} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    </div>
+                  )}
+                  <div>
+                    <time style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.10em', textTransform: 'uppercase', color: '#5C6157' }}>
+                      {formatDate(post.publishedAt || post.createdAt)}
+                    </time>
+                    <h3 style={{ margin: '5px 0 0', fontFamily: SERIF, fontWeight: 400, fontSize: 16, lineHeight: 1.3, color: '#161A14' }} className="group-hover:text-[#0F4D2E] transition-colors line-clamp-2">
+                      <Link href={`/post/${post.slug}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <span className="absolute inset-0" aria-hidden />
+                        {post.title}
+                      </Link>
+                    </h3>
+                  </div>
+                </div>
+              </article>
+            ))}
+
+            {/* Newsletter card */}
+            <div style={{ marginTop: 24 }}>
+              <NewsletterCard />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </section>
-  )
-}
-
-function FeaturedCard({ post, wide }) {
-  return (
-    <article
-      className="group relative flex flex-col overflow-hidden bg-white h-full rounded-[12px]"
-      style={{ border: '0.5px solid #E2DCDA' }}
-    >
-      {/* Cover image */}
-      <div className="relative overflow-hidden" style={{ paddingBottom: '52%' }}>
-        {post.coverImage ? (
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-[#6B2626]/15 to-[#236331]/10 flex items-center justify-center">
-            <span className="text-5xl opacity-40">📰</span>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#111]/60 via-transparent to-transparent" />
-        {post.categories?.[0] && (
-          <div className="absolute top-4 left-4">
-            <span className="rounded-full bg-[#C25757] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.07em] text-white">
-              {post.categories[0]}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-1 flex-col p-6 sm:p-7">
-        <time className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">
-          {formatDate(post.publishedAt || post.createdAt)}
-        </time>
-        <h3 className="mt-3 text-[20px] sm:text-[22px] font-semibold leading-snug text-[#111111] group-hover:text-[#C25757] transition-colors">
-          <Link href={`/post/${post.slug}`}>
-            <span className="absolute inset-0" aria-hidden />
-            {post.title}
-          </Link>
-        </h3>
-        <p className="mt-3 flex-1 text-[15px] leading-[1.75] text-[#5A5450] line-clamp-3">
-          {post.description}
-        </p>
-        <div className="mt-6 flex items-center justify-between border-t border-[#E2DCDA] pt-4">
-          <AuthorChip post={post} />
-          <span className="flex items-center gap-1 text-[12px] font-semibold text-[#C25757]">
-            Read more
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </span>
-        </div>
-      </div>
-    </article>
-  )
-}
-
-function BriefCard({ post }) {
-  return (
-    <article
-      className="group relative flex gap-4 bg-white rounded-[12px] p-4 transition-all duration-150 hover:border-[#D46868]"
-      style={{ border: '0.5px solid #E2DCDA' }}
-    >
-      {/* Thumbnail */}
-      <div className="relative flex-shrink-0 w-20 h-20 overflow-hidden rounded-[8px] bg-[#F8F5F3]">
-        {post.coverImage ? (
-          <img
-            src={post.coverImage}
-            alt={post.title}
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="h-full w-full flex items-center justify-center text-2xl opacity-30">📰</div>
-        )}
-      </div>
-
-      {/* Text */}
-      <div className="flex flex-col min-w-0">
-        <time className="text-[10px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">
-          {formatDate(post.publishedAt || post.createdAt)}
-        </time>
-        <h3 className="mt-1 text-[14px] font-semibold leading-snug text-[#111111] group-hover:text-[#C25757] transition-colors line-clamp-2">
-          <Link href={`/post/${post.slug}`}>
-            <span className="absolute inset-0" aria-hidden />
-            {post.title}
-          </Link>
-        </h3>
-        <p className="mt-1 text-[12px] leading-[1.6] text-[#5A5450] line-clamp-2">
-          {post.description}
-        </p>
-      </div>
-    </article>
   )
 }

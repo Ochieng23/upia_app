@@ -1,101 +1,74 @@
-import Image from 'next/image'
 import Link from 'next/link'
-import img2 from '../images/images/about-2.jpg'
-import img3 from '../images/images/about-3.jpg'
-import img4 from '../images/images/about-4.jpg'
-import img5 from '../images/images/about-5.jpg'
 
-const pillars = [
+const GUTTER = 'clamp(18px, 5vw, 72px)'
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+const SERIF = "Georgia, 'Times New Roman', Times, serif"
+
+const cols = [
   {
-    label: 'Ideology',
-    text: 'Political stability, economic empowerment, social justice, and equitable resource sharing for all Kenyans.',
-    color: '#C25757',
+    num: '01', head: 'Ideology',
+    body: 'The party aims to establish political stability, advance economic empowerment, create social justice, and ensure equitable resource sharing for all Kenyans.',
   },
   {
-    label: 'Vision',
-    text: 'A united, prosperous, and sustainably developed Kenya with equal opportunities for every citizen.',
-    color: '#236331',
+    num: '02', head: 'Vision',
+    body: 'To have a country that is united, prosperous, and sustainably developed with equal opportunities for all Kenyans to develop their potential and be free from poverty.',
   },
   {
-    label: 'Mission',
-    text: 'Build capacity for all Kenyans to realise and exercise their political, social, economic, and cultural rights.',
-    color: '#6B2626',
+    num: '03', head: 'Mission',
+    body: 'To identify and build capacity for all Kenyans to realise and exercise their political, social, economic, and cultural rights and fundamental freedoms enshrined in the constitution.',
   },
 ]
 
 export default function AboutHome() {
   return (
-    <section id="mission" className="relative bg-white py-20 sm:py-28 overflow-hidden scroll-mt-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20 lg:items-center">
+    <section id="mission" style={{ scrollMarginTop: 106, maxWidth: 1240, margin: '0 auto', padding: `clamp(60px, 7.5vw, 108px) ${GUTTER}` }}>
 
-          {/* ── Left: copy ─────────────────────────────── */}
-          <div>
-            <span className="inline-block rounded-full bg-[#FBF0F0] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#C25757] mb-6">
-              Who We Are
-            </span>
-            <h2 className="text-[28px] sm:text-[34px] font-semibold tracking-tight text-[#111111] leading-snug">
-              Building bridges,<br className="hidden sm:block" /> not walls
-            </h2>
-            <p className="mt-5 text-[15px] leading-[1.82] text-[#5A5450]">
-              By leveraging cutting-edge technology and user-centric design, we empower
-              parties and leaders to transcend geographical and ideological boundaries —
-              reaching every Kenyan, from Mandera to Mombasa.
-            </p>
-            <p className="mt-4 text-[15px] leading-[1.82] text-[#5A5450]">
-              We are democratising access to political discourse, amplifying the voices of
-              marginalised groups and building a more resilient, responsive political ecosystem.
-            </p>
-
-            {/* Ideology / Vision / Mission */}
-            <ul className="mt-8 space-y-4">
-              {pillars.map((p) => (
-                <li key={p.label} className="flex gap-4 items-start">
-                  <span
-                    className="mt-1.5 flex-shrink-0 h-2 w-2 rounded-full"
-                    style={{ background: p.color }}
-                  />
-                  <div>
-                    <span className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[#111111]">
-                      {p.label}
-                    </span>
-                    <p className="mt-0.5 text-[14px] leading-[1.75] text-[#5A5450]">{p.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="/about"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#236331] hover:text-[#2B753A] transition-colors"
-            >
-              Learn more about UPIA
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
+      {/* Section header */}
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(20px, 4vw, 60px)', alignItems: 'end', marginBottom: 'clamp(40px, 5vw, 64px)' }}>
+        <div>
+          <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.20em', textTransform: 'uppercase', color: '#8A6520', marginBottom: 20 }}>
+            Who We Are
           </div>
-
-          {/* ── Right: image collage ────────────────────── */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4">
-            <div className="space-y-3 sm:space-y-4">
-              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
-                <Image src={img2} alt="" fill className="object-cover" />
-              </div>
-              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '85%' }}>
-                <Image src={img3} alt="" fill className="object-cover" />
-              </div>
-            </div>
-            <div className="space-y-3 sm:space-y-4 pt-6 sm:pt-10">
-              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '85%' }}>
-                <Image src={img4} alt="" fill className="object-cover" />
-              </div>
-              <div className="relative w-full overflow-hidden rounded-[12px]" style={{ paddingBottom: '65%' }}>
-                <Image src={img5} alt="" fill className="object-cover" />
-              </div>
-            </div>
-          </div>
+          <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: 'clamp(30px, 3.8vw, 50px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#161A14' }}>
+            Our Mission Statement
+          </h2>
         </div>
+        <p style={{ margin: 0, fontSize: 17, lineHeight: 1.65, color: '#3C423A', maxWidth: '44ch', alignSelf: 'flex-end' }}>
+          Guided by principle, driven by purpose — for every Kenyan.
+        </p>
+      </div>
+
+      {/* 3-column grid with asymmetric padding */}
+      <div className="grid grid-cols-1 md:grid-cols-3">
+        {cols.map((col, i) => (
+          <div
+            key={col.num}
+            style={{
+              borderTop: '2px solid #161A14',
+              paddingTop: 28,
+              paddingBottom: 28,
+            }}
+            className={i > 0 ? 'md:border-l border-[#E4E1D6]' : ''}
+          >
+            <div style={{
+              paddingLeft: i > 0 ? 'clamp(14px, 2.5vw, 30px)' : 0,
+              paddingRight: i < 2 ? 'clamp(14px, 2.5vw, 30px)' : 0,
+            }}>
+              <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#0F4D2E', marginBottom: 16, fontWeight: 500 }}>
+                {col.num} — {col.head}
+              </div>
+              <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.72, color: '#3C423A' }}>
+                {col.body}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ marginTop: 40 }}>
+        <Link href="/about" style={{ fontFamily: SANS, fontSize: 13.5, fontWeight: 500, color: '#0F4D2E', textDecoration: 'none', letterSpacing: '0.01em' }}>
+          Learn more about UPIA →
+        </Link>
       </div>
     </section>
   )

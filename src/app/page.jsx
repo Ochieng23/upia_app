@@ -7,7 +7,6 @@ import FocusAreas from '../components/Focus'
 import QuoteBand from '../components/QuoteBand'
 import { CallToAction } from '../components/CallToAction'
 import Blog from '../components/Blog'
-import Newsletter from '../components/Newsletter'
 import Location from '../components/location'
 
 export default function Home() {
@@ -22,7 +21,6 @@ export default function Home() {
         <QuoteBand />
         <CallToAction />
         <Blog />
-        <Newsletter />
         <Location />
       </main>
       <Footer />

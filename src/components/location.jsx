@@ -1,105 +1,123 @@
 'use client'
-import React from 'react'
+import { useState } from 'react'
 
-function Location() {
+const GUTTER = 'clamp(18px, 5vw, 72px)'
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+const SERIF = "Georgia, 'Times New Roman', Times, serif"
+
+const infoCells = [
+  {
+    label: 'Headquarters',
+    content: 'Ramshab Lane, Along Ngong Road\nNext to Nairobi Baptist Church\nNairobi, Kenya',
+  },
+  {
+    label: 'Opening Hours',
+    content: 'Monday – Friday\n9:00 AM – 5:00 PM\nWeekends closed',
+  },
+  {
+    label: 'Contact',
+    links: [
+      { href: 'tel:+254705927424', label: '+254 705 927 424' },
+      { href: 'mailto:info@upiaparty.com', label: 'info@upiaparty.com' },
+    ],
+  },
+  {
+    label: 'Membership',
+    content: 'Dial *509# to verify your\nmembership status',
+  },
+]
+
+const MAP_SRC = 'https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Ramshab+Lane,+Along+Ngong+Road,+Nairobi,+(UPIA%20Party%20HQ)&t=&z=15&ie=UTF8&iwloc=B&output=embed'
+
+export default function Location() {
+  const [showMap, setShowMap] = useState(false)
+
   return (
-    <section className="relative bg-white py-16 sm:py-20 lg:py-28 overflow-hidden">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="location" style={{ background: '#F7F5EF', scrollMarginTop: 106 }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: `clamp(60px, 7.5vw, 108px) ${GUTTER}` }}>
+
         {/* Section header */}
-        <div className="mx-auto max-w-2xl text-center mb-10 sm:mb-16">
-          <span className="inline-block rounded-full bg-[#EBF5EC] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#236331] mb-4">
+        <div style={{ marginBottom: 'clamp(40px, 5vw, 60px)' }}>
+          <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.20em', textTransform: 'uppercase', color: '#8A6520', marginBottom: 18 }}>
             Find Us
-          </span>
-          <h2 className="text-[28px] sm:text-[32px] font-semibold tracking-tight text-[#111111]">
+          </div>
+          <h2 style={{ margin: '0 0 16px', fontFamily: SERIF, fontWeight: 400, fontSize: 'clamp(30px, 3.8vw, 50px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#161A14' }}>
             Our Location
           </h2>
-          <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
-            Visit our headquarters in Nairobi - we&apos;re always open to connect
+          <p style={{ margin: 0, fontFamily: SANS, fontSize: 16, lineHeight: 1.65, color: '#3C423A', maxWidth: '54ch' }}>
+            Visit our headquarters in Nairobi — we&apos;re always open to connect with members and aspirants.
           </p>
         </div>
 
         {/* Content grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
-          {/* Info cards */}
-          <div className="flex flex-col gap-4 md:col-span-1">
-            {/* Hours card */}
-            <div className="rounded-[12px] bg-white p-5 sm:p-6" style={{ border: '0.5px solid #E2DCDA' }}>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#236331] text-white">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-medium text-[#111111]">Opening Hours</h3>
-                  <p className="mt-1 text-sm text-[#5A5450]">Monday - Friday</p>
-                  <p className="text-sm font-medium text-[#236331]">9:00 AM - 5:00 PM</p>
-                  <p className="mt-1 text-sm text-[#5A5450] italic">Weekends closed</p>
-                </div>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(32px, 5vw, 60px)', alignItems: 'start' }}>
 
-            {/* Address card */}
-            <div className="rounded-[12px] bg-white p-5 sm:p-6" style={{ border: '0.5px solid #E2DCDA' }}>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#C25757] text-white">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
+          {/* Info cells */}
+          <div className="grid grid-cols-1 sm:grid-cols-2">
+            {infoCells.map((cell, i) => (
+              <div
+                key={cell.label}
+                style={{
+                  paddingTop: 'clamp(16px, 2vw, 22px)',
+                  paddingBottom: 'clamp(16px, 2vw, 22px)',
+                  borderTop: '1px solid #DFDCD1',
+                  paddingLeft: i % 2 === 1 ? 'clamp(12px, 2vw, 22px)' : 0,
+                  paddingRight: i % 2 === 0 ? 'clamp(12px, 2vw, 22px)' : 0,
+                }}
+                className={i % 2 === 1 ? 'sm:border-l border-[#DFDCD1]' : ''}
+              >
+                <div style={{ fontFamily: SANS, fontSize: 10, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#0F4D2E', marginBottom: 10, fontWeight: 600 }}>
+                  {cell.label}
                 </div>
-                <div>
-                  <h3 className="font-medium text-[#111111]">UPIA Party HQ</h3>
-                  <p className="mt-1 text-sm text-[#5A5450]">
-                    Ramshab Lane, Along Ngong Road<br />
-                    Next to Nairobi Baptist Church<br />
-                    Nairobi
+                {cell.content && (
+                  <p style={{ margin: 0, fontFamily: SANS, fontSize: 13.5, lineHeight: 1.72, color: '#3C423A', whiteSpace: 'pre-line' }}>
+                    {cell.content}
                   </p>
-                </div>
+                )}
+                {cell.links && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                    {cell.links.map((l) => (
+                      <a key={l.href} href={l.href} style={{ fontFamily: SANS, fontSize: 13.5, color: '#0F4D2E', textDecoration: 'none' }}>
+                        {l.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-
-            {/* Contact card */}
-            <div className="rounded-[12px] bg-white p-5 sm:p-6" style={{ border: '0.5px solid #E2DCDA' }}>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[8px] bg-[#111111] text-white">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-medium text-[#111111]">Contact</h3>
-                  <a href="tel:+254705927424" className="mt-1 block text-sm text-[#236331] hover:text-[#2B753A] font-medium">
-                    +254 705 927 424
-                  </a>
-                  <a href="mailto:info@upiaparty.com" className="mt-1 block text-sm text-[#236331] hover:text-[#2B753A]">
-                    info@upiaparty.com
-                  </a>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Map */}
-          <div className="md:col-span-2">
-            <div
-              className="relative w-full overflow-hidden rounded-[12px] min-h-[260px] sm:min-h-[360px] md:h-full md:min-h-[400px]"
-              style={{ border: '0.5px solid #E2DCDA' }}
-            >
+          {/* Map slot */}
+          <div style={{ position: 'relative', background: '#F1EEE6', border: '1px solid #DFDCD1', minHeight: 300, overflow: 'hidden' }}>
+            {showMap ? (
               <iframe
-                className="absolute inset-0 h-full w-full border-0"
-                src="https://maps.google.com/maps?width=100%25&height=600&hl=en&q=Ramshab+Lane,+Along+Ngong+Road,+Nairobi,+(UPIA%20Party%20HQ)&t=&z=15&ie=UTF8&iwloc=B&output=embed"
+                src={MAP_SRC}
+                title="UPIA Party HQ"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="UPIA Party HQ Location"
               />
-            </div>
+            ) : (
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, padding: 24 }}>
+                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="#5C6157" strokeWidth="1.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/>
+                </svg>
+                <span style={{ fontFamily: SANS, fontSize: 12.5, color: '#5C6157', textAlign: 'center' }}>
+                  Ramshab Lane, Ngong Road, Nairobi
+                </span>
+                <button
+                  onClick={() => setShowMap(true)}
+                  style={{ padding: '11px 22px', fontSize: 13, fontWeight: 500, color: '#FBFAF7', background: '#0F4D2E', borderRadius: 3, border: 'none', cursor: 'pointer', fontFamily: SANS }}
+                >
+                  Show Map
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </section>
   )
 }
-
-export default Location

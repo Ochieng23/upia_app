@@ -1,10 +1,7 @@
 'use client'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import clsx from 'clsx'
-import { Logo } from '../components/Logo'
 
 const navLinks = [
   { href: '/',          label: 'Home' },
@@ -15,148 +12,137 @@ const navLinks = [
   { href: '/contact',   label: 'Contact' },
 ]
 
-function HamburgerIcon({ open }) {
-  return (
-    <div className="relative flex h-6 w-6 flex-col justify-center items-center gap-[5px]">
-      <span className={clsx('block h-0.5 w-6 bg-current transition-all duration-300 origin-center', open ? 'rotate-45 translate-y-[7px]' : '')} />
-      <span className={clsx('block h-0.5 w-6 bg-current transition-all duration-300', open ? 'opacity-0 scale-x-0' : '')} />
-      <span className={clsx('block h-0.5 w-6 bg-current transition-all duration-300 origin-center', open ? '-rotate-45 -translate-y-[7px]' : '')} />
-    </div>
-  )
-}
+const GUTTER = 'clamp(18px, 5vw, 72px)'
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+const SERIF = "Georgia, 'Times New Roman', Times, serif"
 
-function NavItem({ href, children }) {
-  const pathname = usePathname()
-  const isActive = pathname === href
-
+function Wordmark({ light }) {
   return (
-    <Link
-      href={href}
-      className={clsx(
-        'relative text-[13px] font-medium transition-colors duration-150',
-        isActive
-          ? 'text-[#C25757]'
-          : 'text-[#5A5450] hover:text-[#C25757]',
-      )}
-    >
-      {children}
-      {isActive && (
-        <span className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full bg-[#C25757]" />
-      )}
+    <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+      <div style={{
+        width: 34, height: 34, borderRadius: '50%', flexShrink: 0,
+        background: light ? '#FBFAF7' : '#0F4D2E',
+        display: 'grid', placeItems: 'center',
+      }}>
+        <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 13, color: light ? '#0F4D2E' : '#FBFAF7' }}>U</span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2, lineHeight: 1 }}>
+        <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 15, color: light ? '#EDEFE9' : '#161A14', letterSpacing: '0.04em' }}>UPIA</span>
+        <span style={{ fontFamily: SANS, fontSize: 7.5, letterSpacing: '0.16em', color: light ? '#8FA694' : '#5C6157', textTransform: 'uppercase' }}>Party of Kenya</span>
+      </div>
     </Link>
   )
 }
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const pathname = usePathname()
 
   return (
-    <header
-      className={clsx(
-        'fixed top-0 z-50 w-full h-[72px] bg-white transition-all duration-300',
-        scrolled
-          ? 'shadow-md border-b border-[#E2DCDA]'
-          : 'border-b border-[#E2DCDA]',
-      )}
-    >
-      {/* Top accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-[3px] flex">
-        <div className="flex-1 bg-[#C25757]" />
-        <div className="flex-1 bg-[#236331]" />
+    <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
+      {/* Utility bar */}
+      <div style={{ background: '#0A3521' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', padding: `8px ${GUTTER}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px 24px', flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: SANS, fontSize: 11, letterSpacing: '0.05em', color: '#CFDCD2' }}>
+            Dial <strong style={{ color: '#E8C782' }}>*509#</strong> to verify your membership
+          </span>
+          <div style={{ display: 'flex', gap: 20, fontSize: 11.5, letterSpacing: '0.04em' }}>
+            <Link href="/login" style={{ color: '#B9C7BC', textDecoration: 'none' }} className="hover:text-white transition-colors duration-100">Login</Link>
+            <Link href="/contact" style={{ color: '#B9C7BC', textDecoration: 'none' }} className="hover:text-white transition-colors duration-100">Contact</Link>
+          </div>
+        </div>
       </div>
 
-      <div className="mx-auto max-w-7xl h-full px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center justify-between h-full">
-          {/* Logo */}
-          <Link href="/" aria-label="Home" className="flex items-center flex-shrink-0 gap-2">
-            <Logo className="h-16 w-auto" />
-          </Link>
+      {/* Nav header */}
+      <header style={{ background: 'rgba(251,250,247,0.96)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', borderBottom: '1px solid #DFDCD1' }}>
+        <div style={{ maxWidth: 1240, margin: '0 auto', padding: `0 ${GUTTER}`, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24 }}>
+          <Wordmark />
 
-          {/* Desktop links */}
-          <div className="hidden lg:flex items-center gap-8">
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: 2, flex: 1, justifyContent: 'center' }}>
             {navLinks.map(({ href, label }) => (
-              <NavItem key={href} href={href}>{label}</NavItem>
+              <Link
+                key={href}
+                href={href}
+                style={{
+                  padding: '8px 12px', fontSize: 13.5, borderRadius: 3,
+                  textDecoration: 'none',
+                  color: pathname === href ? '#0F4D2E' : '#3C423A',
+                  fontWeight: pathname === href ? 500 : 400,
+                  background: pathname === href ? '#EEF4EE' : 'transparent',
+                }}
+                className="hover:bg-[#F1EEE6] transition-colors duration-100"
+              >
+                {label}
+              </Link>
             ))}
-          </div>
+          </nav>
 
-          {/* CTA + mobile toggle */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="hidden lg:inline-flex items-center rounded-[6px] border border-[#D1D5DB] bg-white px-[18px] py-2 text-sm font-medium text-[#111111] hover:bg-[#F9FAFB] active:scale-[0.98] transition-all duration-150"
-            >
-              Login
-            </Link>
-            <Link
-              href="/donate"
-              className="hidden lg:inline-flex items-center rounded-[6px] bg-[#236331] px-[18px] py-2 text-sm font-medium text-white hover:bg-[#2B753A] active:scale-[0.98] transition-all duration-150"
-            >
+          {/* Desktop CTAs */}
+          <div className="hidden lg:flex" style={{ alignItems: 'center', gap: 10, flexShrink: 0 }}>
+            <Link href="/donate" style={{ padding: '9px 16px', fontSize: 13, fontWeight: 500, color: '#161A14', border: '1px solid #C9C4B4', borderRadius: 3, textDecoration: 'none' }}>
               Support Us
             </Link>
-
-            <div className="lg:hidden">
-              <Popover>
-                {({ open }) => (
-                  <>
-                    <PopoverButton
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-[#5A5450] hover:text-[#C25757] focus:outline-none"
-                      aria-label="Toggle navigation"
-                    >
-                      <HamburgerIcon open={open} />
-                    </PopoverButton>
-
-                    <PopoverPanel
-                      transition
-                      className="fixed inset-0 z-50 flex flex-col bg-[#6B2626] transition duration-200 ease-out data-[closed]:opacity-0"
-                    >
-                      <div className="flex items-center justify-between px-5 h-[60px] border-b border-white/10">
-                        <Logo className="h-16 w-auto brightness-0 invert" />
-                        <PopoverButton
-                          className="flex h-10 w-10 items-center justify-center rounded-lg text-white/70 hover:text-white focus:outline-none"
-                          aria-label="Close menu"
-                        >
-                          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </PopoverButton>
-                      </div>
-
-                      <nav className="flex flex-1 flex-col justify-center gap-1 px-6">
-                        {navLinks.map(({ href, label }) => (
-                          <PopoverButton
-                            key={href}
-                            as={Link}
-                            href={href}
-                            className="rounded-lg px-4 py-4 text-lg font-medium text-white/70 hover:bg-white/8 hover:text-white transition-colors"
-                          >
-                            {label}
-                          </PopoverButton>
-                        ))}
-                      </nav>
-
-                      <div className="px-6 pb-10">
-                        <PopoverButton
-                          as={Link}
-                          href="/donate"
-                          className="flex w-full items-center justify-center rounded-[6px] bg-[#236331] px-6 py-4 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
-                        >
-                          Support UPIA
-                        </PopoverButton>
-                      </div>
-                    </PopoverPanel>
-                  </>
-                )}
-              </Popover>
-            </div>
+            <Link href="/register" style={{ padding: '9px 17px', fontSize: 13, fontWeight: 500, color: '#FBFAF7', background: '#0F4D2E', borderRadius: 3, textDecoration: 'none' }}>
+              Register
+            </Link>
           </div>
-        </nav>
-      </div>
-    </header>
+
+          {/* Mobile toggle */}
+          <div className="lg:hidden">
+            <Popover>
+              {({ open }) => (
+                <>
+                  <PopoverButton className="flex h-10 w-10 items-center justify-center focus:outline-none" aria-label="Toggle navigation">
+                    {open ? (
+                      <svg width="20" height="20" fill="none" stroke="#161A14" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    ) : (
+                      <svg width="20" height="20" fill="none" stroke="#161A14" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                      </svg>
+                    )}
+                  </PopoverButton>
+
+                  <PopoverPanel transition className="fixed inset-0 z-[60] flex flex-col bg-[#0A3521] transition duration-200 ease-out data-[closed]:opacity-0">
+                    {/* Mobile header row */}
+                    <div style={{ padding: `0 ${GUTTER}`, height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                      <Wordmark light />
+                      <PopoverButton className="flex h-10 w-10 items-center justify-center focus:outline-none">
+                        <svg width="20" height="20" fill="none" stroke="#EDEFE9" strokeWidth="1.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                      </PopoverButton>
+                    </div>
+
+                    {/* Nav links */}
+                    <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: `24px ${GUTTER}` }}>
+                      {navLinks.map(({ href, label }) => (
+                        <PopoverButton key={href} as={Link} href={href}
+                          style={{ display: 'block', padding: '16px 0', fontSize: 19, fontFamily: SERIF, color: '#EDEFE9', textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                          {label}
+                        </PopoverButton>
+                      ))}
+                    </nav>
+
+                    {/* Mobile CTAs */}
+                    <div style={{ padding: `0 ${GUTTER} 48px`, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <PopoverButton as={Link} href="/register"
+                        style={{ display: 'block', padding: 15, textAlign: 'center', background: '#FBFAF7', color: '#0F4D2E', borderRadius: 3, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
+                        Register
+                      </PopoverButton>
+                      <PopoverButton as={Link} href="/donate"
+                        style={{ display: 'block', padding: 15, textAlign: 'center', border: '1px solid rgba(255,255,255,0.2)', color: '#EDEFE9', borderRadius: 3, fontWeight: 500, fontSize: 14, textDecoration: 'none' }}>
+                        Support Us
+                      </PopoverButton>
+                    </div>
+                  </PopoverPanel>
+                </>
+              )}
+            </Popover>
+          </div>
+        </div>
+      </header>
+    </div>
   )
 }

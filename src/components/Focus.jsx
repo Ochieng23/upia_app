@@ -1,105 +1,71 @@
-'use client'
 import Link from 'next/link'
 
+const GUTTER = 'clamp(18px, 5vw, 72px)'
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+const SERIF = "Georgia, 'Times New Roman', Times, serif"
+
 const pillars = [
-  {
-    num: '01',
-    title: 'Equality',
-    description:
-      'Everyone deserves the same rights, opportunities, and treatment regardless of background. Fairness is not uniformity — it is ensuring every Kenyan can fully participate in national life.',
-    href: '/about',
-    accent: '#C25757',
-  },
-  {
-    num: '02',
-    title: 'Economic Empowerment',
-    description:
-      'Gaining control over financial resources gives every Kenyan the power to make choices that improve their lives. We champion entrepreneurship, fair wages, and inclusive access to capital.',
-    href: '/about',
-    accent: '#236331',
-  },
-  {
-    num: '03',
-    title: 'Education',
-    description:
-      'High-quality education ignites curiosity and equips students with the knowledge and skills to thrive. We commit to accessible, relevant education from early childhood through tertiary level.',
-    href: '/about',
-    accent: '#C25757',
-  },
-  {
-    num: '04',
-    title: 'Eradication of Corruption',
-    description:
-      'Eliminating dishonest acts for personal gain requires systemic transparency and accountability at every level of government. We hold zero tolerance for graft.',
-    href: '/about',
-    accent: '#236331',
-  },
-  {
-    num: '05',
-    title: 'Universal Healthcare',
-    description:
-      'Every Kenyan deserves the medical treatment they need without facing financial ruin. We champion a national healthcare model that reaches every county, every ward, every home.',
-    href: '/about',
-    accent: '#C25757',
-  },
-  {
-    num: '06',
-    title: 'Climate Action',
-    description:
-      "Kenya's climate is changing rapidly. We commit to sustainable development policies that protect our ecosystems, reduce our carbon footprint, and safeguard livelihoods for future generations.",
-    href: '/about',
-    accent: '#236331',
-  },
+  { num: '01', title: 'Equality', href: '/about', description: 'Everyone deserves the same rights, opportunities, and treatment regardless of background. Fairness is not uniformity — it is ensuring every Kenyan can fully participate in national life.' },
+  { num: '02', title: 'Economic Empowerment', href: '/about', description: 'Gaining control over financial resources gives every Kenyan the power to make choices that improve their lives. We champion entrepreneurship, fair wages, and inclusive access to capital.' },
+  { num: '03', title: 'Education', href: '/about', description: 'High-quality education ignites curiosity and equips students with the knowledge and skills to thrive. We commit to accessible, relevant education from early childhood through tertiary level.' },
+  { num: '04', title: 'Eradication of Corruption', href: '/about', description: 'Eliminating dishonest acts for personal gain requires systemic transparency and accountability at every level of government. We hold zero tolerance for graft.' },
+  { num: '05', title: 'Universal Healthcare', href: '/about', description: 'Every Kenyan deserves the medical treatment they need without facing financial ruin. We champion a national healthcare model that reaches every county, every ward, every home.' },
+  { num: '06', title: 'Climate Action', href: '/about', description: "Kenya's climate is changing rapidly. We commit to sustainable development policies that protect our ecosystems, reduce carbon footprint, and safeguard livelihoods for future generations." },
 ]
 
-// Named export kept for backward-compat with page.jsx
-export function HoverEffect() {
-  return <FocusAreas />
-}
+export function HoverEffect() { return <FocusAreas /> }
+export const Card = ({ className, children }) => <div className={`p-5 ${className || ''}`}>{children}</div>
+export const CardTitle = ({ children }) => <h3 style={{ fontFamily: SERIF, fontSize: 18, color: '#161A14' }}>{children}</h3>
+export const CardDescription = ({ children }) => <p style={{ fontSize: 14, color: '#3C423A', lineHeight: 1.7 }}>{children}</p>
 
 export default function FocusAreas() {
   return (
-    <section id="focus" className="relative bg-[#F8F5F3] py-20 sm:py-28 scroll-mt-16">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="focus" style={{ background: '#F7F5EF', scrollMarginTop: 106 }}>
+      <div style={{ maxWidth: 1240, margin: '0 auto', padding: `clamp(60px, 7.5vw, 108px) ${GUTTER}` }}>
 
-        <div className="mx-auto max-w-2xl text-center mb-14">
-          <span className="inline-block rounded-full bg-[#EBF5EC] px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.07em] text-[#236331] mb-4">
-            Our Agenda
-          </span>
-          <h2 className="text-[32px] font-semibold tracking-tight text-[#111111]">Six Focus Areas</h2>
-          <p className="mt-4 text-[15px] leading-[1.75] text-[#5A5450]">
-            Six pillars driving our commitment to a prosperous, just Kenya
+        {/* Section header */}
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 'clamp(20px, 4vw, 60px)', alignItems: 'end', marginBottom: 'clamp(36px, 5vw, 52px)' }}>
+          <div>
+            <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: '0.20em', textTransform: 'uppercase', color: '#8A6520', marginBottom: 18 }}>
+              Our Agenda
+            </div>
+            <h2 style={{ margin: 0, fontFamily: SERIF, fontWeight: 400, fontSize: 'clamp(30px, 3.8vw, 50px)', lineHeight: 1.1, letterSpacing: '-0.02em', color: '#161A14' }}>
+              Six Focus Areas
+            </h2>
+          </div>
+          <p style={{ margin: 0, fontSize: 17, lineHeight: 1.65, color: '#3C423A', maxWidth: '44ch', alignSelf: 'flex-end' }}>
+            Six pillars driving our commitment to a prosperous, just Kenya.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {pillars.map((p) => (
+        {/* Pillar grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {pillars.map((p, i) => (
             <Link
               key={p.num}
               href={p.href}
-              className="group flex flex-col bg-white rounded-[12px] p-[22px] transition-all duration-150 hover:shadow-md"
-              style={{ border: '0.5px solid #E2DCDA', borderLeft: `3px solid ${p.accent}` }}
+              style={{ textDecoration: 'none' }}
+              className={`group flex gap-5 items-start border-t border-[#DFDCD1] transition-colors hover:bg-white/60
+                ${i % 2 === 1 ? 'md:border-l border-[#DFDCD1]' : ''}`}
             >
-              <div className="flex items-center gap-3 mb-4">
-                <span
-                  className="text-[11px] font-bold uppercase tracking-[0.12em] tabular-nums"
-                  style={{ color: p.accent }}
-                >
+              <div style={{
+                paddingTop: 'clamp(18px, 2.5vw, 26px)',
+                paddingBottom: 'clamp(18px, 2.5vw, 26px)',
+                paddingLeft: i % 2 === 1 ? 'clamp(16px, 2.5vw, 30px)' : 0,
+                paddingRight: i % 2 === 0 ? 'clamp(16px, 2.5vw, 30px)' : 0,
+                display: 'flex', gap: 18, alignItems: 'flex-start', width: '100%',
+              }}>
+                <span style={{ fontFamily: SANS, fontSize: 11, fontWeight: 600, letterSpacing: '0.10em', color: '#B8862B', flexShrink: 0, width: 26, paddingTop: 3 }}>
                   {p.num}
                 </span>
-                <span className="h-px flex-1 bg-[#E2DCDA]" />
-              </div>
-              <h3 className="text-[17px] font-semibold text-[#111111] group-hover:text-[#C25757] transition-colors leading-snug">
-                {p.title}
-              </h3>
-              <p className="mt-2 flex-1 text-[14px] leading-[1.75] text-[#5A5450]">
-                {p.description}
-              </p>
-              <div className="mt-5 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.07em] text-[#5A5450] group-hover:text-[#C25757] transition-colors opacity-0 group-hover:opacity-100">
-                Learn more
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+                <div>
+                  <div style={{ fontFamily: SERIF, fontSize: 19, lineHeight: 1.2, color: '#161A14', marginBottom: 10 }} className="group-hover:text-[#0F4D2E] transition-colors">
+                    {p.title}
+                  </div>
+                  <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.72, color: '#3C423A' }}>
+                    {p.description}
+                  </p>
+                </div>
               </div>
             </Link>
           ))}
@@ -108,12 +74,3 @@ export default function FocusAreas() {
     </section>
   )
 }
-
-// Legacy shape exports for old imports
-export const Card = ({ className, children }) => (
-  <div className={`relative z-10 h-full w-full overflow-hidden rounded-[12px] p-[20px] bg-white ${className || ''}`} style={{ border: '0.5px solid #E2DCDA' }}>
-    {children}
-  </div>
-)
-export const CardTitle = ({ children }) => <h3 className="text-[17px] font-medium text-[#111111]">{children}</h3>
-export const CardDescription = ({ children }) => <p className="mt-2 text-[15px] leading-[1.75] text-[#5A5450]">{children}</p>
