@@ -966,6 +966,8 @@ function AspirantManagement({ showFlash, setIssueForm }) {
   const [caIdFrontPrev,  setCaIdFrontPrev]  = useState(null)
   const [caIdBack,       setCaIdBack]       = useState(null)
   const [caIdBackPrev,   setCaIdBackPrev]   = useState(null)
+  const [caExisting,     setCaExisting]     = useState({ photo: '', idFront: '', idBack: '' })
+  const [deletingId,     setDeletingId]     = useState(null)
   const caPhotoRef   = useRef(null)
   const caIdFrontRef = useRef(null)
   const caIdBackRef  = useRef(null)
@@ -1035,6 +1037,7 @@ function AspirantManagement({ showFlash, setIssueForm }) {
     setCaPhoto(null); setCaPhotoPreview(null)
     setCaIdFront(null); setCaIdFrontPrev(null)
     setCaIdBack(null); setCaIdBackPrev(null)
+    setCaExisting({ photo: '', idFront: '', idBack: '' })
     setCaShowPassword(false)
   }
 
@@ -1045,27 +1048,73 @@ function AspirantManagement({ showFlash, setIssueForm }) {
     setPreview(URL.createObjectURL(file))
   }
 
+  const openEditAspirant = (a) => {
+    setCreateForm({
+      _id: a._id,
+      firstName: a.user?.firstName || '',
+      lastName: a.user?.lastName || '',
+      email: a.user?.email || '',
+      phone: a.user?.phone || '',
+      password: '',
+      nationalId: a.nationalId || '',
+      documentType: a.documentType || 1,
+      dob: a.dateOfBirth ? new Date(a.dateOfBirth).toISOString().slice(0, 10) : '',
+      gender: a.gender || 'M',
+      isElected: !!a.isElected,
+      aspirantType: a.aspirantType || 'elective',
+      seatCategory: a.seatCategory || '',
+      countyCode: a.countyCode || '', countyName: a.countyName || '',
+      constituencyCode: a.constituencyCode || '', constituencyName: a.constituencyName || '',
+      wardCode: a.wardCode || '', wardName: a.wardName || '',
+      adminNote: '',
+    })
+    setCaExisting({ photo: a.profilePhoto || '', idFront: a.idDocumentFront || '', idBack: a.idDocumentBack || '' })
+  }
+
   const handleCreateAspirant = async (e) => {
     e.preventDefault()
+    const isEdit = !!createForm._id
     setCreateSaving(true)
     try {
       const fd = new FormData()
       Object.entries(createForm).forEach(([k, v]) => {
+        if (k === '_id') return
         if (v !== undefined && v !== null && v !== '') fd.append(k, String(v))
       })
       if (caPhoto)   fd.append('passportPhoto', caPhoto)
       if (caIdFront) fd.append('idFront', caIdFront)
       if (caIdBack)  fd.append('idBack', caIdBack)
 
-      await api.post('/admin/aspirants', fd)
-      showFlash('Aspirant account created successfully')
+      if (isEdit) {
+        await api.put(`/admin/aspirants/${createForm._id}`, fd)
+        showFlash('Aspirant updated successfully')
+      } else {
+        await api.post('/admin/aspirants', fd)
+        showFlash('Aspirant account created successfully')
+      }
       setCreateForm(null)
       clearCreateFiles()
       reload()
     } catch (err) {
-      alert(err.message || 'Failed to create aspirant account')
+      alert(err.message || `Failed to ${isEdit ? 'update' : 'create'} aspirant account`)
     } finally {
       setCreateSaving(false)
+    }
+  }
+
+  const handleDeleteAspirant = async (a) => {
+    const name = `${a.user?.firstName || ''} ${a.user?.lastName || ''}`.trim() || 'this aspirant'
+    if (!confirm(`Permanently delete ${name} (${a.user?.email})?\n\nThis removes both the aspirant profile and the linked user account. This cannot be undone.`)) return
+    setDeletingId(a._id)
+    try {
+      await api.delete(`/admin/aspirants/${a._id}`)
+      showFlash('Aspirant deleted')
+      setViewAspirant(null)
+      reload()
+    } catch (err) {
+      alert(err.message || 'Failed to delete aspirant')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -1105,6 +1154,8 @@ function AspirantManagement({ showFlash, setIssueForm }) {
       btns.push(<button key="ra" disabled={busy} onClick={() => handleApprove(a._id)} className="text-xs font-medium text-green-700 hover:underline disabled:opacity-40">{busy?'…':'Re-approve'}</button>)
     }
     btns.push(<button key="cert" onClick={() => setIssueForm({ aspirantId: a._id, type: 'nomination', title: '', description: '' })} className="text-xs font-medium text-[#5A5450] hover:underline">Issue Cert</button>)
+    btns.push(<button key="edit" onClick={() => openEditAspirant(a)} className="text-xs font-medium text-[#1a3c5e] hover:underline">Edit</button>)
+    btns.push(<button key="del" disabled={deletingId === a._id} onClick={() => handleDeleteAspirant(a)} className="text-xs font-medium text-red-600 hover:underline disabled:opacity-40">{deletingId === a._id ? '…' : 'Delete'}</button>)
     return <div className="flex items-center gap-3 whitespace-nowrap">{btns}</div>
   }
 
@@ -1285,12 +1336,15 @@ function AspirantManagement({ showFlash, setIssueForm }) {
         const onSeatChange = (val) => {
           setCreateForm((f) => ({ ...f, seatCategory: val, constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' }))
         }
+        const isEdit = !!createForm._id
 
         return (
-          <Modal title="Create Aspirant Account" onClose={() => { setCreateForm(null); clearCreateFiles() }} wide>
-            <div className="mb-4 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              <strong>Admin fallback.</strong> Use this only when the self-service payment flow could not be completed. The account will be created with payment bypassed.
-            </div>
+          <Modal title={isEdit ? `Edit Aspirant — ${createForm.firstName} ${createForm.lastName}` : 'Create Aspirant Account'} onClose={() => { setCreateForm(null); clearCreateFiles() }} wide>
+            {!isEdit && (
+              <div className="mb-4 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                <strong>Admin fallback.</strong> Use this only when the self-service payment flow could not be completed. The account will be created with payment bypassed.
+              </div>
+            )}
             <form onSubmit={handleCreateAspirant} className="space-y-5">
 
               {/* Account credentials */}
@@ -1304,42 +1358,44 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                   <Field label="Email *"><input className={inputCls} type="email" value={createForm.email} onChange={setC('email')} placeholder="aspirant@example.com" required /></Field>
                   <Field label="Phone"><input className={inputCls} type="tel" value={createForm.phone} onChange={setC('phone')} placeholder="07XX XXX XXX" /></Field>
                 </div>
-                <div className="mt-3">
-                  <Field label="Temporary Password *">
-                    <div className="relative">
-                      <input
-                        className={`${inputCls} pr-10`}
-                        type={caShowPassword ? 'text' : 'password'}
-                        value={createForm.password}
-                        onChange={setC('password')}
-                        placeholder="Minimum 8 characters"
-                        required
-                        minLength={8}
-                        autoComplete="new-password"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setCaShowPassword((v) => !v)}
-                        className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-[#5A5450] hover:text-[#111111]"
-                        aria-label={caShowPassword ? 'Hide password' : 'Show password'}
-                        aria-pressed={caShowPassword}
-                        tabIndex={-1}
-                      >
-                        {caShowPassword ? (
-                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.774 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L9.88 9.88" />
-                          </svg>
-                        ) : (
-                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                    <p className="mt-1 text-[11px] text-[#5A5450]">Share this with the aspirant — they can change it after first login.</p>
-                  </Field>
-                </div>
+                {!isEdit && (
+                  <div className="mt-3">
+                    <Field label="Temporary Password *">
+                      <div className="relative">
+                        <input
+                          className={`${inputCls} pr-10`}
+                          type={caShowPassword ? 'text' : 'password'}
+                          value={createForm.password}
+                          onChange={setC('password')}
+                          placeholder="Minimum 8 characters"
+                          required
+                          minLength={8}
+                          autoComplete="new-password"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setCaShowPassword((v) => !v)}
+                          className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-[#5A5450] hover:text-[#111111]"
+                          aria-label={caShowPassword ? 'Hide password' : 'Show password'}
+                          aria-pressed={caShowPassword}
+                          tabIndex={-1}
+                        >
+                          {caShowPassword ? (
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.774 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243L9.88 9.88" />
+                            </svg>
+                          ) : (
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                      <p className="mt-1 text-[11px] text-[#5A5450]">Share this with the aspirant — they can change it after first login.</p>
+                    </Field>
+                  </div>
+                )}
               </div>
 
               <hr className="border-[#E2DCDA]" />
@@ -1387,11 +1443,11 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                       className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] hover:border-[#1a3c5e]/40 transition-colors"
                       onClick={() => caPhotoRef.current?.click()}
                     >
-                      {caPhotoPreview
-                        ? <img src={caPhotoPreview} alt="Passport" className="h-14 w-14 rounded-full object-cover border-2 border-[#E2DCDA]" />
+                      {caPhotoPreview || caExisting.photo
+                        ? <img src={caPhotoPreview || caExisting.photo} alt="Passport" className="h-14 w-14 rounded-full object-cover border-2 border-[#E2DCDA]" />
                         : <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
                       }
-                      <p className="px-2 text-center text-[10px] text-[#5A5450]">{caPhoto ? caPhoto.name : 'Click to upload'}</p>
+                      <p className="px-2 text-center text-[10px] text-[#5A5450]">{caPhoto ? caPhoto.name : caExisting.photo ? 'Click to replace' : 'Click to upload'}</p>
                     </div>
                     <input ref={caPhotoRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={makeFileHandler(setCaPhoto, setCaPhotoPreview)} />
                   </div>
@@ -1405,11 +1461,11 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                       className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] hover:border-[#1a3c5e]/40 transition-colors"
                       onClick={() => caIdFrontRef.current?.click()}
                     >
-                      {caIdFrontPrev
-                        ? <img src={caIdFrontPrev} alt="ID front" className="h-14 w-auto max-w-full rounded object-cover" />
+                      {caIdFrontPrev || caExisting.idFront
+                        ? <img src={caIdFrontPrev || caExisting.idFront} alt="ID front" className="h-14 w-auto max-w-full rounded object-cover" />
                         : <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" /></svg>
                       }
-                      <p className="px-2 text-center text-[10px] text-[#5A5450]">{caIdFront ? caIdFront.name : 'Click to upload'}</p>
+                      <p className="px-2 text-center text-[10px] text-[#5A5450]">{caIdFront ? caIdFront.name : caExisting.idFront ? 'Click to replace' : 'Click to upload'}</p>
                     </div>
                     <input ref={caIdFrontRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={makeFileHandler(setCaIdFront, setCaIdFrontPrev)} />
                   </div>
@@ -1422,11 +1478,11 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                         className="flex h-[110px] cursor-pointer flex-col items-center justify-center gap-2 rounded-[8px] border-2 border-dashed border-[#E2DCDA] bg-[#F8F5F3] hover:border-[#1a3c5e]/40 transition-colors"
                         onClick={() => caIdBackRef.current?.click()}
                       >
-                        {caIdBackPrev
-                          ? <img src={caIdBackPrev} alt="ID back" className="h-14 w-auto max-w-full rounded object-cover" />
+                        {caIdBackPrev || caExisting.idBack
+                          ? <img src={caIdBackPrev || caExisting.idBack} alt="ID back" className="h-14 w-auto max-w-full rounded object-cover" />
                           : <svg className="h-7 w-7 text-[#5A5450]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" /></svg>
                         }
-                        <p className="px-2 text-center text-[10px] text-[#5A5450]">{caIdBack ? caIdBack.name : 'Click to upload'}</p>
+                        <p className="px-2 text-center text-[10px] text-[#5A5450]">{caIdBack ? caIdBack.name : caExisting.idBack ? 'Click to replace' : 'Click to upload'}</p>
                       </div>
                       <input ref={caIdBackRef} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={makeFileHandler(setCaIdBack, setCaIdBackPrev)} />
                     </div>
@@ -1488,10 +1544,10 @@ function AspirantManagement({ showFlash, setIssueForm }) {
 
               {/* Admin note */}
               <Field label="Admin Note (internal)">
-                <textarea className={inputCls} rows={2} value={createForm.adminNote} onChange={setC('adminNote')} placeholder="e.g. Paystack registration fee confirmed paid via reference TXN-XXXXX — account created manually after session expiry" />
+                <textarea className={inputCls} rows={2} value={createForm.adminNote} onChange={setC('adminNote')} placeholder={isEdit ? 'e.g. Corrected constituency after aspirant reported an error' : 'e.g. Paystack registration fee confirmed paid via reference TXN-XXXXX — account created manually after session expiry'} />
               </Field>
 
-              <ModalActions onCancel={() => { setCreateForm(null); clearCreateFiles() }} saving={createSaving} label="Create Aspirant Account" />
+              <ModalActions onCancel={() => { setCreateForm(null); clearCreateFiles() }} saving={createSaving} label={isEdit ? 'Save Changes' : 'Create Aspirant Account'} />
             </form>
           </Modal>
         )
@@ -1530,6 +1586,8 @@ function AspirantManagement({ showFlash, setIssueForm }) {
                   {(st === 'approved' && a.nominationFeePaid) && <button disabled={busy} onClick={() => { handleNominate(a._id); setViewAspirant(null) }} className="rounded-[6px] bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50">{busy?'…':'Stamp / Nominate'}</button>}
                   {(st === 'pending_review' || st === 'approved') && <button onClick={() => { setViewAspirant(null); openReject(a) }} className="rounded-[6px] bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600">Reject</button>}
                   <button onClick={() => { setViewAspirant(null); setIssueForm({ aspirantId:a._id, type:'nomination', title:'', description:'' }) }} className="rounded-[6px] bg-[#1a3c5e] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#153150]">Issue Cert</button>
+                  <button onClick={() => { setViewAspirant(null); openEditAspirant(a) }} className="rounded-[6px] border border-[#E2DCDA] bg-white px-3 py-1.5 text-xs font-medium text-[#111111] hover:bg-[#F8F5F3]">Edit</button>
+                  <button disabled={deletingId === a._id} onClick={() => handleDeleteAspirant(a)} className="rounded-[6px] border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50">{deletingId === a._id ? 'Deleting…' : 'Delete'}</button>
                 </div>
               </div>
 
