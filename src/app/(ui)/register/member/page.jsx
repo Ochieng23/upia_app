@@ -35,9 +35,9 @@ function Step1EligibilityCheck({ onEligible }) {
         onEligible({ documentNo, documentType })
       } else {
         setError(
-          'Your ID is not eligible for party registration at this time. ' +
-            'This may mean you are already registered with another party. ' +
-            'Contact support at ippmssupport@orpp.or.ke for assistance.'
+          'It seems you are already registered with a party. ' +
+            'Dial *509# to check your membership status. ' +
+            'If registered with another party, you will need to deregister before joining United Party of Independent Alliance.'
         )
       }
     } catch {
