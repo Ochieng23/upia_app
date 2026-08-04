@@ -64,6 +64,10 @@ export default function AdminDashboard() {
   const [userForm, setUserForm] = useState(null)
   const [userSaving, setUserSaving] = useState(false)
   const [flash, setFlash] = useState('')
+  const [manualPaymentForm, setManualPaymentForm] = useState(null)
+  const [manualPaymentSaving, setManualPaymentSaving] = useState(false)
+  const [editPaymentForm, setEditPaymentForm] = useState(null)
+  const [editPaymentSaving, setEditPaymentSaving] = useState(false)
 
   useEffect(() => {
     if (!authLoading && !user) { router.replace('/login'); return }
@@ -192,6 +196,26 @@ export default function AdminDashboard() {
     showFlash('User deleted'); loadData()
   }
   const setUsr = (field) => (e) => setUserForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
+
+  /* ── Payments (manual reconciliation) ── */
+  const BLANK_MANUAL_PAYMENT = { aspirantId: '', type: 'registration_fee', amount: '', status: 'success', paidAt: '', note: '' }
+  const setMp = (field) => (e) => setManualPaymentForm((f) => ({ ...f, [field]: e.target.value }))
+  const saveManualPayment = async (e) => {
+    e.preventDefault(); setManualPaymentSaving(true)
+    try {
+      await api.post('/payments/admin/manual', manualPaymentForm)
+      showFlash('Payment recorded'); setManualPaymentForm(null); loadData()
+    } catch (err) { alert(err.message) } finally { setManualPaymentSaving(false) }
+  }
+  const setEp = (field) => (e) => setEditPaymentForm((f) => ({ ...f, [field]: e.target.value }))
+  const saveEditPayment = async (e) => {
+    e.preventDefault(); setEditPaymentSaving(true)
+    try {
+      const { _id, status, amount, note } = editPaymentForm
+      await api.put(`/payments/admin/${_id}`, { status, amount, note })
+      showFlash('Payment updated'); setEditPaymentForm(null); loadData()
+    } catch (err) { alert(err.message) } finally { setEditPaymentSaving(false) }
+  }
 
   if (authLoading || loading) {
     return <div className="min-h-screen bg-[#F8F5F3] flex items-center justify-center"><div className="animate-spin h-8 w-8 rounded-full border-4 border-[#1a3c5e] border-t-transparent" /></div>
@@ -411,15 +435,26 @@ export default function AdminDashboard() {
             {/* ── Payments ── */}
             {tab === 'payments' && (
               <div className="space-y-4">
-                <div><h1 className="text-xl font-semibold text-[#111111]">Payments</h1><p className="text-sm text-[#5A5450] mt-0.5">{payments.length} transactions · KES {payments.filter(p=>p.status==='success').reduce((s,p)=>s+p.amount,0).toLocaleString()} collected</p></div>
+                <div className="flex items-center justify-between gap-4">
+                  <div><h1 className="text-xl font-semibold text-[#111111]">Payments</h1><p className="text-sm text-[#5A5450] mt-0.5">{payments.length} transactions · KES {payments.filter(p=>p.status==='success').reduce((s,p)=>s+p.amount,0).toLocaleString()} collected</p></div>
+                  <button
+                    onClick={() => setManualPaymentForm({ ...BLANK_MANUAL_PAYMENT })}
+                    className="shrink-0 rounded-[6px] bg-[#236331] px-4 py-2 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
+                  >
+                    + Record Payment
+                  </button>
+                </div>
                 <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-[#E2DCDA] text-sm">
-                      <thead className="bg-[#F8F5F3]"><tr>{['Reference','Name','Email','Type','Amount','Status','Date'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
+                      <thead className="bg-[#F8F5F3]"><tr>{['Reference','Name','Email','Type','Amount','Status','Date','Actions'].map(h=><th key={h} className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-[#5A5450]">{h}</th>)}</tr></thead>
                       <tbody className="divide-y divide-[#E2DCDA]">
                         {payments.map(p=>(
                           <tr key={p._id} className="hover:bg-[#F8F5F3]">
-                            <td className="px-4 py-3 font-mono text-xs text-[#5A5450]">{p.reference}</td>
+                            <td className="px-4 py-3 font-mono text-xs text-[#5A5450]">
+                              {p.reference}
+                              {p.metadata?.manual && <span className="ml-1.5 inline-flex rounded-full bg-[#F8F5F3] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#8A6520]">Manual</span>}
+                            </td>
                             <td className="px-4 py-3 font-medium text-[#111111] whitespace-nowrap">
                               {p.user ? `${p.user.firstName} ${p.user.lastName}` : p.metadata?.firstName ? `${p.metadata.firstName} ${p.metadata.lastName}` : <span className="text-[#5A5450] italic text-xs">Registration incomplete</span>}
                             </td>
@@ -428,9 +463,21 @@ export default function AdminDashboard() {
                             <td className="px-4 py-3 font-medium text-[#111111]">KES {(p.amount||0).toLocaleString()}</td>
                             <td className="px-4 py-3"><PaymentBadge status={p.status} /></td>
                             <td className="px-4 py-3 text-[#5A5450] whitespace-nowrap">{new Date(p.createdAt).toLocaleDateString('en-KE')}</td>
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => setEditPaymentForm({
+                                  _id: p._id, status: p.status, amount: p.amount, note: '',
+                                  reference: p.reference,
+                                  name: p.user ? `${p.user.firstName} ${p.user.lastName}` : p.metadata?.firstName ? `${p.metadata.firstName} ${p.metadata.lastName}` : 'Unknown',
+                                })}
+                                className="text-xs font-medium text-[#1a3c5e] hover:underline"
+                              >
+                                Edit
+                              </button>
+                            </td>
                           </tr>
                         ))}
-                        {payments.length===0&&<tr><td colSpan={7} className="px-4 py-12 text-center text-[#5A5450]">No payments yet.</td></tr>}
+                        {payments.length===0&&<tr><td colSpan={8} className="px-4 py-12 text-center text-[#5A5450]">No payments yet.</td></tr>}
                       </tbody>
                     </table>
                   </div>
@@ -672,6 +719,68 @@ export default function AdminDashboard() {
               <label htmlFor="userActive" className="text-sm text-[#5A5450]">Account active</label>
             </div>
             <ModalActions onCancel={()=>setUserForm(null)} saving={userSaving} label={userForm._id?'Save Changes':'Create User'} />
+          </form>
+        </Modal>
+      )}
+
+      {/* ── Record Payment modal (off-system / manual reconciliation) ── */}
+      {manualPaymentForm && (
+        <Modal title="Record Payment" onClose={() => setManualPaymentForm(null)}>
+          <div className="mb-4 rounded-[8px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            For aspirants who paid outside Paystack (cash, bank transfer, M-Pesa direct). This creates a payment record without going through the payment gateway.
+          </div>
+          <form onSubmit={saveManualPayment} className="space-y-4">
+            <Field label="Aspirant *">
+              <select className={selectCls} value={manualPaymentForm.aspirantId} onChange={setMp('aspirantId')} required>
+                <option value="">Select aspirant</option>
+                {aspirants.map(a => (
+                  <option key={a._id} value={a._id}>
+                    {a.user?.firstName} {a.user?.lastName} ({a.user?.email})
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Payment Type *">
+              <select className={selectCls} value={manualPaymentForm.type} onChange={setMp('type')} required>
+                {['registration_fee','nomination_fee','membership_fee','event_fee','donation'].map(t => (
+                  <option key={t} value={t}>{t.replace(/_/g,' ')}</option>
+                ))}
+              </select>
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Amount (KES) *"><input className={inputCls} type="number" min="0" value={manualPaymentForm.amount} onChange={setMp('amount')} placeholder="2000" required /></Field>
+              <Field label="Status *">
+                <select className={selectCls} value={manualPaymentForm.status} onChange={setMp('status')} required>
+                  {['success','pending','failed','abandoned'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </Field>
+            </div>
+            <Field label="Date Paid"><input className={inputCls} type="date" value={manualPaymentForm.paidAt} onChange={setMp('paidAt')} /></Field>
+            <Field label="Note (internal)">
+              <textarea className={inputCls} rows={2} value={manualPaymentForm.note} onChange={setMp('note')} placeholder="e.g. Paid via M-Pesa direct to party account, confirmed by treasurer" />
+            </Field>
+            <ModalActions onCancel={() => setManualPaymentForm(null)} saving={manualPaymentSaving} label="Record Payment" />
+          </form>
+        </Modal>
+      )}
+
+      {/* ── Edit Payment modal ── */}
+      {editPaymentForm && (
+        <Modal title={`Edit Payment — ${editPaymentForm.name}`} onClose={() => setEditPaymentForm(null)}>
+          <form onSubmit={saveEditPayment} className="space-y-4">
+            <p className="font-mono text-xs text-[#5A5450]">{editPaymentForm.reference}</p>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Amount (KES) *"><input className={inputCls} type="number" min="0" value={editPaymentForm.amount} onChange={setEp('amount')} required /></Field>
+              <Field label="Status *">
+                <select className={selectCls} value={editPaymentForm.status} onChange={setEp('status')} required>
+                  {['success','pending','failed','abandoned'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </Field>
+            </div>
+            <Field label="Note (internal, appended to history)">
+              <textarea className={inputCls} rows={2} value={editPaymentForm.note} onChange={setEp('note')} placeholder="e.g. Confirmed manually — Paystack callback failed but M-Pesa receipt verified" />
+            </Field>
+            <ModalActions onCancel={() => setEditPaymentForm(null)} saving={editPaymentSaving} label="Save Changes" />
           </form>
         </Modal>
       )}
