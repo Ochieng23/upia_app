@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../context/AuthContext'
 import { api } from '../../../lib/api'
 import { Logo } from '../../../components/Logo'
-import KENYA_LOCATIONS from '../../../lib/kenyaLocations'
+import { useIppmsLocations } from '../../../lib/useIppmsLocations'
 
 const BLANK_POST = {
   title: '', description: '', body: '', coverImage: '',
@@ -935,9 +935,6 @@ const BLANK_CREATE = {
   nationalId: '', documentType: 1,
   dob: '', gender: 'M', isElected: false, aspirantType: 'elective',
   seatCategory: '',
-  countyCode: '', countyName: '',
-  constituencyCode: '', constituencyName: '',
-  wardCode: '', wardName: '',
   adminNote: '',
 }
 
@@ -950,9 +947,7 @@ function AspirantManagement({ showFlash, setIssueForm }) {
   const [search,      setSearch]            = useState('')
   const [filterSeat,  setFilterSeat]        = useState('')
   const [filterType,  setFilterType]        = useState('')
-  const [filterCounty,setFilterCounty]      = useState('')
-  const [filterConst, setFilterConst]       = useState('')
-  const [filterWard,  setFilterWard]        = useState('')
+  const filterLoc = useIppmsLocations()
   const [rejectModal, setRejectModal]       = useState(null)
   const [rejectReason,setRejectReason]      = useState('')
   const [rejectSaving,setRejectSaving]      = useState(false)
@@ -968,14 +963,10 @@ function AspirantManagement({ showFlash, setIssueForm }) {
   const [caIdBackPrev,   setCaIdBackPrev]   = useState(null)
   const [caExisting,     setCaExisting]     = useState({ photo: '', idFront: '', idBack: '' })
   const [deletingId,     setDeletingId]     = useState(null)
+  const modalLoc = useIppmsLocations()
   const caPhotoRef   = useRef(null)
   const caIdFrontRef = useRef(null)
   const caIdBackRef  = useRef(null)
-
-  const selectedCounty  = KENYA_LOCATIONS.find(c => c.code === filterCounty)
-  const constituencies  = selectedCounty?.constituencies || []
-  const selectedConstit = constituencies.find(c => c.code === filterConst)
-  const wards           = selectedConstit?.wards || []
 
   const loadStats = useCallback(async () => {
     try { const d = await api.get('/admin/aspirants/stats'); setStats(d.data) } catch {}
@@ -985,16 +976,16 @@ function AspirantManagement({ showFlash, setIssueForm }) {
     setLoading(true)
     try {
       const p = new URLSearchParams({ applicationStatus: pipelineTab, limit: '100' })
-      if (filterSeat)   p.set('seatCategory', filterSeat)
-      if (filterType)   p.set('aspirantType', filterType)
-      if (filterCounty) p.set('countyCode', filterCounty)
-      if (filterConst)  p.set('constituencyCode', filterConst)
-      if (filterWard)   p.set('wardCode', filterWard)
-      if (search)       p.set('search', search)
+      if (filterSeat)          p.set('seatCategory', filterSeat)
+      if (filterType)          p.set('aspirantType', filterType)
+      if (filterLoc.countyCode)          p.set('countyCode', filterLoc.countyCode)
+      if (filterLoc.constituencyCode)    p.set('constituencyCode', filterLoc.constituencyCode)
+      if (filterLoc.wardCode)            p.set('wardCode', filterLoc.wardCode)
+      if (search)               p.set('search', search)
       const d = await api.get(`/admin/aspirants?${p}`)
       setAspirants(d.data || [])
     } catch {} finally { setLoading(false) }
-  }, [pipelineTab, filterSeat, filterType, filterCounty, filterConst, filterWard, search])
+  }, [pipelineTab, filterSeat, filterType, filterLoc.countyCode, filterLoc.constituencyCode, filterLoc.wardCode, search])
 
   useEffect(() => { loadStats() }, [loadStats])
   useEffect(() => { loadAspirants() }, [loadAspirants])
@@ -1028,8 +1019,8 @@ function AspirantManagement({ showFlash, setIssueForm }) {
     catch (e) { alert(e.message) } finally { setActionId(null) }
   }
 
-  const clearFilters = () => { setSearch(''); setFilterSeat(''); setFilterType(''); setFilterCounty(''); setFilterConst(''); setFilterWard('') }
-  const hasFilters = !!(search || filterSeat || filterType || filterCounty || filterConst || filterWard)
+  const clearFilters = () => { setSearch(''); setFilterSeat(''); setFilterType(''); filterLoc.reset() }
+  const hasFilters = !!(search || filterSeat || filterType || filterLoc.countyCode || filterLoc.constituencyCode || filterLoc.wardCode)
 
   const setC = (field) => (e) => setCreateForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
 
@@ -1039,6 +1030,7 @@ function AspirantManagement({ showFlash, setIssueForm }) {
     setCaIdBack(null); setCaIdBackPrev(null)
     setCaExisting({ photo: '', idFront: '', idBack: '' })
     setCaShowPassword(false)
+    modalLoc.reset()
   }
 
   const makeFileHandler = (setFile, setPreview) => (e) => {
@@ -1063,11 +1055,9 @@ function AspirantManagement({ showFlash, setIssueForm }) {
       isElected: !!a.isElected,
       aspirantType: a.aspirantType || 'elective',
       seatCategory: a.seatCategory || '',
-      countyCode: a.countyCode || '', countyName: a.countyName || '',
-      constituencyCode: a.constituencyCode || '', constituencyName: a.constituencyName || '',
-      wardCode: a.wardCode || '', wardName: a.wardName || '',
       adminNote: '',
     })
+    modalLoc.hydrate(a.countyCode, a.constituencyCode, a.wardCode)
     setCaExisting({ photo: a.profilePhoto || '', idFront: a.idDocumentFront || '', idBack: a.idDocumentBack || '' })
   }
 
@@ -1081,6 +1071,15 @@ function AspirantManagement({ showFlash, setIssueForm }) {
         if (k === '_id') return
         if (v !== undefined && v !== null && v !== '') fd.append(k, String(v))
       })
+      const locFields = {
+        countyCode: modalLoc.countyCode,
+        countyName: modalLoc.counties.find((c) => c.code === modalLoc.countyCode)?.name || '',
+        constituencyCode: modalLoc.constituencyCode,
+        constituencyName: modalLoc.constituencies.find((c) => c.code === modalLoc.constituencyCode)?.name || '',
+        wardCode: modalLoc.wardCode,
+        wardName: modalLoc.wards.find((w) => w.code === modalLoc.wardCode)?.name || '',
+      }
+      Object.entries(locFields).forEach(([k, v]) => { if (v) fd.append(k, v) })
       if (caPhoto)   fd.append('passportPhoto', caPhoto)
       if (caIdFront) fd.append('idFront', caIdFront)
       if (caIdBack)  fd.append('idBack', caIdBack)
@@ -1207,20 +1206,23 @@ function AspirantManagement({ showFlash, setIssueForm }) {
             <option value="elective">Elective</option>
             <option value="nominated">Party Nominated</option>
           </select>
-          <select className={selectCls} value={filterCounty} onChange={e => { setFilterCounty(e.target.value); setFilterConst(''); setFilterWard('') }}>
+          <select className={selectCls} value={filterLoc.countyCode} onChange={e => filterLoc.selectCounty(e.target.value)}>
             <option value="">All counties</option>
-            {KENYA_LOCATIONS.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+            {filterLoc.counties.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
           </select>
-          <select className={selectCls} value={filterConst} onChange={e => { setFilterConst(e.target.value); setFilterWard('') }} disabled={!filterCounty}>
+          <select className={selectCls} value={filterLoc.constituencyCode} onChange={e => filterLoc.selectConstituency(e.target.value)} disabled={!filterLoc.countyCode}>
             <option value="">All constituencies</option>
-            {constituencies.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+            {filterLoc.constituencies.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
           </select>
         </div>
-        {filterConst && wards.length > 0 && (
+        {filterLoc.error && (
+          <div className="mt-3 rounded-[6px] border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">{filterLoc.error}</div>
+        )}
+        {filterLoc.constituencyCode && filterLoc.wards.length > 0 && (
           <div className="mt-3 max-w-xs">
-            <select className={selectCls} value={filterWard} onChange={e => setFilterWard(e.target.value)}>
+            <select className={selectCls} value={filterLoc.wardCode} onChange={e => filterLoc.selectWard(e.target.value)}>
               <option value="">All wards</option>
-              {wards.map(w => <option key={w.code} value={w.code}>{w.name}</option>)}
+              {filterLoc.wards.map(w => <option key={w.code} value={w.code}>{w.name}</option>)}
             </select>
           </div>
         )}
@@ -1316,25 +1318,11 @@ function AspirantManagement({ showFlash, setIssueForm }) {
       {/* Create Aspirant modal */}
       {createForm && (() => {
         const seat = SEAT_OPTIONS.find((s) => s.value === createForm.seatCategory)
-        const county = KENYA_LOCATIONS.find((c) => c.code === createForm.countyCode)
-        const constits = county?.constituencies || []
-        const constit = constits.find((c) => c.code === createForm.constituencyCode)
-        const wards = constit?.wards || []
 
-        const onCountyChange = (code) => {
-          const c = KENYA_LOCATIONS.find((x) => x.code === code)
-          setCreateForm((f) => ({ ...f, countyCode: code, countyName: c?.name || '', constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' }))
-        }
-        const onConstituencyChange = (code) => {
-          const c = constits.find((x) => x.code === code)
-          setCreateForm((f) => ({ ...f, constituencyCode: code, constituencyName: c?.name || '', wardCode: '', wardName: '' }))
-        }
-        const onWardChange = (code) => {
-          const w = wards.find((x) => x.code === code)
-          setCreateForm((f) => ({ ...f, wardCode: code, wardName: w?.name || '' }))
-        }
         const onSeatChange = (val) => {
-          setCreateForm((f) => ({ ...f, seatCategory: val, constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' }))
+          setCreateForm((f) => ({ ...f, seatCategory: val }))
+          // Reset location sub-fields that may no longer be required
+          modalLoc.selectConstituency('')
         }
         const isEdit = !!createForm._id
 
@@ -1512,27 +1500,30 @@ function AspirantManagement({ showFlash, setIssueForm }) {
 
                 {createForm.seatCategory && (
                   <div className="mt-3 space-y-3">
+                    {modalLoc.error && (
+                      <div className="rounded-[6px] border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">{modalLoc.error}</div>
+                    )}
                     <Field label="County *">
-                      <select className={selectCls} value={createForm.countyCode} onChange={(e) => onCountyChange(e.target.value)} required>
+                      <select className={selectCls} value={modalLoc.countyCode} onChange={(e) => modalLoc.selectCounty(e.target.value)} required>
                         <option value="">Select county</option>
-                        {KENYA_LOCATIONS.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+                        {modalLoc.counties.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
                       </select>
                     </Field>
 
                     {seat?.needsConst && createForm.aspirantType === 'elective' && (
                       <Field label="Constituency *">
-                        <select className={selectCls} value={createForm.constituencyCode} onChange={(e) => onConstituencyChange(e.target.value)} disabled={!createForm.countyCode} required>
+                        <select className={selectCls} value={modalLoc.constituencyCode} onChange={(e) => modalLoc.selectConstituency(e.target.value)} disabled={!modalLoc.countyCode} required>
                           <option value="">Select constituency</option>
-                          {constits.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+                          {modalLoc.constituencies.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
                         </select>
                       </Field>
                     )}
 
                     {seat?.needsWard && createForm.aspirantType === 'elective' && (
                       <Field label="Ward *">
-                        <select className={selectCls} value={createForm.wardCode} onChange={(e) => onWardChange(e.target.value)} disabled={!createForm.constituencyCode} required>
+                        <select className={selectCls} value={modalLoc.wardCode} onChange={(e) => modalLoc.selectWard(e.target.value)} disabled={!modalLoc.constituencyCode} required>
                           <option value="">Select ward</option>
-                          {wards.map((w) => <option key={w.code} value={w.code}>{w.name}</option>)}
+                          {modalLoc.wards.map((w) => <option key={w.code} value={w.code}>{w.name}</option>)}
                         </select>
                       </Field>
                     )}

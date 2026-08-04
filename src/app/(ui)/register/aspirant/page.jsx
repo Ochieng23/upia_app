@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Header } from '../../../../components/Header'
 import { Footer } from '../../../../components/Footer'
 import { saveAuth } from '../../../../lib/auth'
-import KENYA_LOCATIONS from '../../../../lib/kenyaLocations'
+import { useIppmsLocations } from '../../../../lib/useIppmsLocations'
 
 const BASE = '/api/backend'
 const SESSION_KEY = 'upia_reg_session'
@@ -406,36 +406,12 @@ function StepPersonal({ onNext }) {
 function StepElectionLevel({ aspirantType, onNext, onBack }) {
   const isNominated = aspirantType === 'nominated'
   const [seat, setSeat] = useState('')
-  const [loc, setLoc] = useState({
-    countyCode: '', countyName: '',
-    constituencyCode: '', constituencyName: '',
-    wardCode: '', wardName: '',
-  })
-
-  const selectedCounty = KENYA_LOCATIONS.find((c) => c.code === loc.countyCode)
-  const constits        = selectedCounty?.constituencies || []
-  const selectedConstit = constits.find((c) => c.code === loc.constituencyCode)
-  const wards           = selectedConstit?.wards || []
+  const loc = useIppmsLocations()
 
   const onSeatChange = (value) => {
     setSeat(value)
     // Reset location sub-fields that may no longer be required
-    setLoc((l) => ({ ...l, constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' }))
-  }
-
-  const onCountyChange = (code) => {
-    const county = KENYA_LOCATIONS.find((c) => c.code === code)
-    setLoc({ countyCode: code, countyName: county?.name || '', constituencyCode: '', constituencyName: '', wardCode: '', wardName: '' })
-  }
-
-  const onConstituencyChange = (code) => {
-    const constit = constits.find((c) => c.code === code)
-    setLoc((l) => ({ ...l, constituencyCode: code, constituencyName: constit?.name || '', wardCode: '', wardName: '' }))
-  }
-
-  const onWardChange = (code) => {
-    const ward = wards.find((w) => w.code === code)
-    setLoc((l) => ({ ...l, wardCode: code, wardName: ward?.name || '' }))
+    loc.selectConstituency('')
   }
 
   const canProceed = () => {
@@ -447,7 +423,15 @@ function StepElectionLevel({ aspirantType, onNext, onBack }) {
 
   const handleNext = () => {
     if (!canProceed()) return
-    onNext({ seatCategory: seat, ...loc })
+    onNext({
+      seatCategory: seat,
+      countyCode: loc.countyCode,
+      countyName: loc.counties.find((c) => c.code === loc.countyCode)?.name || '',
+      constituencyCode: loc.constituencyCode,
+      constituencyName: loc.constituencies.find((c) => c.code === loc.constituencyCode)?.name || '',
+      wardCode: loc.wardCode,
+      wardName: loc.wards.find((w) => w.code === loc.wardCode)?.name || '',
+    })
   }
 
   const needsConst = NEEDS_CONSTITUENCY.has(seat)
@@ -489,12 +473,16 @@ function StepElectionLevel({ aspirantType, onNext, onBack }) {
         <div className="space-y-4 border-t border-[#E2DCDA] pt-5">
           <p className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450]">Location</p>
 
+          {loc.error && (
+            <div className="rounded-[6px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">{loc.error}</div>
+          )}
+
           {/* County - always */}
           <div>
             <label className={labelCls}>County *</label>
-            <select className={inputCls} style={{ height: '42px' }} value={loc.countyCode} onChange={(e) => onCountyChange(e.target.value)} required>
+            <select className={inputCls} style={{ height: '42px' }} value={loc.countyCode} onChange={(e) => loc.selectCounty(e.target.value)} required>
               <option value="">Select county</option>
-              {KENYA_LOCATIONS.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+              {loc.counties.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
             </select>
           </div>
 
@@ -503,9 +491,9 @@ function StepElectionLevel({ aspirantType, onNext, onBack }) {
             <div>
               <label className={labelCls}>Constituency *</label>
               <select className={inputCls} style={{ height: '42px' }} value={loc.constituencyCode}
-                onChange={(e) => onConstituencyChange(e.target.value)} disabled={!loc.countyCode} required>
+                onChange={(e) => loc.selectConstituency(e.target.value)} disabled={!loc.countyCode} required>
                 <option value="">Select constituency</option>
-                {constits.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
+                {loc.constituencies.map((c) => <option key={c.code} value={c.code}>{c.name}</option>)}
               </select>
             </div>
           )}
@@ -515,9 +503,9 @@ function StepElectionLevel({ aspirantType, onNext, onBack }) {
             <div>
               <label className={labelCls}>Ward *</label>
               <select className={inputCls} style={{ height: '42px' }} value={loc.wardCode}
-                onChange={(e) => onWardChange(e.target.value)} disabled={!loc.constituencyCode} required>
+                onChange={(e) => loc.selectWard(e.target.value)} disabled={!loc.constituencyCode} required>
                 <option value="">Select ward</option>
-                {wards.map((w) => <option key={w.code} value={w.code}>{w.name}</option>)}
+                {loc.wards.map((w) => <option key={w.code} value={w.code}>{w.name}</option>)}
               </select>
             </div>
           )}
