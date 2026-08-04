@@ -25,6 +25,15 @@ const SEAT_LABELS = {
   women_rep: "Women's Representative",
 }
 
+// Nomination fee tiered by seat category (KES) - mirrors backend NOMINATION_FEES
+const NOMINATION_FEES = {
+  mca: 30000,
+  mp: 100000,
+  senator: 100000,
+  women_rep: 100000,
+  governor: 300000,
+}
+
 const IPPMS_STATUS = {
   not_checked: { label: 'Not Checked', color: 'bg-gray-100 text-gray-600' },
   eligible: { label: 'Eligible', color: 'bg-blue-100 text-blue-700' },
@@ -377,10 +386,20 @@ export default function Portal() {
                       { label: 'Full Name', value: `${user.firstName} ${user.lastName}` },
                       { label: 'Email', value: user.email },
                       { label: 'Phone', value: user.phone || '-' },
+                      { label: profile?.documentType === 2 ? 'Passport Number' : 'National ID Number', value: profile?.nationalId || '-' },
+                      { label: 'Date of Birth', value: profile?.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString('en-KE', { day: 'numeric', month: 'long', year: 'numeric' }) : '-' },
+                      { label: 'Gender', value: profile?.gender === 'M' ? 'Male' : profile?.gender === 'F' ? 'Female' : '-' },
+                      { label: 'PWD', value: profile?.hasPWD ? 'Yes' : 'No' },
+                      { label: 'Aspirant Type', value: profile?.aspirantType === 'nominated' ? 'Party Nominated' : profile?.aspirantType === 'elective' ? 'Elective' : '-' },
+                      { label: 'Currently Elected', value: profile?.isElected ? 'Yes' : 'No' },
                       { label: 'Seat', value: profile?.seatCategory ? SEAT_LABELS[profile.seatCategory] : '-' },
+                      { label: 'Seat Description', value: profile?.seatDescription || '-' },
                       { label: 'County', value: profile?.countyName || '-' },
                       { label: 'Constituency', value: profile?.constituencyName || '-' },
                       { label: 'Ward', value: profile?.wardName || '-' },
+                      { label: 'Application Status', value: (profile?.applicationStatus || 'pending_review').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) },
+                      ...(profile?.applicationStatus === 'rejected' && profile?.rejectionReason ? [{ label: 'Rejection Reason', value: profile.rejectionReason }] : []),
+                      { label: 'Nomination Fee', value: profile?.nominationFeePaid ? 'Paid' : 'Not Paid' },
                     ].map(({ label, value }) => (
                       <div key={label} className="flex items-center justify-between px-6 py-3 text-sm">
                         <dt className="text-[#5A5450]">{label}</dt>
@@ -388,6 +407,53 @@ export default function Portal() {
                       </div>
                     ))}
                   </dl>
+
+                  {(profile?.bio || profile?.manifesto) && (
+                    <div className="border-t border-[#E2DCDA] px-6 py-4 space-y-4">
+                      {profile?.bio && (
+                        <div>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[#5A5450] mb-1.5">Bio</p>
+                          <p className="text-sm text-[#111111] whitespace-pre-line">{profile.bio}</p>
+                        </div>
+                      )}
+                      {profile?.manifesto && (
+                        <div>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[#5A5450] mb-1.5">Manifesto</p>
+                          <p className="text-sm text-[#111111] whitespace-pre-line">{profile.manifesto}</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Uploaded documents */}
+                <div className="rounded-xl bg-white border border-[#E2DCDA] shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-[#E2DCDA]">
+                    <h2 className="text-sm font-semibold text-[#111111]">Uploaded Documents</h2>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-3">
+                    {[
+                      { label: 'Passport Photo', url: profile?.profilePhoto, round: true },
+                      { label: profile?.documentType === 2 ? 'Passport Bio Page' : 'National ID - Front', url: profile?.idDocumentFront },
+                      { label: 'National ID - Back', url: profile?.idDocumentBack, hide: profile?.documentType === 2 },
+                    ].filter((d) => !d.hide).map((doc) => (
+                      <div key={doc.label}>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.07em] text-[#5A5450] mb-2">{doc.label}</p>
+                        {doc.url ? (
+                          <a href={doc.url} target="_blank" rel="noreferrer" className="block group">
+                            <div className={`overflow-hidden border border-[#E2DCDA] bg-[#F8F5F3] ${doc.round ? 'h-32 w-32 rounded-full mx-auto' : 'h-32 w-full rounded-lg'}`}>
+                              <img src={doc.url} alt={doc.label} className="h-full w-full object-cover group-hover:opacity-80 transition-opacity" />
+                            </div>
+                            <p className="mt-2 text-center text-xs font-medium text-[#1a3c5e] group-hover:underline">View full size</p>
+                          </a>
+                        ) : (
+                          <div className="flex h-32 items-center justify-center rounded-lg border border-dashed border-[#E2DCDA] bg-[#F8F5F3]">
+                            <p className="text-xs text-[#5A5450]">Not uploaded</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Quick links */}
@@ -478,28 +544,42 @@ export default function Portal() {
 
                 {/* Pay nomination fee CTA */}
                 {!payments.some(p => p.type === 'nomination_fee' && p.status === 'success') && (
-                  <div className="rounded-xl border border-[#1a3c5e]/20 bg-[#1a3c5e]/5 p-6 flex items-start gap-4">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#1a3c5e] text-white">
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                  profile?.isApproved ? (
+                    <div className="rounded-xl border border-[#1a3c5e]/20 bg-[#1a3c5e]/5 p-6 flex items-start gap-4">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#1a3c5e] text-white">
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-semibold text-[#111111]">Nomination Fee</h3>
+                        <p className="mt-1 text-sm text-[#5A5450]">
+                          Pay the party nomination fee of <span className="font-semibold text-[#111111]">KES {(NOMINATION_FEES[profile?.seatCategory] || 100000).toLocaleString()}</span> to complete your aspirant registration. Payment is processed securely via Paystack.
+                        </p>
+                        <button
+                          onClick={payNominationFee}
+                          disabled={paymentLoading}
+                          className="mt-3 inline-flex items-center gap-2 rounded-md bg-[#1a3c5e] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 disabled:opacity-60 transition-colors"
+                        >
+                          {paymentLoading ? (
+                            <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Redirecting…</>
+                          ) : (
+                            <>Pay KES {(NOMINATION_FEES[profile?.seatCategory] || 100000).toLocaleString()} via Paystack →</>
+                          )}
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-semibold text-[#111111]">Nomination Fee</h3>
-                      <p className="mt-1 text-sm text-[#5A5450]">
-                        Pay the party nomination fee of <span className="font-semibold text-[#111111]">KES 5,000</span> to complete your aspirant registration. Payment is processed securely via Paystack.
-                      </p>
-                      <button
-                        onClick={payNominationFee}
-                        disabled={paymentLoading}
-                        className="mt-3 inline-flex items-center gap-2 rounded-md bg-[#1a3c5e] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 disabled:opacity-60 transition-colors"
-                      >
-                        {paymentLoading ? (
-                          <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Redirecting…</>
-                        ) : (
-                          <>Pay KES 5,000 via Paystack →</>
-                        )}
-                      </button>
+                  ) : (
+                    <div className="rounded-xl border border-[#E2DCDA] bg-[#F8F5F3] p-6 flex items-start gap-4">
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#E2DCDA] text-[#5A5450]">
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-semibold text-[#111111]">Nomination Fee</h3>
+                        <p className="mt-1 text-sm text-[#5A5450]">
+                          The nomination fee opens once your application has been approved by the party. Your account is currently <span className="font-semibold text-[#111111]">pending approval</span> - check back once you&apos;ve been notified.
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )
                 )}
 
                 {payments.some(p => p.type === 'nomination_fee' && p.status === 'success') && (
