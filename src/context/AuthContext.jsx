@@ -22,9 +22,15 @@ export function AuthProvider({ children }) {
           setUser(data.user)
           saveAuth(token, null, data.user)
         })
-        .catch(() => {
-          clearAuth()
-          setUser(null)
+        .catch((err) => {
+          // Only a confirmed 401/403 means the token is actually invalid.
+          // Network errors, timeouts, and 5xx responses are transient - keep
+          // the already-hydrated localStorage user rather than logging the
+          // person out from under themselves (e.g. right after registration).
+          if (err?.status === 401 || err?.status === 403) {
+            clearAuth()
+            setUser(null)
+          }
         })
         .finally(() => setLoading(false))
     } else {
@@ -58,8 +64,15 @@ export function AuthProvider({ children }) {
     return data.user
   }, [])
 
+  // For flows that call saveAuth() directly (e.g. registration callback pages
+  // navigating client-side to /portal) - keeps context state in sync without
+  // an extra round-trip, since those pages already have the full user object.
+  const setAuthUser = useCallback((nextUser) => {
+    setUser(nextUser)
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, refreshUser, setAuthUser }}>
       {children}
     </AuthContext.Provider>
   )

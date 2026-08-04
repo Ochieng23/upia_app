@@ -1,6 +1,22 @@
 import { getToken, getRefreshToken, saveAuth, clearAuth } from './auth'
 
 const BASE = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api`
+const REQUEST_TIMEOUT_MS = 20000
+
+// Wraps fetch with a timeout so a hung request rejects instead of leaving
+// callers (e.g. auth checks on page load) waiting forever with no feedback.
+async function fetchWithTimeout(url, options) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  try {
+    return await fetch(url, { ...options, signal: controller.signal })
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error('Request timed out. Please check your connection and try again.')
+    throw err
+  } finally {
+    clearTimeout(timer)
+  }
+}
 
 let refreshPromise = null
 
@@ -8,7 +24,7 @@ async function refreshAccessToken() {
   const refreshToken = getRefreshToken()
   if (!refreshToken) throw new Error('No refresh token')
 
-  const res = await fetch(`${BASE}/auth/refresh`, {
+  const res = await fetchWithTimeout(`${BASE}/auth/refresh`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken }),
@@ -38,7 +54,7 @@ async function request(path, options = {}) {
     delete headers['Content-Type']
   }
 
-  let res = await fetch(`${BASE}${path}`, { ...options, headers })
+  let res = await fetchWithTimeout(`${BASE}${path}`, { ...options, headers })
 
   // Auto-refresh on 401 only when the user already has a stored token
   // (skip on login/register where a 401 means wrong credentials)
@@ -52,7 +68,7 @@ async function request(path, options = {}) {
         ...headers,
         Authorization: `Bearer ${newToken}`,
       }
-      res = await fetch(`${BASE}${path}`, { ...options, headers: retryHeaders })
+      res = await fetchWithTimeout(`${BASE}${path}`, { ...options, headers: retryHeaders })
     } catch {
       refreshPromise = null
       clearAuth()
