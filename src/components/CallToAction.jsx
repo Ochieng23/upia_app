@@ -33,8 +33,8 @@ export function CallToAction() {
                 <div style={{ marginTop: 7, fontFamily: SANS, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8FA694' }}>Members</div>
               </div>
               <div>
-                <div style={{ fontFamily: SERIF, fontSize: 'clamp(28px, 3vw, 40px)', lineHeight: 1, color: '#EDEFE9', letterSpacing: '-0.01em' }}>30+</div>
-                <div style={{ marginTop: 7, fontFamily: SANS, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8FA694' }}>MCAs Elected</div>
+                <div style={{ fontFamily: SERIF, fontSize: 'clamp(28px, 3vw, 40px)', lineHeight: 1, color: '#EDEFE9', letterSpacing: '-0.01em' }}>29+</div>
+                <div style={{ marginTop: 7, fontFamily: SANS, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#8FA694' }}>Years of Service</div>
               </div>
             </div>
           </div>
