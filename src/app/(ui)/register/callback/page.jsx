@@ -13,7 +13,7 @@ function CallbackInner() {
   const router = useRouter()
   const { setAuthUser } = useAuth()
 
-  // phase: verifying → verified → creating → done | failed
+  // phase: verifying → verified → creating → done | pending | failed
   const [phase, setPhase] = useState('verifying')
   const [email, setEmail] = useState('')
   const [sessionToken, setSessionToken] = useState('')
@@ -24,26 +24,27 @@ function CallbackInner() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm]   = useState(false)
   const verified = useRef(false)
+  const refRef = useRef('')
 
-  useEffect(() => {
-    if (verified.current) return
-    verified.current = true
-
-    const ref = searchParams.get('reference') || searchParams.get('trxref') || searchParams.get('ref')
+  const checkPayment = () => {
+    const ref = refRef.current
     const session = searchParams.get('session')
 
     if (!ref) { setPhase('failed'); return }
 
-    // 1. Verify the payment with the backend
     fetch(`${BASE}/registration/payment/verify/${ref}`)
       .then((r) => r.json())
       .then(async (data) => {
+        if (data.status === 'pending') {
+          setPhase('pending')
+          return
+        }
         if (data.status !== 'success' && !data.alreadyPaid) {
           setPhase('failed')
           return
         }
 
-        // 2. Fetch session details so we can pre-fill the email
+        // Fetch session details so we can pre-fill the email
         const token = session || localStorage.getItem(SESSION_KEY) || ''
         if (!token) { setPhase('failed'); return }
 
@@ -60,7 +61,21 @@ function CallbackInner() {
         setPhase('verified')
       })
       .catch(() => setPhase('failed'))
+  }
+
+  useEffect(() => {
+    if (verified.current) return
+    verified.current = true
+
+    refRef.current = searchParams.get('reference') || searchParams.get('trxref') || searchParams.get('ref')
+    setPhase('verifying')
+    checkPayment()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleCheckAgain = () => {
+    setPhase('verifying')
+    checkPayment()
+  }
 
   const handleCreateAccount = async (e) => {
     e.preventDefault()
@@ -220,6 +235,29 @@ function CallbackInner() {
           </>
         )}
 
+        {/* ── Still processing (e.g. mobile money confirmation in progress) ── */}
+        {phase === 'pending' && (
+          <>
+            <div className="mx-auto h-14 w-14 rounded-full bg-amber-50 flex items-center justify-center mb-5">
+              <svg className="h-7 w-7 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h1 className="text-lg font-medium text-[#111111]">Still Confirming Your Payment</h1>
+            <p className="mt-2 text-sm text-[#5A5450]">
+              If you approved an M-Pesa or mobile money prompt, this can take a minute to confirm.
+              If money was deducted, there's no need to pay again — it will confirm automatically.
+            </p>
+            <button
+              type="button"
+              onClick={handleCheckAgain}
+              className="mt-6 inline-flex items-center justify-center w-full rounded-[6px] bg-[#236331] px-6 py-3 text-sm font-medium text-white hover:bg-[#2B753A] transition-colors"
+            >
+              Check Again
+            </button>
+          </>
+        )}
+
         {/* ── Failed ── */}
         {phase === 'failed' && (
           <>
@@ -232,9 +270,16 @@ function CallbackInner() {
             <p className="mt-2 text-sm text-[#5A5450]">
               The payment was not completed or could not be verified. Your registration details are saved — you can go back and try again.
             </p>
+            <button
+              type="button"
+              onClick={handleCheckAgain}
+              className="mt-6 inline-flex items-center justify-center w-full rounded-[6px] bg-[#1a3c5e] px-6 py-3 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-colors"
+            >
+              Check Again
+            </button>
             <Link
               href="/register/aspirant"
-              className="mt-6 inline-flex items-center justify-center w-full rounded-[6px] bg-[#1a3c5e] px-6 py-3 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-colors"
+              className="mt-3 inline-flex items-center justify-center w-full rounded-[6px] px-6 py-3 text-sm font-medium text-[#5A5450] hover:text-[#111111] transition-colors"
             >
               ← Back to Registration
             </Link>
