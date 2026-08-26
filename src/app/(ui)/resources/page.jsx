@@ -164,7 +164,7 @@ export default function Resources() {
                 {filtered.map(doc => (
                   <a
                     key={doc._id}
-                    href={doc.fileUrl}
+                    href={`/api/backend/resources/${doc._id}/view`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex flex-col gap-4 rounded-[12px] bg-white p-[20px] transition-all duration-150 hover:border-[#D46868] sm:flex-row sm:items-center"
@@ -203,10 +203,11 @@ export default function Resources() {
                       )}
                     </div>
 
-                    {/* Download icon */}
+                    {/* View icon */}
                     <div className="flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-[6px] bg-[#F8F5F3] group-hover:bg-[#C25757] transition-colors duration-150">
                       <svg className="h-5 w-5 text-[#5A5450] group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
                   </a>
