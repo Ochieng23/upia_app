@@ -33,11 +33,87 @@ const CATEGORY_ICONS = {
 }
 
 const ALL_CATEGORIES = ['Financial Reports', 'Press Releases', 'Party Manifesto', 'Party Constitution', 'Other']
+const IMAGE_TYPES = ['JPG', 'JPEG', 'PNG', 'WEBP']
+
+function DocumentPreviewModal({ doc, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const onKeyDown = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [onClose])
+
+  const fileType = (doc.fileType || 'PDF').toUpperCase()
+  const viewUrl = `/api/backend/resources/${doc._id}/view`
+  const isImage = IMAGE_TYPES.includes(fileType)
+  const isPdf = fileType === 'PDF'
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 sm:p-8"
+      onClick={onClose}
+    >
+      <div
+        className="flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-[12px] bg-white shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between gap-4 border-b px-5 py-4" style={{ borderColor: '#E2DCDA' }}>
+          <div className="min-w-0">
+            <h3 className="truncate text-[15px] font-medium text-[#111111]">{doc.title}</h3>
+            <p className="text-xs text-[#5A5450]">{doc.category} · {fileType}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close preview"
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-[6px] text-[#5A5450] hover:bg-[#F8F5F3] hover:text-[#111111] transition-colors"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="flex-1 overflow-auto bg-[#F8F5F3]">
+          {isPdf ? (
+            <iframe
+              src={`${viewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+              title={doc.title}
+              className="h-full min-h-[70vh] w-full border-0"
+            />
+          ) : isImage ? (
+            <div className="flex h-full min-h-[70vh] items-center justify-center p-6">
+              <img src={viewUrl} alt={doc.title} className="max-h-full max-w-full rounded-[8px] object-contain" />
+            </div>
+          ) : (
+            <div className="flex h-full min-h-[70vh] flex-col items-center justify-center gap-3 p-10 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white ring-1 ring-[#E2DCDA]">
+                <svg className="h-6 w-6 text-[#5A5450]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-[#111111]">Preview isn't available for {fileType} files</p>
+              <p className="max-w-sm text-sm text-[#5A5450]">
+                This document format can't be displayed in-browser. Use the "Request Document" link if you need this file.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function Resources() {
   const [resources,    setResources]    = useState([])
   const [loading,      setLoading]      = useState(true)
   const [activeCategory, setActiveCategory] = useState(null)
+  const [previewDoc,   setPreviewDoc]   = useState(null)
 
   useEffect(() => {
     fetch('/api/backend/resources')
@@ -162,12 +238,11 @@ export default function Resources() {
             ) : (
               <div className="space-y-4">
                 {filtered.map(doc => (
-                  <a
+                  <button
                     key={doc._id}
-                    href={`/api/backend/resources/${doc._id}/view`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex flex-col gap-4 rounded-[12px] bg-white p-[20px] transition-all duration-150 hover:border-[#D46868] sm:flex-row sm:items-center"
+                    type="button"
+                    onClick={() => setPreviewDoc(doc)}
+                    className="group flex w-full flex-col gap-4 rounded-[12px] bg-white p-[20px] text-left transition-all duration-150 hover:border-[#D46868] sm:flex-row sm:items-center"
                     style={{ border: doc.category === 'Press Releases' ? '0.5px solid #C25757' : '0.5px solid #E2DCDA' }}
                   >
                     {/* File icon */}
@@ -210,7 +285,7 @@ export default function Resources() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
-                  </a>
+                  </button>
                 ))}
               </div>
             )}
@@ -234,6 +309,8 @@ export default function Resources() {
       </main>
 
       <Footer />
+
+      {previewDoc && <DocumentPreviewModal doc={previewDoc} onClose={() => setPreviewDoc(null)} />}
     </div>
   )
 }
