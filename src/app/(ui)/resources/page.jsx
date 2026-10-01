@@ -1,7 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Header } from '../../../components/Header'
 import { Footer } from '../../../components/Footer'
+import { ProtectedDocumentViewer } from '../../../components/ProtectedDocumentViewer'
 import Link from 'next/link'
 
 const CATEGORY_ICONS = {
@@ -36,6 +37,9 @@ const ALL_CATEGORIES = ['Financial Reports', 'Press Releases', 'Party Manifesto'
 const IMAGE_TYPES = ['JPG', 'JPEG', 'PNG', 'WEBP']
 
 function DocumentPreviewModal({ doc, onClose }) {
+  const [error, setError] = useState(null)
+  const handleError = useCallback((message) => setError(message), [])
+
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     const onKeyDown = (e) => { if (e.key === 'Escape') onClose() }
@@ -80,16 +84,15 @@ function DocumentPreviewModal({ doc, onClose }) {
 
         {/* Body */}
         <div className="flex-1 overflow-auto bg-[#F8F5F3]">
-          {isPdf ? (
-            <iframe
-              src={`${viewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-              title={doc.title}
-              className="h-full min-h-[70vh] w-full border-0"
-            />
-          ) : isImage ? (
-            <div className="flex h-full min-h-[70vh] items-center justify-center p-6">
-              <img src={viewUrl} alt={doc.title} className="max-h-full max-w-full rounded-[8px] object-contain" />
+          {error ? (
+            <div className="flex h-full min-h-[70vh] flex-col items-center justify-center gap-3 p-10 text-center">
+              <p className="text-sm font-medium text-[#111111]">{error}</p>
+              <p className="max-w-sm text-sm text-[#5A5450]">
+                Use the "Request Document" link if you need this file.
+              </p>
             </div>
+          ) : isPdf || isImage ? (
+            <ProtectedDocumentViewer url={viewUrl} kind={isPdf ? 'pdf' : 'image'} onError={handleError} />
           ) : (
             <div className="flex h-full min-h-[70vh] flex-col items-center justify-center gap-3 p-10 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white ring-1 ring-[#E2DCDA]">
