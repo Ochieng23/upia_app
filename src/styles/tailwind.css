@@ -52,6 +52,32 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Article bodies — shared by the public post page and the admin editor */
+  .post-prose img {
+    @apply mx-auto rounded-[12px];
+  }
+  .post-prose div[data-youtube-video] iframe {
+    @apply aspect-video h-auto w-full rounded-[12px];
+  }
+  .post-prose a {
+    @apply text-[#C25757] no-underline hover:underline;
+  }
+
+  /* Admin editor */
+  .tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    color: #C9C2BE;
+  }
+  .tiptap img.ProseMirror-selectednode,
+  .tiptap div[data-youtube-video].ProseMirror-selectednode {
+    outline: 3px solid #236331;
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
 }
 
 @layer utilities {

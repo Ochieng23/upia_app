@@ -6,11 +6,7 @@ import { useAuth } from '../../../context/AuthContext'
 import { api } from '../../../lib/api'
 import { Logo } from '../../../components/Logo'
 import { useIppmsLocations } from '../../../lib/useIppmsLocations'
-
-const BLANK_POST = {
-  title: '', description: '', body: '', coverImage: '',
-  categories: '', authorName: '', authorTitle: '', authorImageUrl: '', published: false,
-}
+import { PostEditor } from '../../../components/PostEditor'
 
 const BLANK_EVENT = {
   title: '', description: '', date: '', endDate: '', venue: '',
@@ -53,10 +49,7 @@ export default function AdminDashboard() {
 
   const [issueForm, setIssueForm] = useState(null)
   const [issuing, setIssuing] = useState(false)
-  const [postForm, setPostForm] = useState(null)
-  const [postSaving, setPostSaving] = useState(false)
-  const [coverUploading, setCoverUploading] = useState(false)
-  const coverInputRef = useRef(null)
+  const [postForm, setPostForm] = useState(null) // null | {} (new) | post being edited
   const [eventForm, setEventForm] = useState(null)
   const [eventSaving, setEventSaving] = useState(false)
   const [structureForm, setStructureForm] = useState(null)
@@ -117,38 +110,11 @@ export default function AdminDashboard() {
 
   /* ── Posts ── */
   const openEditPost = async (id) => {
-    const data = await api.get(`/posts/admin/${id}`); const p = data.data
-    setPostForm({ _id: p._id, title: p.title, description: p.description || '', body: p.body || '', coverImage: p.coverImage || '', categories: (p.categories || []).join(', '), authorName: p.author?.name || '', authorTitle: p.author?.title || '', authorImageUrl: p.author?.imageUrl || '', published: p.published })
+    const data = await api.get(`/posts/admin/${id}`); setPostForm(data.data)
   }
-  const savePost = async (e) => {
-    e.preventDefault(); setPostSaving(true)
-    try {
-      const payload = { title: postForm.title, description: postForm.description, body: postForm.body, coverImage: postForm.coverImage, categories: postForm.categories, author: { name: postForm.authorName, title: postForm.authorTitle, imageUrl: postForm.authorImageUrl }, published: postForm.published }
-      if (postForm._id) { await api.put(`/posts/${postForm._id}`, payload); showFlash('Post updated') }
-      else { await api.post('/posts', payload); showFlash('Post created') }
-      setPostForm(null); loadData()
-    } catch (err) { alert(err.message) } finally { setPostSaving(false) }
-  }
+  const onPostSaved = (message) => { setPostForm(null); showFlash(message); loadData() }
   const deletePost = async (id) => { if (!confirm('Delete this post?')) return; await api.delete(`/posts/${id}`); showFlash('Post deleted'); loadData() }
   const togglePublish = async (post) => { await api.put(`/posts/${post._id}`, { published: !post.published }); showFlash(post.published ? 'Unpublished' : 'Published'); loadData() }
-  const setPost = (field) => (e) => setPostForm((f) => ({ ...f, [field]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
-
-  const uploadCoverImage = async (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setCoverUploading(true)
-    try {
-      const fd = new FormData()
-      fd.append('image', file)
-      const { url } = await api.post('/posts/upload-image', fd)
-      setPostForm((f) => ({ ...f, coverImage: url }))
-    } catch (err) {
-      alert('Image upload failed: ' + err.message)
-    } finally {
-      setCoverUploading(false)
-      if (coverInputRef.current) coverInputRef.current.value = ''
-    }
-  }
 
   /* ── Events ── */
   const saveEvent = async (e) => {
@@ -595,7 +561,7 @@ export default function AdminDashboard() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div><h1 className="text-xl font-semibold text-[#111111]">News Posts</h1><p className="text-sm text-[#5A5450] mt-0.5">{posts.length} total · {posts.filter(p=>p.published).length} published</p></div>
-                  <button onClick={()=>setPostForm({...BLANK_POST})} className="rounded-[6px] bg-[#1a3c5e] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-colors">+ New Post</button>
+                  <button onClick={()=>setPostForm({})} className="rounded-[6px] bg-[#1a3c5e] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a3c5e]/90 transition-colors">+ New Post</button>
                 </div>
                 <div className="rounded-xl bg-white border border-[#E2DCDA] overflow-hidden shadow-sm">
                   <div className="overflow-x-auto">
@@ -645,35 +611,8 @@ export default function AdminDashboard() {
         </Modal>
       )}
 
-      {/* ── Post modal ── */}
-      {postForm && (
-        <Modal title={postForm._id?'Edit Post':'New Post'} onClose={()=>setPostForm(null)} wide>
-          <form onSubmit={savePost} className="space-y-4">
-            <Field label="Title *"><input className={inputCls} value={postForm.title} onChange={setPost('title')} placeholder="Post title" required /></Field>
-            <Field label="Excerpt"><textarea className={inputCls} rows={2} value={postForm.description} onChange={setPost('description')} placeholder="Short summary…" /></Field>
-            <Field label="Cover Image">
-              <input ref={coverInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={uploadCoverImage} />
-              <div className="flex gap-2">
-                <button type="button" onClick={()=>coverInputRef.current?.click()} disabled={coverUploading}
-                  className="shrink-0 rounded-[6px] border border-[#d1d5db] bg-white px-3 py-1.5 text-xs font-medium text-[#374151] hover:bg-[#f9fafb] disabled:opacity-50 transition-colors">
-                  {coverUploading ? 'Uploading…' : '⬆ Upload image'}
-                </button>
-                <input className={inputCls} type="url" value={postForm.coverImage} onChange={setPost('coverImage')} placeholder="or paste URL…" />
-              </div>
-              {postForm.coverImage&&<img src={postForm.coverImage} alt="Cover preview" className="mt-2 h-36 w-full object-cover rounded-[6px] border border-[#e5e7eb]" onError={e=>{e.target.style.display='none'}} />}
-            </Field>
-            <Field label="Categories (comma-separated)"><input className={inputCls} value={postForm.categories} onChange={setPost('categories')} placeholder="Politics, News" /></Field>
-            <div className="grid grid-cols-3 gap-3">
-              <Field label="Author Name"><input className={inputCls} value={postForm.authorName} onChange={setPost('authorName')} /></Field>
-              <Field label="Author Title"><input className={inputCls} value={postForm.authorTitle} onChange={setPost('authorTitle')} /></Field>
-              <Field label="Author Photo URL"><input className={inputCls} type="url" value={postForm.authorImageUrl} onChange={setPost('authorImageUrl')} /></Field>
-            </div>
-            <Field label="Body (HTML)"><textarea className={`${inputCls} font-mono text-xs`} rows={12} value={postForm.body} onChange={setPost('body')} placeholder="<p>Article content…</p>" /><p className="mt-1 text-xs text-[#5A5450]">Supports HTML: &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;blockquote&gt;</p></Field>
-            <div className="flex items-center gap-3 pt-1"><input id="pub" type="checkbox" checked={postForm.published} onChange={setPost('published')} className="h-4 w-4 rounded text-[#1a3c5e]" /><label htmlFor="pub" className="text-sm text-[#5A5450]">Publish immediately</label></div>
-            <ModalActions onCancel={()=>setPostForm(null)} saving={postSaving} label={postForm._id?'Save Changes':'Create Post'} />
-          </form>
-        </Modal>
-      )}
+      {/* ── Post editor ── */}
+      {postForm && <PostEditor post={postForm} onClose={()=>setPostForm(null)} onSaved={onPostSaved} />}
 
       {/* ── Event modal ── */}
       {eventForm && (

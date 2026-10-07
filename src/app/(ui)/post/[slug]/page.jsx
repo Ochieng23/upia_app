@@ -116,7 +116,7 @@ export default async function PostPage({ params }) {
             {/* Article body */}
             <article className="lg:col-span-2">
               <div
-                className="prose prose-lg max-w-none
+                className="post-prose prose prose-lg max-w-none
                   prose-headings:font-semibold prose-headings:text-[#111111]
                   prose-p:text-[#5A5450] prose-p:leading-relaxed
                   prose-a:text-[#C25757] prose-a:no-underline hover:prose-a:underline
