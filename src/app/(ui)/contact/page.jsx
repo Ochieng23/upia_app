@@ -24,8 +24,10 @@ const contactInfo = [
       </svg>
     ),
     label: 'Phone Number',
-    value: '+254 705 927 424',
-    href: 'tel:+254705927424',
+    links: [
+      { value: '+254 705 927 424', href: 'tel:+254705927424' },
+      { value: '+254 781 699 903', href: 'tel:+254781699903', note: 'Reception · Airtel' },
+    ],
     iconBg: 'bg-[#236331]',
   },
   {
@@ -134,7 +136,18 @@ export default function Contact() {
                   {item.icon}
                 </div>
                 <h3 className="text-[11px] font-medium uppercase tracking-[0.07em] text-[#5A5450] mb-2">{item.label}</h3>
-                {item.href ? (
+                {item.links ? (
+                  <ul className="space-y-1.5">
+                    {item.links.map((l) => (
+                      <li key={l.href}>
+                        <a href={l.href} className="text-sm font-medium text-[#111111] hover:text-[#C25757] transition-colors">
+                          {l.value}
+                        </a>
+                        {l.note && <span className="block text-xs text-[#5A5450]">{l.note}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                ) : item.href ? (
                   <a href={item.href} className="text-sm font-medium text-[#111111] hover:text-[#C25757] transition-colors">
                     {item.value}
                   </a>

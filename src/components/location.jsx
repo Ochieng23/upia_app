@@ -18,6 +18,7 @@ const infoCells = [
     label: 'Contact',
     links: [
       { href: 'tel:+254705927424', label: '+254 705 927 424' },
+      { href: 'tel:+254781699903', label: '+254 781 699 903 (Reception, Airtel)' },
       { href: 'mailto:info@upiaparty.com', label: 'info@upiaparty.com' },
     ],
   },
